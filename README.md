@@ -5,10 +5,17 @@
 
 ### 1. virtual environment 별도 설치
 명령어 : __python -m venv myvenv__ (myvenv는 가상환경의 이름으로 자유롭게 설정 가능)
+        
+        <window>
+        > pip install virtualenv 
+        > virtualenv venv
 
 ### 2. virtual environment 실행
 명령어 : __source myvenv/bin/activate__ (myvenv -설치한 가상환경 이름- 의 상위 폴더에서 진행해야함)
-
+        
+        <window>
+        > call venv/scripts/activate
+        
 ### 3. pip 최신으로 업그레이드
 명령어 : __python -m pip install --updgrade pip__
 
