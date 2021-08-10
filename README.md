@@ -23,7 +23,7 @@
 명령어 : __pip install django__
 
 ### 5. 장고 프로젝트 시작 
-명령어 : __django-admin startproject SGFriend .
+명령어 : __django-admin startproject SGFriend .__<br>
 . 을 꼭 찍어야 하며, SGFriend는 임의의 이름입니다.
 
 ### 6. 위의 설치가 완료되면 main 브랜치의 코드를 다운받아 기존을 대체
