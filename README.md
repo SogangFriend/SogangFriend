@@ -1,6 +1,7 @@
 # SogangFriend
 
 Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
+[파이참 학생 무료 Pro버전](https://celebro.tistory.com/1)
 
 ## 설치 Step
 --------------------
