@@ -21,6 +21,9 @@
 
 ### 6. 위의 설치가 완료되면 main 브랜치의 코드를 다운받아 기존을 대체
 
+### 7. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
+명령어 : <br>__python manage.py makemigrations__<br>__python manage.py migrate__
+
 * 주의사항
 1. 사람별로 브랜치를 만들 것입니다. <br>본인의 브랜치를 사용하길 권장하며 main 브랜치에 바로 commit-push 하지 않도록 부탁드립니다.<br>
 
