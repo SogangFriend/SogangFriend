@@ -127,11 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-<<<<<<< Updated upstream
-=======
-
 
 /mainApp/migrations/*
 /myvenv/*
 /.idea/*
->>>>>>> Stashed changes
