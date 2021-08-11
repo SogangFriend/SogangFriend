@@ -112,6 +112,7 @@ class Member(models.Model):
 # 1: 지원 유진
 # 2: 수현 인찬
 
-hi
-hello
-ggg
+# hi
+# hello
+# ggg
+## merge를 테스트해보아요
