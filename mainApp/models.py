@@ -16,25 +16,25 @@ class Do(models.Model):
 
 class Si(models.Model):
     name = models.CharField(max_length=30, null=False)
-    do = models.ForeignKey(Do, on_delete=models.CASCADE, null=True)
+    do = models.ForeignKey(Do, on_delete=models.CASCADE, null=True, blank=True)
     isGYorTB = models.BooleanField(default=False)
 
 
 class Gu(models.Model):
     name = models.CharField(max_length=30, null=False)
-    si = models.ForeignKey(Si, on_delete=models.CASCADE, null=True)
+    si = models.ForeignKey(Si, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Dong(models.Model):
     name = models.CharField(max_length=30, null=False)
-    gu = models.ForeignKey(Gu, on_delete=models.CASCADE, null=True)
+    gu = models.ForeignKey(Gu, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Location(models.Model):
-    do = models.ForeignKey(Do, on_delete=models.CASCADE, null=True)
+    do = models.ForeignKey(Do, on_delete=models.CASCADE, null=True, blank=True)
     si = models.ForeignKey(Si, on_delete=models.CASCADE, null=False)
-    gu = models.ForeignKey(Gu, on_delete=models.CASCADE, null=True)
-    dong = models.ForeignKey(Dong, on_delete=models.CASCADE, null=True)
+    gu = models.ForeignKey(Gu, on_delete=models.CASCADE, null=True, blank=True)
+    dong = models.ForeignKey(Dong, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Member(models.Model):
