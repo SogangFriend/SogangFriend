@@ -5,6 +5,11 @@ Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 
 ## 설치 Step
 --------------------
+### 0. 이 repository clone
+명령어 : __git clone https://github.com/SogangFriend/SogangFriend.git__
+또는
+1) Github Desktop에서 file -> clone repository -> Github.com 에서 SogangFriend 찾아서 선택 또는 URL에서 위 주소 입력
+2) 로컬 패스는 적절히 선택
 
 ### 1. virtual environment 별도 설치
 명령어 : __python -m venv myvenv__ (myvenv는 가상환경의 이름으로 자유롭게 설정 가능)
@@ -25,13 +30,7 @@ Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 ### 4. Django 설치
 명령어 : __pip install django__
 
-### 5. 장고 프로젝트 시작 
-명령어 : __django-admin startproject SGFriend .__<br>
-. 을 꼭 찍어야 하며, SGFriend는 임의의 이름입니다.
-
-### 6. 위의 설치가 완료되면 main 브랜치의 코드를 다운받아 기존을 대체
-
-### 7. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
+### 5. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
 명령어 : <br>__python manage.py makemigrations__<br>__python manage.py migrate__
 
 * 주의사항
