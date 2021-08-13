@@ -131,3 +131,6 @@ dmypy.json
 /mainApp/migrations/*
 /myvenv/*
 /.idea/*
+
+SGFriend/my_settings.py
+/Member/migrations/*
