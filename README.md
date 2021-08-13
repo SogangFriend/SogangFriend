@@ -27,7 +27,9 @@ Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 ### 4. Django 설치
 명령어 : __pip install django__
 
-### 5. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
+### 5. Member 폴더 아래에 migrations 폴더를 생성해줍니다. 그리고 migrations 폴더 아래에 __init__.py 파일을 생성해줍니다. (언더바 두개씩)
+
+### 6. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
 명령어 : <br>__python manage.py makemigrations__<br>__python manage.py migrate__
 
         <window>
