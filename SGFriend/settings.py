@@ -12,16 +12,32 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from .my_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Database
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+SECRET_KEY = SECRET_KEY
+
+EMAIL_BACKEND = EMAIL['EMAIL_BACKEND']
+EMAIL_USE_TLS = EMAIL['EMAIL_USE_TLS']
+EMAIL_PORT = EMAIL['EMAIL_PORT']
+EMAIL_HOST = EMAIL['EMAIL_HOST']
+EMAIL_HOST_USER = EMAIL['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
+SERVER_EMAIL = EMAIL['SERVER_EMAIL']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#ia@-6c)+#(4%^my(=x9(oe!*oderakvevr665v*da*zxy5^_z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainApp',
+    'Member',
 ]
 
 MIDDLEWARE = [
@@ -70,17 +87,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'SGFriend.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation

@@ -7,6 +7,5 @@ admin.site.register(Si)
 admin.site.register(Do)
 admin.site.register(Gu)
 admin.site.register(Dong)
-admin.site.register(Member)
 
 
