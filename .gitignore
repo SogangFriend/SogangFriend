@@ -133,4 +133,4 @@ dmypy.json
 /.idea/*
 
 SGFriend/my_settings.py
-/mainApp/templates/Member/migrations/*
+/Member/migrations/*

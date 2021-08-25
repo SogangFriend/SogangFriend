@@ -7,7 +7,7 @@ from .models import *
 # Create your views here.
 def register(request):  # 회원가입 페이지를 보여주기 위한 함수
     if request.method == "GET":
-        return render(request, 'register.html')
+        return render(request, 'Member/register.html')
 
     elif request.method == "POST":
         name = request.POST.get('name', '')
@@ -29,14 +29,14 @@ def register(request):  # 회원가입 페이지를 보여주기 위한 함수
         else:
             member = Member(name=name, email=email, password=make_password(password))
             member.save()
-        return render(request, 'register.html', res_data)  # register를 요청받으면 register.html 로 응답.
+        return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
 
 def login(request):
     response_data = {}
 
     if request.method == "GET":
-        return render(request, 'login.html')
+        return render(request, 'Member/login.html')
 
     elif request.method == "POST":
         login_email = request.POST.get('email', None)
@@ -55,7 +55,7 @@ def login(request):
             else:
                 response_data['error'] = "비밀번호를 틀렸습니다."
 
-        return render(request, 'login.html', response_data)
+        return render(request, 'Member/login.html', response_data)
 
 
 def home(request):
