@@ -12,16 +12,24 @@ from django.contrib.auth.hashers import make_password, check_password
 from mainApp.models import *
 
 
-def mail_authenticate(member, request):
-    send_mail(
-        "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
-        html=render_to_string('send_mail.html', {
-            "user": member,
-            'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
-            'domain': request.META['HTTP_HOST'],
-            # 'token': default_token_generator.make_token(self.object),
-        })
-    )
+def mail_send(member, request, find):
+    if find:
+        send_mail(
+            "~~~제목~~~~",
+            #~~~누구한테 보낼지~~~~
+            #~~~~~html~~~~~~
+            # 아래 양식 참고
+        )
+    else:
+        send_mail(
+            "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
+            html=render_to_string('send_mail.html', {
+                "user": member,
+                'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
+                'domain': request.META['HTTP_HOST'],
+                # 'token': default_token_generator.make_token(self.object),
+            })
+        )
 
 
 class RegisterView(View):
@@ -57,7 +65,7 @@ class RegisterView(View):
             loc.save()
             member = Member(name=name, student_number=student_number, email=email, password=make_password(password), location=loc)
             member.save()
-            mail_authenticate(member, request)
+            mail_send(member, request)
             return HttpResponse("메일 확인 바람")
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
