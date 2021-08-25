@@ -1,0 +1,16 @@
+<!-- templates/registration/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <h2>로그인</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><a href="{% url 'password_reset' %}">비밀번호 찾기</a>
+            <a href="{% url 'signup' %}">회원가입</a></p>
+        <button type="submit">로그인</button>
+
+    </form>
+{% endblock %}

@@ -1,0 +1,22 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <form action="http://127.0.0.1:8000/">
+        <input type="submit" value="홈">
+    {% if user.is_authenticated %}
+        Hi {{ user.username }}!
+        <p><a href="{% url 'logout' %}">Log Out</a></p>
+    {% else %}
+        <h2>서강프렌드</h2>
+
+        </form>
+        <a href="{% url 'login' %}">Log In</a>
+        <p><a href="{% url 'password_reset' %}">비밀번호 찾기</a>
+            <a href="{% url 'signup' %}">회원가입</a></p>
+
+
+    {% endif %}
+{% endblock %}
