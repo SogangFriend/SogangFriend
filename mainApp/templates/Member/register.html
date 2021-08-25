@@ -2,10 +2,9 @@
 
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb"></script>
-        <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb&submodules=geocoder"></script>
+
     </head>
     <body>
         <div class= "container">
@@ -24,105 +23,90 @@
              csrf_token 폼의 경우에는 , 데이터를 서버에 전달하는 기능.이때 암호화된 키를 숨겨놓아 크로스도메인을 막기 위함. -->
     <!-- bootstrap -component - forms -->
         <div class= "container">
+                <div class = "row mt-5">
+                    {{error}}
+                    <div class = "col-12 ">
             <div class = "row mt-5">
-                {{error}}
                 <div class = "col-12 ">
-                    <div class = "row mt-5">
-                        <div class = "col-12 ">
-                            <form method = "POST" action = "">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="name">닉네임 *</label>
-                                    <input type="text" class="form-control" id="name" placeholder="닉네임" name="name">
-                                    <button type="button" class="id_overlap_button" onclick="id_overlap_check()">중복검사</button>
-                                  <!-- 이 name 값으로 정보가 전달된다 -->
-                                </div>
+                    <form method = "POST" action = "">
+                    {% csrf_token %}
 
-                                <div class="form-group">
-                                    <label for="student_number">학번</label>
-                                    <input type="number" class="form-control" id="student_number" placeholder="학번을 입력하면 공개됩니다" name= "student_number">
-                                </div>
-                                <div class="form-group">
-                                    <label for="email">이메일 *</label>
-                                    <input type="text" class="form-control" id="email" placeholder="이메일" name= "email">
-                                </div>
-                                <div class="form-group">
-                                    <label for="location">위치 *</label>
-                                    <input type="text" class="form-control" id="location" placeholder="위치를 인증해주세요" name= "location"/>
-                                    <input type="button" onclick="coordToAddr()" value="위치 얻기"/>
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">비밀번호 *</label>
-                                    <input type="password" class="form-control" id="password" placeholder="비밀번호" name= "password">
-                                </div>
-                                <div class="form-group">
-                                    <label for="re_password">비밀번호 확인 *</label>
-                                    <input type= "password" class="form-control" id="re_password" placeholder="비밀번호 확인" name = "re_password">
-                                </div>
-                                <div class="form-group">
-                                    <label for="introduction">자기소개 *</label>
-                                    <input type="text" class="form-control" id="introduction" placeholder="자기소개" name= "introduction">
-                                </div>
-                                <button type="submit" class="btn btn-primary">메일인증 후 가입하기</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <script>
+    <div class="form-group">
+      <label for="name">닉네임 *</label>
+      <input
+      type="text"
+      class="form-control"
+      id="name"
+      placeholder="닉네임"
+      name="name">
 
-    var lat =37.3595704, lng = 127.105399;
-    var mapOption = {
-        center : new naver.maps.LatLng(lat, lng),
-        zoom: 10
-    };
-    var map = new naver.maps.Map('map', mapOption);
-    function coordToAddr() {
-        if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position){
-               lat = position.coords.latitude;
-               lng = position.coords.longitude;
-               // moveCameraToCurrentLocation();
-               naver.maps.Service.reverseGeocode({
-                   coords: new naver.maps.LatLng(lat, lng),
-               }, function (status, response) {
-                   if(status !== naver.maps.Service.Status.OK) {
-                       return alert("Something wrong!");
-                   }
-                   var str = JSON.stringify(response, null, 2);
-                   var result = response.v2.results;
-                   var items = result[0];
-                   var region = items.region;
-                   var addr = region.area1.name + " " + region.area2.name + " " + region.area3.name + " " + region.area4.name;
-                   console.log(str);
-                   document.getElementById("location").value = addr;
-               });
-            }, function (error){
-                console.error(error);
-            }, {
-                enableHighAccuracy: true,
-                maximumAge:0,
-                timeout: Infinity
-            });
-        } else {
-            alert('GPS NOT SUPPORTED');
-        }
-
-    }
-
-    function moveCameraToCurrentLocation() {
-        var cur = new naver.maps.LatLng(lat, lng);
-        var marker = new naver.maps.Marker({
-            position: cur,
-            map: map
-        })
-        map.setCenter(cur);
-        map.setZoom(18);
-        // 쉐이프 파일
-    }
+        <button type="button" class="id_overlap_button" onclick="id_overlap_check()">중복검사</button>
+      <!-- 이 name 값으로 정보가 전달된다 -->
+    </div>
 
 
-    </script>
+    <div class="form-group">
+      <label for="student_number">학번</label>
+      <input
+      type="number"
+      class="form-control"
+      id="student_number"
+      placeholder="학번을 입력하면 공개됩니다"
+      name= "student_number">
+    </div>
+
+    <div class="form-group">
+      <label for="email">이메일 *</label>
+      <input
+      type="text"
+      class="form-control"
+      id="email"
+      placeholder="이메일"
+      name= "email">
+    </div>
+
+    <div class="form-group">
+      <label for="location">위치 *</label>
+      <input
+      type="text"
+      class="form-control"
+      id="location"
+      placeholder="위치를 인증해주세요"
+      name= "location">
+    </div>
+
+    <div class="form-group">
+      <label for="password">비밀번호 *</label>
+      <input type="password"
+      class="form-control"
+       id="password"
+        placeholder="비밀번호"
+        name= "password">
+    </div>
+
+    <div class="form-group">
+      <label for="re_password">비밀번호 확인 *</label>
+      <input
+      type= "password"
+      class="form-control"
+       id="re_password"
+        placeholder="비밀번호 확인"
+        name = "re_password">
+    </div>
+
+    <div class="form-group">
+      <label for="introduction">자기소개 *</label>
+      <input
+      type="text"
+      class="form-control"
+      id="introduction"
+      placeholder="자기소개"
+      name= "introduction">
+    </div>
+
+    <button type="submit" class="btn btn-primary">메일인증 후 가입하기</button>
+    </form>
+
+
     </body>
 </html>
