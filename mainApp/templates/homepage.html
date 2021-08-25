@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SGFRIEND</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb"></script>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb&submodules=geocoder"></script>
+    <style>
+        div {
+            width: 100%;
+            height: 960px;
+            border: 1px solid #003458;
+        }
+        div.left {
+            width: 30%;
+            float: left;
+            box-sizing: border-box;
+            background: #8977ad;
+        }
+        div.right {
+            width: 70%;
+            float: right;
+            box-sizing: border-box;
+            background: #ece6cc;
+        }
+        .left_header{
+            background-color: yellow;
+            border: 1px solid red;
+            height: 10%;
+        }
+
+        .lh_cell{
+            float: left;
+            width: 50%;
+            height: 100%;
+            box-sizing: border-box;
+            border: 1px solid blue;
+        }
+        .left_body {
+            background-color: green;
+            height: 90%;
+            overflow: auto;
+        }
+        .lb_profile {
+            float: left;
+            width: 100%;
+            height: 10%;
+            box-sizing: border-box;
+            border: 1px solid black;
+        }
+        .lh_content {
+            text-align: center;
+            padding-top: 7.5%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="left">
+            <div class="left_header">
+                <div class="left_header1 lh_cell"><p class="lh_content">people</p></div>
+                <div class="left_header2 lh_cell"><p class="lh_content">chat</p></div>
+            </div>
+            <div class="left_body">
+                <div class="left_body1 lb_profile">profile</div>
+                <div class="left_body2 lb_profile">profile</div>
+                <div class="left_body3 lb_profile">profile</div>
+                <div class="left_body4 lb_profile">profile</div>
+                <div class="left_body5 lb_profile">profile</div>
+                <div class="left_body6 lb_profile">profile</div>
+                <div class="left_body7 lb_profile">profile</div>
+                <div class="left_body8 lb_profile">profile</div>
+                <div class="left_body9 lb_profile">profile</div>
+                <div class="left_body10 lb_profile">profile</div>
+                <div class="left_body11 lb_profile">profile</div>
+                <div class="left_body12 lb_profile">profile</div>
+                <div class="left_body13 lb_profile">profile</div>
+                <div class="left_body14 lb_profile">profile</div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="TF" style="height: 5%; float: left;">
+                <form id="testForm">
+                    {{form}}
+                    <input type="button" onclick="coordToAddr()" value="myLoc"/>
+                </form>
+            </div>
+            <div id="map" style="height: 95%"></div>
+        </div>
+    </div>
+<script>
+
+    var lat =37.3595704, lng = 127.105399;
+    var mapOption = {
+        center : new naver.maps.LatLng(lat, lng),
+        zoom: 10
+    };
+    var map = new naver.maps.Map('map', mapOption);
+    function coordToAddr() {
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position){
+               lat = position.coords.latitude;
+               lng = position.coords.longitude;
+               moveCameraToCurrentLocation();
+               naver.maps.Service.reverseGeocode({
+                   coords: new naver.maps.LatLng(lat, lng),
+               }, function (status, response) {
+                   if(status !== naver.maps.Service.Status.OK) {
+                       return alert("Something wrong!");
+                   }
+                   var str = JSON.stringify(response, null, 2);
+                   var result = response.v2.results;
+                   var items = result[0];
+                   var region = items.region;
+                   var addr = region.area1.name + " " + region.area2.name + " " + region.area3.name + " " + region.area4.name;
+                   console.log(str);
+                   document.getElementById("id_location").value = addr;
+               });
+            }, function (error){
+                console.error(error);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge:0,
+                timeout: Infinity
+            });
+        } else {
+            alert('GPS NOT SUPPORTED');
+        }
+
+    }
+
+    function moveCameraToCurrentLocation() {
+        var cur = new naver.maps.LatLng(lat, lng);
+        var marker = new naver.maps.Marker({
+            position: cur,
+            map: map
+        })
+        map.setCenter(cur);
+        map.setZoom(18);
+        // 쉐이프 파일
+    }
+
+
+</script>
+</body>
+</html>

@@ -9,4 +9,5 @@ from .forms import *
 
 class HomeView(FormView):
     form_class = TestForm
-    template_name = 'home.html'
+    template_name = 'homepage.html'
+
