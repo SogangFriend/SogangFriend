@@ -35,7 +35,6 @@ EMAIL_HOST = EMAIL['EMAIL_HOST']
 EMAIL_HOST_USER = EMAIL['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
