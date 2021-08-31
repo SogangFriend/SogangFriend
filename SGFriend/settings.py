@@ -13,7 +13,6 @@ from .my_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {
@@ -25,6 +24,7 @@ DATABASES = {
 
 SECRET_KEY = SECRET_KEY
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = EMAIL['EMAIL_BACKEND']
 EMAIL_USE_TLS = EMAIL['EMAIL_USE_TLS']
 EMAIL_PORT = EMAIL['EMAIL_PORT']
@@ -32,6 +32,8 @@ EMAIL_HOST = EMAIL['EMAIL_HOST']
 EMAIL_HOST_USER = EMAIL['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
 SERVER_EMAIL = EMAIL['SERVER_EMAIL']
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -45,15 +47,18 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mainApp',
     'Member',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'crispy_forms',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -131,8 +136,12 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+<<<<<<< Updated upstream
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
+=======
+SECURE_SSL_REDIRECT = False
+>>>>>>> Stashed changes
