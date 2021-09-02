@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>SGFRIEND</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb"></script>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb&submodules=geocoder"></script>
     <style>
@@ -89,14 +90,101 @@
         </div>
     </div>
 <script>
-
+    var HOME_PATH = "https://navermaps.github.io/maps.js.ncp/docs",
+    urlPrefix = HOME_PATH +'/data/region',
+    urlSuffix = '.json',
+    regionGeoJson,
+    loadCount = 0;
     var lat =37.3595704, lng = 127.105399;
-    var mapOption = {
-        center : new naver.maps.LatLng(lat, lng),
-        zoom: 10
-    };
-    var map = new naver.maps.Map('map', mapOption);
-    function coordToAddr() {
+
+
+    naver.maps.Event.once(map, 'init_stylemap', function () {
+        $.ajax({
+                url: "https://gist.githubusercontent.com/dls4585/e86c3599724fc94125a51326cb91baf0/raw/45ff97e9fc08e91e97de07bf069963682d99dd0c/Seoul.geojson",
+                success: startDataLayer
+
+            });
+    });
+
+{% comment %}    var tooltip = $('<div style="position:absolute;z-index:1000;padding:5px 10px;background-color:#fff;border:solid 2px #000;font-size:14px;pointer-events:none;display:none;"></div>');
+
+    tooltip.appendTo(map.getPanes().floatPane);{% endcomment %}
+
+    function startDataLayer(geoJson) {
+        var mapOption = {
+            center : new naver.maps.LatLng(lat, lng),
+            zoom: 10
+        };
+        var map = new naver.maps.Map('map', mapOption);
+        console.log(geoJson);
+        map.data.addGeoJson(geoJson);
+        regionGeoJson = geoJson;
+
+        map.data.setStyle(function(feature) {
+            var color = 'red';
+
+            if (feature.getProperty('isColorful')) {
+                color = feature.getProperty('color');
+            }
+
+            return {
+                fillColor: color,
+                strokeColor: color,
+                strokeWeight: 3,
+                icon: null
+            };
+        });
+{% comment %}
+            if (feature.getProperty('focus')) {
+                styleOptions.fillOpacity = 0.6;
+                styleOptions.fillColor = '#0f0';
+                styleOptions.strokeColor = '#0f0';
+                styleOptions.strokeWeight = 4;
+                styleOptions.strokeOpacity = 1;
+            }
+
+            return styleOptions;
+        });{% endcomment %}
+
+{% comment %}        regionGeoJson.forEach(function(geojson) {
+            map.data.addGeoJson(geojson);
+            console.log(geojson + " added");
+        });{% endcomment %}
+
+        map.data.addListener('click', function(e) {
+            var feature = e.feature;
+
+            if (feature.getProperty('focus') !== true) {
+                feature.setProperty('focus', true);
+            } else {
+                feature.setProperty('focus', false);
+            }
+        });
+
+        {% comment %}map.data.addListener('mouseover', function(e) {
+            var feature = e.feature,
+                regionName = feature.getProperty('area1');
+
+            tooltip.css({
+                display: '',
+                left: e.offset.x,
+                top: e.offset.y
+            }).text(regionName);
+
+            map.data.overrideStyle(feature, {
+                fillOpacity: 0.6,
+                strokeWeight: 4,
+                strokeOpacity: 1
+            });
+        });
+
+        map.data.addListener('mouseout', function(e) {
+            tooltip.hide().empty();
+            map.data.revertStyle();
+        });{% endcomment %}
+    }
+
+   {% comment %} function coordToAddr() {
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position){
                lat = position.coords.latitude;
@@ -127,9 +215,9 @@
             alert('GPS NOT SUPPORTED');
         }
 
-    }
+    }{% endcomment %}
 
-    function moveCameraToCurrentLocation() {
+    {% comment %}function moveCameraToCurrentLocation() {
         var cur = new naver.maps.LatLng(lat, lng);
         var marker = new naver.maps.Marker({
             position: cur,
@@ -138,7 +226,9 @@
         map.setCenter(cur);
         map.setZoom(18);
         // 쉐이프 파일
-    }
+    }{% endcomment %}
+
+
 
 
 </script>
