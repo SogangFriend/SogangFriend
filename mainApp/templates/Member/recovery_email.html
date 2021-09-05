@@ -1,0 +1,24 @@
+<div>
+    {% csrf_token %}
+    <div>
+        <label name="label_user_id" for="{{ form.user_id.id_for_label }}">{{ form.user_id.label }}</label>
+        {{ form.user_id }}
+    </div>
+    <div>
+        <label name="label_name" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+        {{ form.name }}
+    </div>
+    <div>
+        <label name="label_email" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+        {{ form.email }}
+        <small>
+            등록하신 메일로 인증번호가 발송됩니다.
+        </small>
+    </div>
+
+    <div id="div_find_pw">
+        <button id="find_pw" name="recovery_pw">비밀번호찾기</button>
+    </div>
+
+    <div id="result_pw"></div>
+</div>

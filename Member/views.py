@@ -1,45 +1,61 @@
-from .helper import send_mail
-from .forms import *
-from django.contrib.auth.hashers import make_password, check_password
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.views.generic import *
-from Member.models import *
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode
-from django.core.mail import send_mail, BadHeaderError
-from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.urls import reverse_lazy
+
+from .helper import send_mail
+from django.views.generic import *
+from .models import Member
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from .forms import *
+from django.contrib.auth.hashers import make_password
+from mainApp.models import *
+from django.utils.encoding import force_bytes, force_text
+from django.contrib import messages, auth
+from .tokens import account_activation_token
+from django.contrib.auth.hashers import check_password
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
+from django.contrib.auth.forms import PasswordResetForm
+from django.template.loader import render_to_string
 from django.db.models.query_utils import Q
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes
+
 from django.core.mail import EmailMultiAlternatives
 from django import template
 
-def mail_send(member, request, find):
-    if find:
-        send_mail(
-            "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
-            html=render_to_string('send_mail.html', {
-                "user": member,
-                'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
-                'domain': request.META['HTTP_HOST'],
-                # 'token': default_token_generator.make_token(self.object),
-            })
-        )
-    else:
-        send_mail(
-            "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
-            html=render_to_string('send_mail.html', {
-                "user": member,
-                'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
-                'domain': request.META['HTTP_HOST'],
-                # 'token': default_token_generator.make_token(self.object),
-            })
-        )
+def mail_authenticate(member, request):
+    send_mail(
+        "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
+        html=render_to_string('send_mail.html', {
+            "user": member,
+            'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),#pk를 자연수에서 bytes로 변환,인코드, bytes에서 str로 변환
+            'domain': request.META['HTTP_HOST'],
+            'token': account_activation_token.make_token(member),#token.py에서 만들었던 token 생성기로 token생성
+        })
+    )
 
+def activate(request, uid64, token):#계정활성화 함수
+    try:
+        uid = force_text(urlsafe_base64_decode(uid64)) #decode해서 user 불러옴
+        user = Member.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, Member.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token): #유효성 검사
+        user.is_active = True
+        user.save()
+        #return render(request, "homepage.html") #~님 환영합니다?
+        return render(request, "test2.html")
+    elif user is None: #이메일 인증 기한 지남
+        return render(request, "Member/register.html")
+    else: #이미 확인된 토큰 혹은 유효기간이 지난 토큰
+        #return HttpResponse("invalid")
+
+        return render(request, 'Member/login.html')
 
 class RegisterView(View):
+
     def get(self, request):
         return render(request, 'Member/register.html')
 
@@ -51,6 +67,7 @@ class RegisterView(View):
         password = request.POST.get('password', '')
         re_password = request.POST.get('re_password', '')
         introduction = request.POST.get('email', '')
+
         res_data = {}
         if not (name and email and password and re_password and location and introduction):
             # return HttpResponse('필수문항(*)을 입력해 주세요.')
@@ -70,11 +87,12 @@ class RegisterView(View):
             dong.save()
             loc = Location(si=si, gu=gu, dong=dong)
             loc.save()
-            member = Member(name=name, student_number=student_number, email=email, password=make_password(password),
-                            location=loc)
+            member = Member(name=name, student_number=student_number, email=email, password=make_password(password), location=loc)
             member.save()
-            mail_send(member, request)
-            return HttpResponse("메일 확인 바람")
+
+            mail_authenticate(member, request)
+            return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
+
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
 
@@ -84,7 +102,7 @@ class LoginView(View):
 
     def get(self, request):
         form = self.form_class()
-        return render(request, 'Member/login.html', {'form': form})
+        return render(request, 'Member/login.html', {'form' : form})
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -110,35 +128,74 @@ def logout(request):
     return redirect('/')
 
 
-def password_reset_request(request, *args, **kwargs):
+
+
+def change_pw(request):
+    context= {}
     if request.method == "POST":
-        password_reset_form = PasswordResetForm(request.POST)
-        if password_reset_form.is_valid():
-            data = password_reset_form.cleaned_data['email']
-            associated_users = User.objects.filter(Q(email=data)|Q(username=data))
-            if associated_users.exists():
-                for user in associated_users:
-                    subject = "Password Reset Requested"
-                    plaintext = template.loader.get_template('member/password/password_reset_email.txt')
-                    htmltemp = template.loader.get_template('member/password/password_reset_email.html')
-                    c = {
-                        "email":user.email,
-                        'domain':'127.0.0.1:8000',
-                        'site_name': 'Website',
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)).encode(),
-                        "user": user,
-                        'token': default_token_generator.make_token(user),
-                        'protocol': 'http',
-                    }
-                    text_content = plaintext.render(c)
-                    html_content = htmltemp.render(c)
-                    try:
-                        msg = EmailMultiAlternatives(subject, text_content, 'Website <sogangfriend@naver.com>', [user.email], headers = {'Reply-To': 'admin@example.com'})
-                        msg.attach_alternative(html_content, "text/html")
-                        msg.send()
-                    except BadHeaderError:
-                        return HttpResponse('Invalid header found.')
-                    #messages.info(request, "Password reset instructions have been sent to the email address entered.")
-                    return redirect ('/member/password_reset/done/')
-    password_reset_form = PasswordResetForm()
-    return render(request=request, template_name="member/password/password_reset_confirm.html", context={"password_reset_form":password_reset_form})
+        current_password = request.POST.get("origin_password")
+        user = request.user
+        if check_password(current_password,user.password):
+            new_password = request.POST.get("password1")
+            password_confirm = request.POST.get("password2")
+            if new_password == password_confirm:
+                user.set_password(new_password)
+                user.save()
+                auth.login(request,user)
+                return redirect('')
+            else:
+                context.update({'error':"새로운 비밀번호를 다시 확인해주세요."})
+    else:
+        context.update({'error':"현재 비밀번호가 일치하지 않습니다."})
+
+    return render(request, "Member/change_pw.html",context)
+
+class MyPasswordResetConfirmView(PasswordResetConfirmView):
+    success_url=reverse_lazy('login')
+    template_name = 'member/password_reset_confirm.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+class MyPasswordResetView(PasswordResetView):
+    template_name = 'member/password_reset_form.html'
+    email_template_name = 'member/password_reset_email.html'
+    mail_title="비밀번호 재설정"
+
+    def password_reset_request(request):
+        if request.method == "POST":
+            password_reset_form = PasswordResetForm(request.POST)
+            if password_reset_form.is_valid():
+                data = password_reset_form.cleaned_data['email']
+                associated_users = User.objects.filter(Q(email=data)|Q(username=data))
+                if associated_users.exists():
+                    for user in associated_users:
+                        subject = "Password Reset Requested"
+                        htmltemp = template.loader.get_template('member/password_reset_email.html')
+                        c = {
+                            "email":user.email,
+                            'domain':'127.0.0.1:8000',
+                            'site_name': 'Website',
+                            "uid": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                            "user": user,
+                            'token': default_token_generator.make_token(user),
+                            'protocol': 'http',
+                        }
+                        html_content = htmltemp.render(c)
+                        try:
+                            msg = EmailMultiAlternatives(subject, text_content, 'Website <admin@example.com>', [user.email], headers = {'Reply-To': 'admin@example.com'})
+                            msg.attach_alternative(html_content, "text/html")
+                            msg.send()
+                        except BadHeaderError:
+                            return HttpResponse('Invalid header found.')
+                        messages.info(request, "Password reset instructions have been sent to the email address entered.")
+
+                        return redirect ("password_reset_done")
+        password_reset_form = change_pw(request)
+
+        return render(request=request, template_name="Member/password_reset.html", context={"password_reset_form":change_pw(request)})
+
+
+
+

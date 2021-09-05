@@ -5,10 +5,13 @@
 <br><br>
 
 </div>
-<form method = "POST">
+    </div>
+</div>
+    <form method = "POST">
   {% csrf_token %}
   {{form}}}
   <span style="color:red;"><strong>{{ error }}</strong> </span>
   <button type="submit" class="btn btn-primary">로그인</button>
-    <a href="{% url 'password_reset' %}">비밀번호 찾기</a>
-</form>
+
+
+    </form>
