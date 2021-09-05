@@ -5,15 +5,21 @@ from .models import Member
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 from .forms import *
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 from mainApp.models import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+
+User = get_user_model()
 
 
 def mail_send(member, request, find):
-    if find:
+    '''if find:
         send_mail(
             "~~~제목~~~~",
             #~~~누구한테 보낼지~~~~
@@ -29,10 +35,20 @@ def mail_send(member, request, find):
                 'domain': request.META['HTTP_HOST'],
                 # 'token': default_token_generator.make_token(self.object),
             })
-        )
+        )'''
+    send_mail(
+        "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
+        html=render_to_string('send_mail.html', {
+            "user": member,
+            'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
+            'domain': request.META['HTTP_HOST'],
+            # 'token': default_token_generator.make_token(self.object),
+        })
+    )
 
 
-class RegisterView(View):
+class RegisterView(APIView):
+
     def get(self, request):
         return render(request, 'Member/register.html')
 
@@ -43,7 +59,7 @@ class RegisterView(View):
         location = request.POST.get('location', '')
         password = request.POST.get('password', '')
         re_password = request.POST.get('re_password', '')
-        introduction = request.POST.get('email', '')
+        introduction = request.POST.get('introduction', '')
         res_data = {}
         if not (name and email and password and re_password and location and introduction):
             # return HttpResponse('필수문항(*)을 입력해 주세요.')
@@ -63,10 +79,14 @@ class RegisterView(View):
             dong.save()
             loc = Location(si=si, gu=gu, dong=dong)
             loc.save()
-            member = Member(name=name, student_number=student_number, email=email, password=make_password(password), location=loc)
+            member = Member(name=name, student_number=student_number, email=email, password=make_password(password),
+                            location=loc, introduction=introduction)
             member.save()
+            user = User.objects.create_user(email=request.data['email'], name=request.data['name'], password=request.data['password'])
+            user.save()
             mail_send(member, request)
-            return HttpResponse("메일 확인 바람")
+            token = Token.objects.create(user=user)
+            return Response({"Token": token.key})
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
 
@@ -76,20 +96,19 @@ class LoginView(View):
 
     def get(self, request):
         form = self.form_class()
-        return render(request, 'Member/login.html', {'form' : form})
+        return render(request, 'Member/login.html', {'form': form})
 
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
             login_email = form.cleaned_data['email']
             login_password = form.cleaned_data['password']
-            member = Member.objects.get(email=login_email)
-            # db에서 꺼내는 명령. Post로 받아온 email으로 , db의 email을 꺼내온다.
-            if check_password(login_password, member.password):
-                request.session['Member'] = member.id
-                # 세션도 딕셔너리 변수 사용과 똑같이 사용하면 된다.
-                # 세션 member라는 key에 방금 로그인한 id를 저장한것.
+            member = authenticate(email=request.data['email'], name=request.data['name'], password=request.data['password'])
+            if member is not None:
+                token = Token.objects.get(member=member)
+                Response({"Token": token.key})
                 return redirect('/')
+
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
         else:
