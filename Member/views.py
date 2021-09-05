@@ -56,6 +56,7 @@ class RegisterView(APIView):
     def get(self, request):
         return render(request, 'Member/register.html')
 
+      
     def post(self, request):
         name = request.POST.get('name', '')
         student_number = request.POST.get('student_number', '')
@@ -101,6 +102,7 @@ class LoginView(View):
     def get(self, request):
         form = self.form_class()
         return render(request, 'Member/login.html', {'form': form})
+
 
     def post(self, request):
         form = self.form_class(request.POST)
