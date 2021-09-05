@@ -49,13 +49,14 @@ def activate(request, uid64, token):#계정활성화 함수
     else: #이미 확인된 토큰 혹은 유효기간이 지난 토큰
         #return HttpResponse("invalid")
 
-        return render(request, 'Member/login.html')
-
+        # return render(request, 'Member/login.html')
+        return redirect(request, 'Member/login')
 
 class RegisterView(APIView):
     def get(self, request):
         return render(request, 'Member/register.html')
 
+      
     def post(self, request):
         name = request.POST.get('name', '')
         student_number = request.POST.get('student_number', '')
@@ -101,6 +102,7 @@ class LoginView(View):
     def get(self, request):
         form = self.form_class()
         return render(request, 'Member/login.html', {'form': form})
+
 
     def post(self, request):
         form = self.form_class(request.POST)
