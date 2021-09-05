@@ -113,28 +113,17 @@
     map.setDraggable(true);
     var zoomControl = new kakao.maps.ZoomControl();
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-    kakao.maps.event.addListener(map, 'dragend', function() {
 
-    // 지도 중심좌표를 얻어옵니다
-    var latlng = map.getCenter();
-
-    var message = '변경된 지도 중심좌표는 ' + latlng.getLat() + ' 이고, ';
-    message += '경도는 ' + latlng.getLng() + ' 입니다';
-
-    var resultDiv = document.getElementById('result');
-    resultDiv.innerHTML = message;
-
-});
     drawPolygon();
 
 
     function drawPolygon() {
-        $.getJSON("https://gist.githubusercontent.com/dls4585/61ade071d3d416b108c970ac3b68bd0f/raw/d4394391432320a1969c0c66f2c18e981ae4f641/Seoul.geojson", function (geoJson) {
+        $.getJSON("https://gist.githubusercontent.com/dls4585/0c9a66150bfd8a710e2fa89b2ab59f30/raw/dec00d21c9108c16f6c0a0584a0eb383ec8c6a8d/gangneung.geojson", function (geoJson) {
             var data = geoJson.features;
             var name= '';
 
             $.each(data, function (index, val) {
-                name = val.properties.ADM_DR_NM;
+                {#name = val.properties.ADM_DR_NM;#}
 
                 displayArea(name, val.geometry.coordinates);
             });

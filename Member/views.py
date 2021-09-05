@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
 from .helper import send_mail
 from django.views.generic import *
 from .models import Member
@@ -36,6 +38,7 @@ class RegisterView(View):
     def get(self, request):
         return render(request, 'Member/register.html')
 
+    @csrf_exempt
     def post(self, request):
         name = request.POST.get('name', '')
         student_number = request.POST.get('student_number', '')
@@ -65,7 +68,7 @@ class RegisterView(View):
             loc.save()
             member = Member(name=name, student_number=student_number, email=email, password=make_password(password), location=loc)
             member.save()
-            mail_send(member, request)
+            mail_send(member, request, False)
             return HttpResponse("메일 확인 바람")
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
@@ -78,6 +81,7 @@ class LoginView(View):
         form = self.form_class()
         return render(request, 'Member/login.html', {'form' : form})
 
+    @csrf_exempt
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
