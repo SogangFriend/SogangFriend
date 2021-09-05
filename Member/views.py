@@ -169,29 +169,11 @@ class MyPasswordResetView(PasswordResetView):
             if password_reset_form.is_valid():
                 data = password_reset_form.cleaned_data['email']
                 associated_users = User.objects.filter(Q(email=data)|Q(username=data))
-                if associated_users.exists():
-                    for user in associated_users:
-                        subject = "Password Reset Requested"
-                        htmltemp = template.loader.get_template('member/password_reset_email.html')
-                        c = {
-                            "email":user.email,
-                            'domain':'127.0.0.1:8000',
-                            'site_name': 'Website',
-                            "uid": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-                            "user": user,
-                            'token': default_token_generator.make_token(user),
-                            'protocol': 'http',
-                        }
-                        html_content = htmltemp.render(c)
-                        try:
-                            msg = EmailMultiAlternatives(subject, text_content, 'Website <admin@example.com>', [user.email], headers = {'Reply-To': 'admin@example.com'})
-                            msg.attach_alternative(html_content, "text/html")
-                            msg.send()
-                        except BadHeaderError:
-                            return HttpResponse('Invalid header found.')
-                        messages.info(request, "Password reset instructions have been sent to the email address entered.")
 
-                        return redirect ("password_reset_done")
+                member = data.objects.get(email__exact='usermail@example.com')
+                mail_authenticate(member, request)
+
+        return redirect ("password_reset_done")
         password_reset_form = change_pw(request)
 
         return render(request=request, template_name="Member/password_reset.html", context={"password_reset_form":change_pw(request)})
