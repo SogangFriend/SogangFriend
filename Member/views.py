@@ -79,14 +79,13 @@ class RegisterView(APIView):
             dong.save()
             loc = Location(si=si, gu=gu, dong=dong)
             loc.save()
-            member = Member(name=name, student_number=student_number, email=email, password=make_password(password),
-                            location=loc, introduction=introduction)
-            member.save()
-            user = User.objects.create_user(email=request.data['email'], name=request.data['name'], password=request.data['password'])
+
+            user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number,
+                                            loc=loc, introduction=introduction)
             user.save()
-            mail_send(member, request)
+            mail_send(user, request, False)
             token = Token.objects.create(user=user)
-            return Response({"Token": token.key})
+            return HttpResponse("메일 확인 바랍니다")
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
 
@@ -103,9 +102,9 @@ class LoginView(View):
         if form.is_valid():
             login_email = form.cleaned_data['email']
             login_password = form.cleaned_data['password']
-            member = authenticate(email=request.data['email'], name=request.data['name'], password=request.data['password'])
+            member = authenticate(email=login_email, password=login_password)
             if member is not None:
-                token = Token.objects.get(member=member)
+                token = Token.objects.get(user=member)
                 Response({"Token": token.key})
                 return redirect('/')
 

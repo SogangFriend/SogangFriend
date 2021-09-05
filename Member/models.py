@@ -6,13 +6,16 @@ from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, Permi
 # Create your models here.
 
 class MemberManager(BaseUserManager):
-    def create_user(self, email, name, password=None):
+    def create_user(self,  email, name, student_number=None, loc=None, introduction=None, password=None):
         if not email:
             raise ValueError('이메일을 입력하세요')
 
         member = self.model(
             email=self.normalize_email(email),
             name=name,
+            student_number=student_number,
+            location=loc,
+            introduction=introduction,
         )
 
         member.set_password(password)
@@ -20,7 +23,7 @@ class MemberManager(BaseUserManager):
         return member
 
     def create_superuser(self, email, name, password):
-        member = self.create_user(email, name, password)
+        member = self.create_user(email=email, name=name, password=password)
         member.is_admin = True
         member.save(using=self._db)
         return member
