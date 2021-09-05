@@ -35,9 +35,14 @@ class Member(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=50, unique=True, blank=False, verbose_name='email')  # 이메일 검증은 views.py 에서 저희가 로직을 만들어서 검증을 합니다
     location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True, verbose_name='location')
     # 알아봐야될거같은데 보안 때문에, 사용자가 패스워드로 123456 입력 -> 내부에 해쉬함수로 못알아보는 값으로 저장을 해야 돼요 -> 장고는 어떻게?
-    introduction = models.TextField(blank=True, null=True, verbose_name='introduction')  # help_text(필드입력도움말기능) -> 폼에서 설정합니당!
 
-    is_active = models.BooleanField(default=True)
+    introduction = models.TextField(blank=True, null=True, verbose_name='introduction')  # help_text(필드입력도움말기능) -> 폼에서 설정합니당!
+    last_login = models.DateTimeField(blank=True, null=True)
+  
+    is_active = models.BooleanField(
+        'active',
+        default=False,  #이메일 인증 전까지는 False인 상태
+        help_text="")
     is_admin = models.BooleanField(default=False)
 
     objects = MemberManager()
@@ -45,6 +50,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
 
+    
     def __str__(self):
         return self.email
 

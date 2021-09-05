@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from .helper import send_mail
 from django.views.generic import *
 from .models import Member
 from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
@@ -11,6 +11,10 @@ from .forms import *
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 from mainApp.models import *
+from django.utils.encoding import force_bytes, force_text
+from django.forms import ValidationError
+from django.contrib import messages
+from .tokens import account_activation_token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -19,36 +23,36 @@ User = get_user_model()
 
 
 def mail_send(member, request, find):
-    '''if find:
-        send_mail(
-            "~~~제목~~~~",
-            #~~~누구한테 보낼지~~~~
-            #~~~~~html~~~~~~
-            # 아래 양식 참고
-        )
-    else:
-        send_mail(
-            "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
-            html=render_to_string('send_mail.html', {
-                "user": member,
-                'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
-                'domain': request.META['HTTP_HOST'],
-                # 'token': default_token_generator.make_token(self.object),
-            })
-        )'''
     send_mail(
         "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
         html=render_to_string('send_mail.html', {
             "user": member,
-            'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
+            'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),#pk를 자연수에서 bytes로 변환,인코드, bytes에서 str로 변환
             'domain': request.META['HTTP_HOST'],
-            # 'token': default_token_generator.make_token(self.object),
+            'token': account_activation_token.make_token(member),#token.py에서 만들었던 token 생성기로 token생성
         })
     )
 
+def activate(request, uid64, token):#계정활성화 함수
+    try:
+        uid = force_text(urlsafe_base64_decode(uid64)) #decode해서 user 불러옴
+        user = Member.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, Member.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token): #유효성 검사
+        user.is_active = True
+        user.save()
+        #return render(request, "homepage.html") #~님 환영합니다?
+        return render(request, "test2.html")
+    elif user is None: #이메일 인증 기한 지남
+        return render(request, "Member/register.html")
+    else: #이미 확인된 토큰 혹은 유효기간이 지난 토큰
+        #return HttpResponse("invalid")
+
+        return render(request, 'Member/login.html')
+
 
 class RegisterView(APIView):
-
     def get(self, request):
         return render(request, 'Member/register.html')
 
@@ -60,6 +64,7 @@ class RegisterView(APIView):
         password = request.POST.get('password', '')
         re_password = request.POST.get('re_password', '')
         introduction = request.POST.get('introduction', '')
+
         res_data = {}
         if not (name and email and password and re_password and location and introduction):
             # return HttpResponse('필수문항(*)을 입력해 주세요.')
@@ -85,7 +90,7 @@ class RegisterView(APIView):
             user.save()
             mail_send(user, request, False)
             token = Token.objects.create(user=user)
-            return HttpResponse("메일 확인 바랍니다")
+            return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
 
