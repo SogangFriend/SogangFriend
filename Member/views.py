@@ -103,7 +103,6 @@ class LoginView(View):
         form = self.form_class()
         return render(request, 'Member/login.html', {'form': form})
 
-
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -113,8 +112,8 @@ class LoginView(View):
             if member is not None:
                 token = Token.objects.get(user=member)
                 Response({"Token": token.key})
+                request.session['Member'] = member.pk
                 return redirect('/')
-
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
         else:
