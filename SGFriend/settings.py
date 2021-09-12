@@ -34,7 +34,7 @@ EMAIL_PORT = EMAIL['EMAIL_PORT']
 EMAIL_HOST = EMAIL['EMAIL_HOST']
 EMAIL_HOST_USER = EMAIL['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
-SERVER_EMAIL= EMAIL['SERVER_EMAIL']
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -48,16 +48,36 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'chat',
+    'mainApp',
+    'Member',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mainApp',
-    'Member',
     'six',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
+
+ASGI_APPLICATION = 'SGFriend.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 
 MIDDLEWARE = [
@@ -109,6 +129,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'Member.Member'
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -128,7 +150,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, './mainApp/templates/static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

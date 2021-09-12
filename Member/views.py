@@ -1,58 +1,36 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView, \
-    PasswordContextMixin
-from django.core.serializers import json
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
+from django.contrib.auth.views import PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView, \
+    PasswordResetView
+from django.shortcuts import render, redirect, reverse, resolve_url
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import FormView, TemplateView
+import SGFriend.settings
 
-from .helper import send_mail
-from .forms import *
-from django.contrib.auth.hashers import make_password
-from mainApp.models import *
-from django.core.mail import send_mail, BadHeaderError
+from .helpers import send_mail
+from django.views.generic import *
+from .models import Member
 from django.template.loader import render_to_string
-from django.contrib.auth.hashers import check_password
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
+from .forms import *
+from django.http import HttpResponse
+from django.contrib.auth.hashers import make_password, check_password
+from mainApp.models import *
+from django.utils.encoding import force_bytes, force_text
+from django.forms import ValidationError
+from django.contrib import messages
+from .tokens import account_activation_token
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 
-from .models     import Member
-from .tokens     import account_activation_token
-
-from django.utils.http              import urlsafe_base64_encode, urlsafe_base64_decode
-
-from django.utils.encoding          import force_bytes, force_text
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-
-from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-from django.shortcuts import resolve_url
-from django.conf import settings
-from django.urls import reverse_lazy
-from django.views import generic, View
-try:
-    from django.utils import simplejson as json
-except ImportError:
-    import json
-from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import (
-    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
-    logout as auth_logout, update_session_auth_hash,
-)
-from django.contrib.auth.forms import (
-    AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
-)
-from django.utils.http import is_safe_url, urlsafe_base64_decode
-from django.contrib.auth.forms import SetPasswordForm
+User = get_user_model()
+INTERNAL_RESET_URL_TOKEN = 'set-password'
+INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 
 
-
-def mail_authenticate(member, request):
+def mail_send(member, request, find):
     send_mail(
         "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
         html=render_to_string('send_mail.html', {
@@ -79,13 +57,14 @@ def activate(request, uid64, token):#계정활성화 함수
     else: #이미 확인된 토큰 혹은 유효기간이 지난 토큰
         #return HttpResponse("invalid")
 
-        return render(request, 'Member/login.html')
+        # return render(request, 'Member/login.html')
+        return redirect(request, 'Member/login')
 
-class RegisterView(View):
-
+class RegisterView(APIView):
     def get(self, request):
         return render(request, 'Member/register.html')
 
+      
     def post(self, request):
         name = request.POST.get('name', '')
         student_number = request.POST.get('student_number', '')
@@ -93,7 +72,7 @@ class RegisterView(View):
         location = request.POST.get('location', '')
         password = request.POST.get('password', '')
         re_password = request.POST.get('re_password', '')
-        introduction = request.POST.get('email', '')
+        introduction = request.POST.get('introduction', '')
 
         res_data = {}
         if not (name and email and password and re_password and location and introduction):
@@ -114,12 +93,13 @@ class RegisterView(View):
             dong.save()
             loc = Location(si=si, gu=gu, dong=dong)
             loc.save()
-            member = Member(name=name, student_number=student_number, email=email, password=make_password(password), location=loc)
-            member.save()
 
-            mail_authenticate(member, request)
+            user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number,
+                                            loc=loc, introduction=introduction)
+            user.save()
+            mail_send(user, request, False)
+            token = Token.objects.create(user=user)
             return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
-
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
 
@@ -129,19 +109,18 @@ class LoginView(View):
 
     def get(self, request):
         form = self.form_class()
-        return render(request, 'Member/login.html', {'form' : form})
+        return render(request, 'Member/login.html', {'form': form})
 
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
             login_email = form.cleaned_data['email']
             login_password = form.cleaned_data['password']
-            member = Member.objects.get(email=login_email)
-            # db에서 꺼내는 명령. Post로 받아온 email으로 , db의 email을 꺼내온다.
-            if check_password(login_password, member.password):
-                request.session['Member'] = member.id
-                # 세션도 딕셔너리 변수 사용과 똑같이 사용하면 된다.
-                # 세션 member라는 key에 방금 로그인한 id를 저장한것.
+            member = authenticate(email=login_email, password=login_password)
+            if member is not None:
+                token = Token.objects.get(user=member)
+                Response({"Token": token.key})
+                request.session['Member'] = member.pk
                 return redirect('/')
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
@@ -153,6 +132,7 @@ class LoginView(View):
 def logout(request):
     request.session.pop('Member')
     return redirect('/')
+
 
 class UserPasswordResetView(PasswordResetView):
     template_name = 'Member/password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
@@ -170,27 +150,6 @@ class UserPasswordResetView(PasswordResetView):
 
 class UserPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'Member/password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
-
-# def change_pw(request):
-#     context= {}
-#     user = request.user
-#     if check_password(user.password):
-#             new_password = request.POST.get("password1")
-#             password_confirm = request.POST.get("password2")
-#             if new_password == password_confirm:
-#                 user.set_password(new_password)
-#                 user.save()
-#                 auth.login(request,user)
-#                 return redirect("account:home")
-#             else:
-#                 context.update({'error':"새로운 비밀번호를 다시 확인해주세요."})
-#
-#     return render(request, "member/change_pw.html",context)
-
-UserModel = get_user_model()
-INTERNAL_RESET_URL_TOKEN = 'set-password'
-INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
-
 
 
 class MySetPasswordForm(SetPasswordForm):
@@ -217,6 +176,4 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
         context = super().get_context_data(**kwargs)
         context['login_url'] = resolve_url(settings.LOGIN_URL)
         return context
-
-
 
