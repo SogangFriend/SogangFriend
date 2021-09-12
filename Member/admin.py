@@ -7,7 +7,6 @@ from .models import *
 
 
 # Register your models here.
-
 class UserAdmin(UserAdmin):
     form = MemberChangeForm
     add_form = MemberCreationForm

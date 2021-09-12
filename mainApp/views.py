@@ -1,5 +1,6 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.views.generic import *
 from Member.models import *
 from SGFriend.settings import STATIC_ROOT
@@ -27,4 +28,3 @@ class HomeView(View):
 # render <-> redirect
 # render는 html을 뿌려주는거고
 # redirect는 다시 그 url -> 뷰로
-
