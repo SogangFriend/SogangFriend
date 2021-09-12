@@ -9,13 +9,6 @@
     <form method="POST" action="{% url 'password_reset' %}" class="login_form">
         {% csrf_token %}
 
-        <div class="login_input_container">
-            <div class="username_form_text">Origin Password</div>
-            <div class="input_container">
-                <label>
-                    <input class="login_input" name="origin_password" type="password">
-                </label>
-            </div>
 
             <div class="password_form_text"> New Password</div>
             <div class="input_container">

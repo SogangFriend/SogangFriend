@@ -1,29 +1,56 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordResetDoneView, \
+    PasswordContextMixin
+from django.core.serializers import json
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import FormView, TemplateView
 
 from .helper import send_mail
-from django.views.generic import *
-from .models import Member
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .forms import *
 from django.contrib.auth.hashers import make_password
 from mainApp.models import *
-from django.utils.encoding import force_bytes, force_text
-from django.contrib import messages, auth
-from .tokens import account_activation_token
-from django.contrib.auth.hashers import check_password
-from django.shortcuts import render, redirect
 from django.core.mail import send_mail, BadHeaderError
-from django.http import HttpResponse
-from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
-from django.db.models.query_utils import Q
-from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.hashers import check_password
 
-from django.core.mail import EmailMultiAlternatives
-from django import template
+from .models     import Member
+from .tokens     import account_activation_token
+
+from django.utils.http              import urlsafe_base64_encode, urlsafe_base64_decode
+
+from django.utils.encoding          import force_bytes, force_text
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.shortcuts import resolve_url
+from django.conf import settings
+from django.urls import reverse_lazy
+from django.views import generic, View
+try:
+    from django.utils import simplejson as json
+except ImportError:
+    import json
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import (
+    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
+    logout as auth_logout, update_session_auth_hash,
+)
+from django.contrib.auth.forms import (
+    AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
+)
+from django.utils.http import is_safe_url, urlsafe_base64_decode
+from django.contrib.auth.forms import SetPasswordForm
+
+
 
 def mail_authenticate(member, request):
     send_mail(
@@ -127,57 +154,69 @@ def logout(request):
     request.session.pop('Member')
     return redirect('/')
 
+class UserPasswordResetView(PasswordResetView):
+    template_name = 'Member/password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    success_url = reverse_lazy('password_reset_done')
+    form_class = PasswordResetForm
+    email_template_name= 'Member/password_reset_email.html'
+    subject_template_name= 'Member/password_reset_subject.txt'
+
+
+    def form_valid(self, form):
+        if User.objects.filter(email=self.request.POST.get("email")).exists():
+            return super().form_valid(form)
+        else:
+            return render(self.request, 'Member/password_reset_done_fail.html')
+
+class UserPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'Member/password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+
+# def change_pw(request):
+#     context= {}
+#     user = request.user
+#     if check_password(user.password):
+#             new_password = request.POST.get("password1")
+#             password_confirm = request.POST.get("password2")
+#             if new_password == password_confirm:
+#                 user.set_password(new_password)
+#                 user.save()
+#                 auth.login(request,user)
+#                 return redirect("account:home")
+#             else:
+#                 context.update({'error':"새로운 비밀번호를 다시 확인해주세요."})
+#
+#     return render(request, "member/change_pw.html",context)
+
+UserModel = get_user_model()
+INTERNAL_RESET_URL_TOKEN = 'set-password'
+INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 
 
 
-def change_pw(request):
-    context= {}
-    if request.method == "POST":
-        current_password = request.POST.get("origin_password")
-        user = request.user
-        if check_password(current_password,user.password):
-            new_password = request.POST.get("password1")
-            password_confirm = request.POST.get("password2")
-            if new_password == password_confirm:
-                user.set_password(new_password)
-                user.save()
-                auth.login(request,user)
-                return redirect('')
-            else:
-                context.update({'error':"새로운 비밀번호를 다시 확인해주세요."})
-    else:
-        context.update({'error':"현재 비밀번호가 일치하지 않습니다."})
+class MySetPasswordForm(SetPasswordForm):
 
-    return render(request, "Member/change_pw.html",context)
+    def save(self, *args, commit=True, **kwargs):
+        user = super().save(*args, commit=False, **kwargs)
+        user.is_active = True
+        if commit:
+            user.save()
+        return user
 
-class MyPasswordResetConfirmView(PasswordResetConfirmView):
-    success_url=reverse_lazy('login')
-    template_name = 'member/password_reset_confirm.html'
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = MySetPasswordForm
+    success_url=reverse_lazy('password_reset_complete')
+    template_name = 'Member/password_reset_confirm.html'
 
     def form_valid(self, form):
         return super().form_valid(form)
 
+class UserPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'Member/password_reset_complete.html'
 
-class MyPasswordResetView(PasswordResetView):
-    template_name = 'member/password_reset_form.html'
-    email_template_name = 'member/password_reset_email.html'
-    mail_title="비밀번호 재설정"
-
-    def password_reset_request(request):
-        if request.method == "POST":
-            password_reset_form = PasswordResetForm(request.POST)
-            if password_reset_form.is_valid():
-                data = password_reset_form.cleaned_data['email']
-                associated_users = User.objects.filter(Q(email=data)|Q(username=data))
-
-                member = data.objects.get(email__exact='usermail@example.com')
-                mail_authenticate(member, request)
-
-        return redirect ("password_reset_done")
-        password_reset_form = change_pw(request)
-
-        return render(request=request, template_name="Member/password_reset.html", context={"password_reset_form":change_pw(request)})
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['login_url'] = resolve_url(settings.LOGIN_URL)
+        return context
 
 
 
