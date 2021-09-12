@@ -1,5 +1,11 @@
-from django.shortcuts import render, redirect, reverse
-from .helper import send_mail
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
+from django.contrib.auth.views import PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView, \
+    PasswordResetView
+from django.shortcuts import render, redirect, reverse, resolve_url
+from django.urls import reverse_lazy
+import SGFriend.settings
+
+from .helpers import send_mail
 from django.views.generic import *
 from .models import Member
 from django.template.loader import render_to_string
@@ -20,6 +26,8 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 User = get_user_model()
+INTERNAL_RESET_URL_TOKEN = 'set-password'
+INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 
 
 def mail_send(member, request, find):
@@ -124,3 +132,48 @@ class LoginView(View):
 def logout(request):
     request.session.pop('Member')
     return redirect('/')
+
+
+class UserPasswordResetView(PasswordResetView):
+    template_name = 'Member/password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    success_url = reverse_lazy('password_reset_done')
+    form_class = PasswordResetForm
+    email_template_name= 'Member/password_reset_email.html'
+    subject_template_name= 'Member/password_reset_subject.txt'
+
+
+    def form_valid(self, form):
+        if User.objects.filter(email=self.request.POST.get("email")).exists():
+            return super().form_valid(form)
+        else:
+            return render(self.request, 'Member/password_reset_done_fail.html')
+
+class UserPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'Member/password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+
+
+class MySetPasswordForm(SetPasswordForm):
+
+    def save(self, *args, commit=True, **kwargs):
+        user = super().save(*args, commit=False, **kwargs)
+        user.is_active = True
+        if commit:
+            user.save()
+        return user
+
+class UserPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = MySetPasswordForm
+    success_url=reverse_lazy('password_reset_complete')
+    template_name = 'Member/password_reset_confirm.html'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+class UserPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'Member/password_reset_complete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['login_url'] = resolve_url(settings.LOGIN_URL)
+        return context
+

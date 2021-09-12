@@ -25,8 +25,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 SECRET_KEY = SECRET_KEY
+
 
 EMAIL_BACKEND = EMAIL['EMAIL_BACKEND']
 EMAIL_USE_TLS = EMAIL['EMAIL_USE_TLS']
@@ -34,6 +34,7 @@ EMAIL_PORT = EMAIL['EMAIL_PORT']
 EMAIL_HOST = EMAIL['EMAIL_HOST']
 EMAIL_HOST_USER = EMAIL['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -57,9 +58,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'six',
     'rest_framework',
     'rest_framework.authtoken',
 ]
+
 ASGI_APPLICATION = 'SGFriend.routing.application'
 CHANNEL_LAYERS = {
     'default': {
@@ -75,6 +78,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -152,3 +156,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, './mainApp/templates/static')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+DEFAULT_FROM_EMAIL = 'sogangfriend@naver.com'

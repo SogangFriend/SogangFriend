@@ -1,13 +1,16 @@
 <div class = "raw">
     <div class = "col-12" >
-      <div class = "col-12 text-center">
-<h1>로그인</h1>
-<br><br>
+        <div class = "col-12 text-center">
+            <h1>로그인</h1>
+            <br><br>
 
+        </div>
+        <form method = "POST">
+            {% csrf_token %}
+            {{form}}}
+            <span style="color:red;"><strong>{{ error }}</strong> </span>
+            <button type="submit" class="btn btn-primary">로그인</button>
+            <a href="{% url 'password_reset'%}"> 비밀번호 찾기 </a>
+        </form>
+    </div>
 </div>
-<form method = "POST">
-  {% csrf_token %}
-  {{form}}}
-  <span style="color:red;"><strong>{{ error }}</strong> </span>
-  <button type="submit" class="btn btn-primary">로그인</button>
-</form>
