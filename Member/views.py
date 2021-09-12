@@ -3,7 +3,7 @@ from django.contrib.auth.views import PasswordResetDoneView, PasswordResetConfir
     PasswordResetView
 from django.shortcuts import render, redirect, reverse, resolve_url
 from django.urls import reverse_lazy
-import SGFriend.settings
+from SGFriend import settings
 
 from .helpers import send_mail
 from django.views.generic import *
@@ -136,11 +136,10 @@ def logout(request):
 
 class UserPasswordResetView(PasswordResetView):
     template_name = 'Member/password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
-    success_url = reverse_lazy('password_reset_done')
+    success_url = reverse_lazy('Member:password_reset_done')
     form_class = PasswordResetForm
     email_template_name= 'Member/password_reset_email.html'
     subject_template_name= 'Member/password_reset_subject.txt'
-
 
     def form_valid(self, form):
         if User.objects.filter(email=self.request.POST.get("email")).exists():
@@ -148,12 +147,12 @@ class UserPasswordResetView(PasswordResetView):
         else:
             return render(self.request, 'Member/password_reset_done_fail.html')
 
+
 class UserPasswordResetDoneView(PasswordResetDoneView):
     template_name = 'Member/password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
 
 
 class MySetPasswordForm(SetPasswordForm):
-
     def save(self, *args, commit=True, **kwargs):
         user = super().save(*args, commit=False, **kwargs)
         user.is_active = True
@@ -161,19 +160,21 @@ class MySetPasswordForm(SetPasswordForm):
             user.save()
         return user
 
+
 class UserPasswordResetConfirmView(PasswordResetConfirmView):
     form_class = MySetPasswordForm
-    success_url=reverse_lazy('password_reset_complete')
+    success_url=reverse_lazy('Member:password_reset_complete')
     template_name = 'Member/password_reset_confirm.html'
 
     def form_valid(self, form):
         return super().form_valid(form)
+
 
 class UserPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'Member/password_reset_complete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['login_url'] = resolve_url(settings.LOGIN_URL)
+        context['login_url'] = resolve_url('Member:login')
         return context
 

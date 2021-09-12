@@ -7,7 +7,7 @@ from .models import *
 
 
 # Register your models here.
-class UserAdmin(UserAdmin):
+class UserCustomAdmin(UserAdmin):
     form = MemberChangeForm
     add_form = MemberCreationForm
 
@@ -29,5 +29,5 @@ class UserAdmin(UserAdmin):
     filter_horizontal = ()
 
 
-admin.site.register(Member, UserAdmin)
+admin.site.register(Member, UserCustomAdmin)
 admin.site.unregister(Group)
