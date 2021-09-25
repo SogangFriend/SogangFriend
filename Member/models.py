@@ -25,6 +25,7 @@ class MemberManager(BaseUserManager):
     def create_superuser(self, email, name, password):
         member = self.create_user(email=email, name=name, password=password)
         member.is_admin = True
+        member.is_active = True
         member.save(using=self._db)
         return member
 
