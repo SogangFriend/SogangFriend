@@ -24,11 +24,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         mc = await self.get_member_chatroom()
         await self.set_member_timestamp(mc)
+
         await self.channel_layer.group_discard (
             self.room_group_name,
             self.channel_name
         )
 
+    #receive message from websocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
