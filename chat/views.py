@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import *
 
@@ -9,14 +9,15 @@ from .models import *
 # Create your views here.
 
 
-class ChatHomeView(View, LoginRequiredMixin):
+class ChatHomeView(LoginRequiredMixin, View):
     login_url = '/member/login/'
     redirect_field_name = '/chat/'
+
     def get(self, request):
         return render(request, 'chat/chat_home.html', {})
 
 
-class RoomCreateView(View, LoginRequiredMixin):
+class RoomCreateView(LoginRequiredMixin, View):
     login_url = '/member/login/'
     redirect_field_name = '/chat/create/'
     form_class = ChatRoomForm
@@ -33,13 +34,14 @@ class RoomCreateView(View, LoginRequiredMixin):
             member_pk = request.session.get('Member')
             member = Member.objects.get(pk=member_pk)
 
-            chatroom = ChatRoom.objects.create(name=room_name, creator=member, created_time=timezone.now(), location=member.location)
-            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now(),chat_room_timestamp=timezone.now())
+            chatroom = ChatRoom.objects.create(name=room_name, creator=member,
+                                               created_time=timezone.now(), location=member.location)
+            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
 
-        return render(request, 'homepage.html')
+        return redirect('/chat/list')
 
       
-class RoomView(View, LoginRequiredMixin):
+class RoomView(LoginRequiredMixin, View):
     login_url = '/member/login/'
     redirect_field_name = '/chat/'
 
@@ -51,10 +53,12 @@ class RoomView(View, LoginRequiredMixin):
                       {'room_name': room_name, 'member_pk': member_pk})
 
 
-class ChatListView(View, LoginRequiredMixin):
+class ChatListView(LoginRequiredMixin, View):
     login_url = '/member/login/'
     redirect_field_name = '/chat/list/'
+
     def get(self, request):
         rooms = ChatRoom.objects.all()
         return render(request, 'chat/room_list.html',
                       {'rooms': rooms})
+

@@ -110,7 +110,7 @@
 
         $.each(data, function (index, val) {
             {#name = val.properties.ADM_DR_NM;#}
-
+            // sggnm == member.location.gu || member.location.dong 이면 넘겨주기
             displayArea(name, val.geometry.coordinates);
         });
     }
@@ -160,7 +160,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'Member:profile' user.pk %}"> <span class="glyphicon glyphicon-heart"></span> {{user.username}}마이페이지</a>
+                <a class="nav-link" href="{% url 'Member:profile' %}"> <span class="glyphicon glyphicon-heart"></span> {{user.username}}마이페이지</a>
 
             </li>
         </ul>

@@ -16,7 +16,7 @@
                 <h2>{{member.profile.username}}</h2>
             {% endif %}
             {% if user == member %}   <!-- 로그인한 사용자와 profile_user(프로필 소유자)가 일치할 때만 프로필 편집이 가능하도록 함 -->
-                <a href="{% url 'Member:profile' user.pk %}">
+                <a href="{% url 'Member:profile' %}">
                     <button type="button" class="btn btn-default">프로필 편집</button></a></h2>
             {% endif %}
             <h3> 닉네임: {{member.name}} <br></h3>

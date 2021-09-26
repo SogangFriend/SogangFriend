@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView, \
     PasswordResetView
 from django.shortcuts import render, redirect, reverse, resolve_url
@@ -8,7 +9,7 @@ from .helpers import send_mail
 from django.views.generic import *
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from .forms import *
 from django.http import HttpResponse
@@ -38,6 +39,7 @@ def mail_send(member, request, find):
         })
     )
 
+
 def activate(request, uid64, token):#계정활성화 함수
     try:
         uid = force_text(urlsafe_base64_decode(uid64)) #decode해서 user 불러옴
@@ -57,10 +59,10 @@ def activate(request, uid64, token):#계정활성화 함수
         # return render(request, 'Member/login.html')
         return redirect(request, 'Member/login')
 
+
 class RegisterView(APIView):
     def get(self, request):
         return render(request, 'Member/register.html')
-
       
     def post(self, request):
         name = request.POST.get('name', '')
@@ -118,6 +120,7 @@ class LoginView(View):
                 token = Token.objects.get(user=member)
                 Response({"Token": token.key})
                 request.session['Member'] = member.pk
+                login(request, member)
                 return redirect('/')
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
@@ -176,7 +179,10 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
         return context
 
 
-class ProfileView(View):
+class ProfileView(LoginRequiredMixin, View):
+    login_url = '/member/login/'
+    redirect_field_name = '/profle/'
+
     def get(self, request):
         member_pk = request.session.get('Member')
         member = Member.objects.get(pk=member_pk)
