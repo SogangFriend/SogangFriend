@@ -9,6 +9,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # 디비에 없을 경우 방 못 들어감
         self.room_group_name = 'chat_%s' % self.room_name
 
+        #join room group
         await self.channel_layer.group_add (
             self.room_group_name,
             self.channel_name
@@ -17,11 +18,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        #leave room group
         await self.channel_layer.group_discard (
             self.room_group_name,
             self.channel_name
         )
 
+    #receive message from websocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']

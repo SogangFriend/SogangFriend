@@ -7,6 +7,7 @@ from django.utils import timezone
 class ChatRoom(models.Model):
     name = models.CharField(max_length=100, null=False)
     creator = models.ForeignKey(Member, on_delete=models.CASCADE, null=False, blank=False, related_name='my_chatrooms')
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=False, blank=False, related_name='chats')
     created_time = models.DateTimeField()
     timestamp = models.DateTimeField(default=timezone.now)
     '''participants가 있어야 함'''
