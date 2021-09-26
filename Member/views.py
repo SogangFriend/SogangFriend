@@ -175,8 +175,9 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
         context['login_url'] = resolve_url('Member:login')
         return context
 
+
 class ProfileView(View):
-    def get(self, request, pk):
+    def get(self, request):
         member_pk = request.session.get('Member')
         member = Member.objects.get(pk=member_pk)
         return render(request, 'Member/profile.html', {'member': member})

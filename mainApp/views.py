@@ -10,7 +10,7 @@ import json
 # 컨트롤러 역할
 
 
-class HomeView(View):
+class HomeView(View, LoginRequiredMixIn):
     def get(self, request):
         member_id = request.session.get('Member')
         if member_id:
