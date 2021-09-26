@@ -24,6 +24,9 @@ from .tokens import account_activation_token
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
+from django.views.generic import CreateView, DetailView
+from django.shortcuts import render
 
 User = get_user_model()
 INTERNAL_RESET_URL_TOKEN = 'set-password'
@@ -94,8 +97,8 @@ class RegisterView(APIView):
             loc = Location(si=si, gu=gu, dong=dong)
             loc.save()
 
-            user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number,
-                                            loc=loc, introduction=introduction)
+            user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number, loc=loc, introduction=introduction)
+
             user.save()
             mail_send(user, request, False)
             token = Token.objects.create(user=user)
@@ -133,7 +136,7 @@ def logout(request):
     request.session.pop('Member')
     return redirect('/')
 
-
+#password change
 class UserPasswordResetView(PasswordResetView):
     template_name = 'Member/password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
     success_url = reverse_lazy('Member:password_reset_done')
@@ -178,3 +181,8 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
         context['login_url'] = resolve_url('Member:login')
         return context
 
+class ProfileView(View):
+    def get(self, request, pk):
+        member_pk = request.session.get('Member')
+        member = Member.objects.get(pk=member_pk)
+        return render(request, 'Member/profile.html', {'member': member})

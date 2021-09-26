@@ -1,8 +1,9 @@
 from django.db import models
+
+from SGFriend import settings
 from mainApp.models import *
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, PermissionsMixin)
-
-
+from django.views.generic import CreateView, DetailView
 # Create your models here.
 
 class MemberManager(BaseUserManager):
@@ -28,6 +29,11 @@ class MemberManager(BaseUserManager):
         member.is_active = True
         member.save(using=self._db)
         return member
+
+#class Profile(models.Model):
+#    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) # 현 계정의 사용자를 가져올 수 있음.
+#    nickname = models.CharField(max_length=64)
+ #   profile_photo = models.ImageField(blank=True)                 # 값을 채워넣지 않아도 되는 속성.
 
 
 class Member(AbstractBaseUser, PermissionsMixin):
