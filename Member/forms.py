@@ -44,3 +44,19 @@ class LoginForm(forms.Form):
     email = forms.CharField(label="Email", max_length=100)
     password = forms.CharField(label="Password", widget=forms.PasswordInput(), required=True)
 
+#class ProfileUpdateForm(forms.ModelForm):
+#    profile_image = forms.ImageField(required=False)
+
+ #   class Meta:
+#        model = Member
+#        fields = ['intro','profile_image']
+
+#        widgets = {
+#            'intro': forms.TextInput(attrs={'class': 'form-control'}),
+#            'profile_image' : forms.ClearableFileInput(attrs={'class': 'form-control-file', 'onchange': 'readURL(this);'}),
+#        }
+
+#        labels = {
+ #           'profile_image': '프로필 사진',
+#            'intro': '인사말',
+ #       }
