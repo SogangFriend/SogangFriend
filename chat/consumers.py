@@ -74,7 +74,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         chat_room = ChatRoom.objects.get(pk=self.room_name)
         if Member_ChatRoom.objects.filter(member=member, chat_room=chat_room).count() == 0:
             Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
-                                           member_timestamp=timezone.now(), chat_room_timestamp=timezone.now())
+                                           member_timestamp=timezone.now())
 
     @database_sync_to_async
     def get_member_chatroom(self):

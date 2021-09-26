@@ -18,7 +18,6 @@ class Member_ChatRoom(models.Model):
     chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
     member_timestamp = models.DateTimeField() # 멤버가 나간 시간 -> develop : 멤버가 지금 채팅방에 머물지 않고 있을 때
 
-
 class Message(models.Model):
     message = models.TextField(null=False, blank=False)
     chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, null=False, blank=False)
