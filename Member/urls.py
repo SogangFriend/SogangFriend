@@ -16,7 +16,7 @@ app_name ='Member'
 urlpatterns = [
     path('register/', RegisterView.as_view()),
     path('login/', LoginView.as_view(), name='login'),
-    path('logout/', logout),
+    path('logout/', log_out),
 
     path('password_reset_confirm/<uidb64>/<token>/', UserPasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     path('password_reset_complete/', UserPasswordResetCompleteView.as_view(), name="password_reset_complete"),

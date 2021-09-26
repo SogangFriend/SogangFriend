@@ -9,7 +9,7 @@ from .helpers import send_mail
 from django.views.generic import *
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from .forms import *
 from django.http import HttpResponse
@@ -129,8 +129,9 @@ class LoginView(View):
         return render(request, 'Member/login.html', self.response_data)
 
 
-def logout(request):
-    request.session.pop('Member')
+def log_out(request):
+    logout(request)
+    # request.session.pop('Member')
     return redirect('/')
 
 #password change
