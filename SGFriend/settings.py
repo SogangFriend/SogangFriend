@@ -42,8 +42,9 @@ EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
 
+#ALLOWED_HOSTS = ['127.0.0.1']
+    #EMAIL_BACKEND
 
 # Application definition
 
@@ -151,6 +152,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, './mainApp/templates/static')
+STATICFILES_DIRS = [
+
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -159,3 +164,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 DEFAULT_FROM_EMAIL = 'sogangfriend@naver.com'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+
