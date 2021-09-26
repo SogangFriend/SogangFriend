@@ -4,7 +4,7 @@ app_name = 'Chat'
 
 urlpatterns = [
     path('', ChatHomeView.as_view(), name='index'),
-    #path('<str:room_name>/<str:member>/<str:user_nickname>/', RoomView.as_view(), name='room'),
     path('create/', RoomView.as_view(), name='chat_create'),
-    #path('chatform/', FormView.as_view(), name='room')
+    path('list/', ChatListView.as_view(), name='list'),
+    path('enter/<str:room_name>/', RoomView.as_view(), name='room'),
 ]

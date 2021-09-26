@@ -3,23 +3,17 @@ from django.contrib.auth.views import PasswordResetDoneView, PasswordResetConfir
     PasswordResetView
 from django.shortcuts import render, redirect, reverse, resolve_url
 from django.urls import reverse_lazy
-from SGFriend import settings
 
 from .helpers import send_mail
 from django.views.generic import *
-from .models import Member
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from .forms import *
 from django.http import HttpResponse
-from django.contrib.auth.hashers import make_password, check_password
 from mainApp.models import *
 from django.utils.encoding import force_bytes, force_text
-from django.forms import ValidationError
-from django.contrib import messages
 from .tokens import account_activation_token
 from rest_framework.views import APIView
 from rest_framework.response import Response

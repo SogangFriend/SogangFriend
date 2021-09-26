@@ -10,15 +10,20 @@
 </body>
 <script>
     var roomName = "{{ room_name }}";
-
+    var member = "{{ member_pk }}";
     var chatSocket = new WebSocket(
         'ws://' + window.location.host +
-        '/ws/chat/' + roomName + '/');
+        '/ws/chat/' + roomName + '/' + member + '/');
 
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
+        var sender = data['member'];
         var message = data['message'];
-        document.querySelector('#chat-log').value += (message + '\n');
+        var timestamp = data['timestamp'];
+        document.querySelector('#chat-log').value += (sender + ": " + "\t"
+            + message + '\t'
+            + '(' + timestamp + ')'
+            + '\n');
     };
 
     chatSocket.onclose = function(e) {

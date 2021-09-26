@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for room in rooms  %}
+    <div> <a href="{% url 'Chat:room' room_name=room.pk %}">{{ room.name }}</a> / {{ room.creator.name }}</div>
+    {% endfor %}
+</body>
+</html>
