@@ -22,7 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME' : os.path.join(BASE_DIR, 'db.sqlites3'),
     }
 }
 SECRET_KEY = SECRET_KEY
@@ -153,7 +154,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, './mainApp/templates/static')
 STATICFILES_DIRS = [
-
     os.path.join(BASE_DIR, 'static'),
 ]
 
