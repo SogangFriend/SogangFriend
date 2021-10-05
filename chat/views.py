@@ -62,3 +62,22 @@ class ChatListView(LoginRequiredMixin, View):
         return render(request, 'chat/room_list.html',
                       {'rooms': rooms})
 
+
+class EnterDMView(LoginRequiredMixin, View):
+    login_url = '/member/login/'
+    redirect_field_name = '/chat/list/'
+
+    def get(self, request, pk):
+        target = Member.objects.get(pk=pk)
+        me = Member.objects.get(pk=request.session.get('Member'))
+        mc = me.chats.filter(target=target, is_dm=True)
+        if mc.count() != 0:
+            chatroom = mc.chat_room
+        else:
+            chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
+                                               created_time=timezone.now(), location=me.location,
+                                               is_dm=True, target=target)
+            Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
+            Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
+        return render(request, 'chat/room.html',
+                      {'room_name': chatroom.pk, 'member_pk': me.pk})

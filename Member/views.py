@@ -119,8 +119,8 @@ class LoginView(View):
             if member is not None:
                 token = Token.objects.get(user=member)
                 Response({"Token": token.key})
-                request.session['Member'] = member.pk
                 login(request, member)
+                request.session['Member'] = member.pk
                 return redirect('/')
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
