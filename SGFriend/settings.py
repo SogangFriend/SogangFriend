@@ -40,7 +40,7 @@ EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = ['127.0.0.1', 'ec2-3-38-103-73.ap-northeast-2.compute.amazonaws.com']

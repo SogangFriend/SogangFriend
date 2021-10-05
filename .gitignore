@@ -133,7 +133,7 @@ dmypy.json
 /.idea/*
 
 SGFriend/my_settings.py
-/Member/migrations/*
+#/Member/migrations/*
 *.geojson
 
 /chat/migrations/*
