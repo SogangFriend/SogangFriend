@@ -72,7 +72,7 @@ class EnterDMView(LoginRequiredMixin, View):
         me = Member.objects.get(pk=request.session.get('Member'))
         mc = me.chats.filter(target=target, is_dm=True)
         if mc.count() != 0:
-            chatroom = mc[0].chat_room
+            chatroom = mc[0]
         else:
             chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
                                                created_time=timezone.now(), location=me.location,
