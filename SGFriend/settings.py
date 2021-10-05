@@ -22,8 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        'NAME' : os.path.join(BASE_DIR, 'db.sqlites3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 SECRET_KEY = SECRET_KEY
@@ -44,7 +43,7 @@ EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
 DEBUG = False
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'ec2-3-38-103-73.ap-northeast-2.compute.amazonaws.com']
     #EMAIL_BACKEND
 
 # Application definition
@@ -70,7 +69,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379), ('.pythonanywhere.com', 6379)],
+            "hosts": [('127.0.0.1', 6379), ('ec2-3-38-103-73.ap-northeast-2.compute.amazonaws.com', 6379)],
         },
     },
 }
