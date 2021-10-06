@@ -134,5 +134,6 @@ dmypy.json
 
 SGFriend/my_settings.py
 /Member/migrations/*
+*.geojson
 
 /chat/migrations/*
