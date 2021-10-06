@@ -167,3 +167,5 @@ DEFAULT_FROM_EMAIL = 'sogangfriend@naver.com'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
