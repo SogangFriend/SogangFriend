@@ -1,0 +1,31 @@
+{% block content %}
+
+    {% load static%}
+
+    <div class="row">
+        <div class="col-xs-6 col-md-3">
+            {% if member.profile.profile_photo %}
+                <img class="round" src="{{member.profile.profile_photo.url}}" width="200" alt=""> <br>
+            {% else %}
+                <img class="round" src="{% static 'member/images/default_profile.png' %}" width="200" alt=""> <br>
+            {% endif %}
+        </div>
+
+        <div class="col-xs-6 col-md-3">
+            {% if member.profile.username %}
+                <h2>{{member.profile.username}}</h2>
+            {% endif %}
+            {% if user == member %}   <!-- 로그인한 사용자와 profile_user(프로필 소유자)가 일치할 때만 프로필 편집이 가능하도록 함 -->
+                <a href="{% url 'Member:profile' %}">
+                    <button type="button" class="btn btn-default">프로필 편집</button></a></h2>
+            {% endif %}
+            <h3> 닉네임: {{member.name}} <br></h3>
+            <h3> 학번: {{member.student_number}} <br></h3>
+            <h3> 주소: {{member.location}} <br></h3>
+            <h3> 자기소개: {{member.introduction}} <br></h3>
+
+            </h3>
+        </div>
+    </div>
+
+{% endblock %}

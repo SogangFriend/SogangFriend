@@ -7,7 +7,7 @@ from django.utils import timezone
 class ChatRoom(models.Model):
     name = models.CharField(max_length=100, null=False)
     creator = models.ForeignKey(Member, on_delete=models.CASCADE, null=False, blank=False, related_name='my_chatrooms')
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=False, blank=False, related_name='chats')
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True, related_name='chats')
     created_time = models.DateTimeField()
     timestamp = models.DateTimeField(default=timezone.now) # 가장 최신의 채팅 시간
     '''participants가 있어야 함'''
@@ -18,6 +18,8 @@ class Member_ChatRoom(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
     member_timestamp = models.DateTimeField() # 멤버가 나간 시간 -> develop : 멤버가 지금 채팅방에 머물지 않고 있을 때
+    unread = models.BooleanField(default=False)
+
 
 class Message(models.Model):
     message = models.TextField(null=False, blank=False)

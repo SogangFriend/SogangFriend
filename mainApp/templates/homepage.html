@@ -1,6 +1,8 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <title>SGFRIEND</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
@@ -108,7 +110,7 @@
 
         $.each(data, function (index, val) {
             {#name = val.properties.ADM_DR_NM;#}
-
+            // sggnm == member.location.gu || member.location.dong 이면 넘겨주기
             displayArea(name, val.geometry.coordinates);
         });
     }
@@ -150,3 +152,17 @@
 </script>
 </body>
 </html>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{% url 'Member:login' %}">로그인</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'Member:profile' %}"> <span class="glyphicon glyphicon-heart"></span> {{user.username}}마이페이지</a>
+
+            </li>
+        </ul>
+    </div>
+</nav>

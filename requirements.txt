@@ -2,3 +2,4 @@ djangorestframework
 channels
 channels_redis
 six
+Pillow

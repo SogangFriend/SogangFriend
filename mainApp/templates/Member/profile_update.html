@@ -1,0 +1,33 @@
+{% block content %}
+
+    <div class="cantrion">
+        <div class="row justify-content-center">
+            <div class="col-md-4 order-md-1 d-flex align-items-center">
+                <img class="img-fluid rounded-circle" width="250" height="250" src="{{profile.profile_image.url}}"
+                     preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail">
+            </div>
+
+            <div class="col-md-2 order-md-2 mb-4">
+                <br>
+                <h3 class="mb-0">{{user.username}}</h3>
+                <form method="POST" class="post-form" enctype="multipart/form-data" action="">
+                    {%csrf_token%}
+                    <br>
+
+                    {{ profile_form.intro }}
+                    <br>
+                    {{ profile_form.profile_image }}
+                    <br>
+                    <br>
+
+                    <input type="submit" value="Update">
+                    <a href="{% url 'index' %}">
+                        <button type="button">Cancel</button>
+                    </a>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
