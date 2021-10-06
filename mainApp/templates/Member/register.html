@@ -78,6 +78,7 @@
             navigator.geolocation.getCurrentPosition(function (position){
                lat = position.coords.latitude;
                lng = position.coords.longitude;
+               alert("lat:"+ lat + "lng:" + lng);
                naver.maps.Service.reverseGeocode({
                    coords: new naver.maps.LatLng(lat, lng),
                }, function (status, response) {
