@@ -84,14 +84,30 @@ class RegisterView(APIView):
         else:
             location_info = str(location).split(' ')
             # 수정 필요 이미 있는지 검사
-            si = Si(name=location_info[0], isGYorTB=True)  # 수정 필요 나중에 특별시 광역시 검사 로직
-            si.save()
-            gu = Gu(name=location_info[1], si=si)
-            gu.save()
-            dong = Dong(name=location_info[2], si=si, gu=gu)
-            dong.save()
-            loc = Location(si=si, gu=gu, dong=dong)
-            loc.save()
+            s = Si.objects.filter(name=location_info[0])
+            if s.count() != 0: # 이미 있으면
+                s = s[0]
+            else:
+                s = Si(name=location_info[0], isGYorTB=True)  # 수정 필요 나중에 특별시 광역시 검사 로직 이거 지금 생성자
+                s.save()
+            g = Gu.objects.filter(name=location_info[1])
+            if g.count() != 0:
+                g = g[0]
+            else:
+                g = Gu(name=location_info[1], si=s)
+                g.save()
+            d = Dong.objects.filter(name=location_info[2])
+            if d.count() != 0:
+                d = d[0]
+            else:
+                d = Dong(name=location_info[2], si=s, gu=g)
+                d.save()
+            loc = Location.objects.filter(si=s, gu=g, dong=d)
+            if loc.count() != 0:
+                loc = loc[0]
+            else:
+                loc = Location(si=s, gu=g, dong=d)
+                loc.save()
 
             user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number, loc=loc, introduction=introduction)
 
