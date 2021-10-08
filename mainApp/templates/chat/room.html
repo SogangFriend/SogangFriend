@@ -16,6 +16,7 @@
         '/ws/chat/' + roomName + '/' + member + '/');
 
     chatSocket.onmessage = function(e) {
+        alert(e.data);
         var data = JSON.parse(e.data);
         var sender = data['sender'];
         var message = data['message'];
