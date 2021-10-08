@@ -43,7 +43,7 @@
         var message = messageInputDom.value;
         chatSocket.send(JSON.stringify({
             'message': message,
-            'sender' : {{ member_pk }}
+            'sender' : "{{ member_pk }}"
         }));
 
         messageInputDom.value = '';
