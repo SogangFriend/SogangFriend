@@ -17,7 +17,7 @@
 
     chatSocket.onmessage = function(e) {
         var data = JSON.parse(e.data);
-        var sender = data['member'];
+        var sender = data['sender'];
         var message = data['message'];
         var timestamp = data['timestamp'];
         document.querySelector('#chat-log').value += (sender + ": " + "\t"
@@ -42,7 +42,8 @@
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
         chatSocket.send(JSON.stringify({
-            'message': message
+            'message': message,
+            'sender' : {{ member_pk }}
         }));
 
         messageInputDom.value = '';

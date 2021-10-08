@@ -34,21 +34,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-
+        sender_pk = text_data_json['sender']
+        sender = self.get_member_with_pk(sender_pk)
         await self.channel_layer.group_send(
             self.room_group_name, {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'sender': sender.name
             }
         )
 
     async def chat_message(self, event):
         message = event['message']
+        sender = event['sender']
         msg = await self.create_message(message)
         await self.set_chat_room_timestamp()
-        member = await self.get_member()
+        # member = await self.get_member()
         await self.send(text_data=json.dumps({
-            'member' : member.name,
+            'sender' : sender,
             'message' : message,
             'timestamp' : msg.timestamp
         }, default=str))
@@ -56,6 +59,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_member(self):
         return Member.objects.get(pk=self.member)
+
+    @database_sync_to_async
+    def get_member_with_pk(self, pk):
+        return Member.objects.get(pk=pk)
 
     @database_sync_to_async
     def create_message(self, message):
