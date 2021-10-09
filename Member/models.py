@@ -71,3 +71,5 @@ class Member(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+image = models.ImageField(upload_to='Member', null=True)
