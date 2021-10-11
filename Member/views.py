@@ -156,7 +156,7 @@ class UserPasswordResetView(PasswordResetView):
     success_url = reverse_lazy('Member:password_reset_done')
     form_class = PasswordResetForm
     email_template_name= 'Member/password_reset_email.html'
-    subject_template_name= 'Member/password_reset_subject.txt'
+    subject_template_name= '서강프렌드 비밀번호 재설정'
 
     def form_valid(self, form):
         if User.objects.filter(email=self.request.POST.get("email")).exists():

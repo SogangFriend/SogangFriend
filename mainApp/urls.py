@@ -4,7 +4,6 @@ from .views import *
 from Member import views
 
 urlpatterns = [
-    path('', HomeView.as_view()),
-    path('member/list/', MemberListView.as_view()),
-
+    path('', HomeView.as_view(), name="homepage"),
+    path('members/', MemberListView.as_view()),
 ]

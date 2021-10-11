@@ -1,18 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
+
    <form method="post" action="{% url 'Chat:chat_create' %}">
     <h1> 채팅방만들기 </h1>
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">확인</button>
     </form>
-
-
-
-</body>
-</html>
+{% endblock %}
