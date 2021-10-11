@@ -1,168 +1,96 @@
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% block content %}
 
-    <meta charset="UTF-8">
-    <title>SGFRIEND</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8adb3b0eff104b23a8de69e696957720&libraries=services,drawing"></script>
-
-    <style>
-        div.left, div.right {
-            width: 100%;
-            height: 960px;
-            border: 1px solid #003458;
-        }
-        div.left {
-            width: 30%;
-            float: left;
-            box-sizing: border-box;
-            background: #8977ad;
-        }
-        div.right {
-            width: 70%;
-            float: right;
-            box-sizing: border-box;
-            background: #ece6cc;
-        }
-        .left_header{
-            background-color: yellow;
-            border: 1px solid red;
-            height: 10%;
-        }
-
-        .lh_cell{
-            float: left;
-            width: 50%;
-            height: 100%;
-            box-sizing: border-box;
-            border: 1px solid blue;
-        }
-        .left_body {
-            background-color: green;
-            height: 90%;
-            overflow: auto;
-        }
-        .lb_profile {
-            float: left;
-            width: 100%;
-            height: 10%;
-            box-sizing: border-box;
-            border: 1px solid black;
-        }
-        .lh_content {
-            text-align: center;
-            padding-top: 7.5%;
-        }
-    </style>
-</head>
-<body>
-    <div>
-        <div class="left">
-            <div class="left_header">
-                <div class="left_header1 lh_cell"><p class="lh_content">people</p></div>
-                <div class="left_header2 lh_cell"><p class="lh_content">chat</p></div>
+        <body>
+            <div>
+                <div class="left">
+                    <div class="left_header">
+                        <div class="left_header1 lh_cell"><p class="lh_content">people</p></div>
+                        <div class="left_header2 lh_cell"><p class="lh_content">chat</p></div>
+                    </div>
+                    <div class="left_body">
+                        <div class="left_body1 lb_profile">profile</div>
+                        <div class="left_body2 lb_profile">profile</div>
+                        <div class="left_body3 lb_profile">profile</div>
+                        <div class="left_body4 lb_profile">profile</div>
+                        <div class="left_body5 lb_profile">profile</div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="member_info" style="height: 5%; float: left;">
+                        <p>
+                        {{member_info.location.si.name}} {{member_info.location.gu.name}} {{member_info.location.dong.name}}
+                        </p>
+                    </div>
+                    <div id="map" style="width:100%; height: 95%; display: block;"></div>
+                    <!-- 지도타입 컨트롤 div 입니다 -->
+                </div>
             </div>
-            <div class="left_body">
-                <div class="left_body1 lb_profile">profile</div>
-                <div class="left_body2 lb_profile">profile</div>
-                <div class="left_body3 lb_profile">profile</div>
-                <div class="left_body4 lb_profile">profile</div>
-                <div class="left_body5 lb_profile">profile</div>
-            </div>
-        </div>
-        <div class="right">
-            <div class="member_info" style="height: 5%; float: left;">
-                <p>
-                {{member_info.location.si.name}} {{member_info.location.gu.name}} {{member_info.location.dong.name}}
-                </p>
-            </div>
-            <div id="map" style="width:100%; height: 95%; display: block;"></div>
-            <!-- 지도타입 컨트롤 div 입니다 -->
-        </div>
-    </div>
-<script>
-    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+        <script>
+            var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 
-    var options = { //지도를 생성할 때 필요한 기본 옵션
-        center: new kakao.maps.LatLng(37.462932227677896, 126.899851798148), //지도의 중심좌표.
-        level: 10 //지도의 레벨(확대, 축소 정도)
-    };
-    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+            var options = { //지도를 생성할 때 필요한 기본 옵션
+                center: new kakao.maps.LatLng(37.462932227677896, 126.899851798148), //지도의 중심좌표.
+                level: 10 //지도의 레벨(확대, 축소 정도)
+            };
+            var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 
-    map.setZoomable(true);
-    map.setDraggable(true);
-        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-    var zoomControl = new kakao.maps.ZoomControl();
-    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+            map.setZoomable(true);
+            map.setDraggable(true);
+                // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+            var zoomControl = new kakao.maps.ZoomControl();
+            map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-    drawPolygon();
+            drawPolygon();
 
-    function drawPolygon() {
+            function drawPolygon() {
 
-        const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");
-        const geoJson = JSON.parse(jsonStr);
+                const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");
+                const geoJson = JSON.parse(jsonStr);
 
-        var data = geoJson.features;
-        var name= '';
+                var data = geoJson.features;
+                var name= '';
 
-        $.each(data, function (index, val) {
-            {#name = val.properties.ADM_DR_NM;#}
-            // sggnm == member.location.gu || member.location.dong 이면 넘겨주기
-            displayArea(name, val.geometry.coordinates);
-        });
-    }
+                $.each(data, function (index, val) {
+                    {#name = val.properties.ADM_DR_NM;#}
 
-    function makeMultiPolygon(coordinates) {
-        var paths = [];
-        $.each(coordinates, function (index, val) {
-            var coordinates2 = [];
+                    displayArea(name, val.geometry.coordinates);
+                });
+            }
 
-            $.each(val[0], function (index2, coordinate) {
-                coordinates2.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
-            });
-            paths.push(coordinates2);
-        });
+            function makeMultiPolygon(coordinates) {
+                var paths = [];
+                $.each(coordinates, function (index, val) {
+                    var coordinates2 = [];
 
-        return new kakao.maps.Polygon({
-            path: paths,
-            strokeWeight: 1,
-            strokeColor: '#004c80',
-            strokeOpacity: 0.8,
-            strokeStyle: 'longdash',
-            fillColor: '#A2FF99',
-            fillOpacity: 0.2
-        });
-    }
+                    $.each(val[0], function (index2, coordinate) {
+                        coordinates2.push(new kakao.maps.LatLng(coordinate[1], coordinate[0]));
+                    });
+                    paths.push(coordinates2);
+                });
 
-    function displayArea(name, coordinates) {
-        var polygon = makeMultiPolygon(coordinates);
+                return new kakao.maps.Polygon({
+                    path: paths,
+                    strokeWeight: 1,
+                    strokeColor: '#004c80',
+                    strokeOpacity: 0.8,
+                    strokeStyle: 'longdash',
+                    fillColor: '#A2FF99',
+                    fillOpacity: 0.2
+                });
+            }
 
-        polygon.setMap(map);
-    }
+            function displayArea(name, coordinates) {
+                var polygon = makeMultiPolygon(coordinates);
 
-    // 버튼 클릭에 따라 지도 이동 기능을 막거나 풀고 싶은 경우에는 map.setDraggable 함수를 사용합니다
-    function setDraggable(draggable) {
-        // 마우스 드래그로 지도 이동 가능여부를 설정합니다
-        map.setDraggable(draggable);
-    }
+                polygon.setMap(map);
+            }
 
-</script>
-</body>
-</html>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{% url 'Member:login' %}">로그인</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'Member:profile' %}"> <span class="glyphicon glyphicon-heart"></span> {{user.username}}마이페이지</a>
-
-            </li>
-        </ul>
-    </div>
-</nav>
+            // 버튼 클릭에 따라 지도 이동 기능을 막거나 풀고 싶은 경우에는 map.setDraggable 함수를 사용합니다
+            function setDraggable(draggable) {
+                // 마우스 드래그로 지도 이동 가능여부를 설정합니다
+                map.setDraggable(draggable);
+            }
+        </script>
+{% endblock %}
