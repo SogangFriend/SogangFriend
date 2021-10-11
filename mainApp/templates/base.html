@@ -11,19 +11,16 @@
     <link rel="stylesheet" type="text/css" href="{% static 'static/style.css' %}">
     <title>Hello, SogangFriend!</title>
 
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-
-
     <meta charset="UTF-8">
     <title>SGFRIEND</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb"></script>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=6a63luu2nb&submodules=geocoder"></script>
-    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script  src="https://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8adb3b0eff104b23a8de69e696957720&libraries=services,drawing"></script>
-
+    <!-- Bootstrap JS -->
+    <script src="{% static 'bootstrap.min.js' %}"></script>
     <style>
         div.left, div.right {
             width: 100%;
@@ -79,10 +76,7 @@
     <!-- 기본 템플릿 안에 삽입될 내용 Start -->
     {% block content %}
     {% endblock %}
-    <!-- jQuery JS -->
-    <script src="{% static 'jquery-3.6.0.min.js' %}"></script>
-    <!-- Bootstrap JS -->
-    <script src="{% static 'bootstrap.min.js' %}"></script>
+
     <!-- 기본 템플릿 안에 삽입될 내용 End -->
 
 </body>
