@@ -1,25 +1,20 @@
 from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView, \
     PasswordResetView
 from django.shortcuts import render, redirect, reverse, resolve_url
 from django.urls import reverse_lazy
-from SGFriend import settings
 
 from .helpers import send_mail
 from django.views.generic import *
-from .models import Member
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from .forms import *
 from django.http import HttpResponse
-from django.contrib.auth.hashers import make_password, check_password
 from mainApp.models import *
 from django.utils.encoding import force_bytes, force_text
-from django.forms import ValidationError
-from django.contrib import messages
 from .tokens import account_activation_token
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -44,6 +39,7 @@ def mail_send(member, request, find):
         })
     )
 
+
 def activate(request, uid64, token):#계정활성화 함수
     try:
         uid = force_text(urlsafe_base64_decode(uid64)) #decode해서 user 불러옴
@@ -63,10 +59,10 @@ def activate(request, uid64, token):#계정활성화 함수
         # return render(request, 'Member/login.html')
         return redirect(request, 'Member/login')
 
+
 class RegisterView(APIView):
     def get(self, request):
         return render(request, 'Member/register.html')
-
       
     def post(self, request):
         name = request.POST.get('name', '')
@@ -124,6 +120,7 @@ class LoginView(View):
                 token = Token.objects.get(user=member)
                 Response({"Token": token.key})
                 request.session['Member'] = member.pk
+                login(request, member)
                 return redirect('/')
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
@@ -132,8 +129,9 @@ class LoginView(View):
         return render(request, 'Member/login.html', self.response_data)
 
 
-def logout(request):
-    request.session.pop('Member')
+def log_out(request):
+    logout(request)
+    # request.session.pop('Member')
     return redirect('/')
 
 #password change
@@ -181,8 +179,12 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
         context['login_url'] = resolve_url('Member:login')
         return context
 
-class ProfileView(View):
-    def get(self, request, pk):
+
+class ProfileView(LoginRequiredMixin, View):
+    login_url = '/member/login/'
+    redirect_field_name = '/profle/'
+
+    def get(self, request):
         member_pk = request.session.get('Member')
         member = Member.objects.get(pk=member_pk)
         return render(request, 'Member/profile.html', {'member': member})
