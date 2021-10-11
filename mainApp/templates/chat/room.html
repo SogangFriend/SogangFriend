@@ -12,7 +12,7 @@
     var roomName = "{{ room_name }}";
     var member = "{{ member_pk }}";
     var chatSocket = new WebSocket(
-        'ws://' + window.location.host +
+        'wss://' + window.location.host +
         '/ws/chat/' + roomName + '/' + member + '/');
 
     chatSocket.onmessage = function(e) {
