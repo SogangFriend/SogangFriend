@@ -23,7 +23,9 @@ urlpatterns = [
     path('password_reset/', UserPasswordResetView.as_view(), name="password_reset"),
     path('password_reset_done/', UserPasswordResetDoneView.as_view(), name="password_reset_done"),
     path('activate/<str:uid64>/<str:token>/', activate, name='activate'),
-    path('profile/', ProfileView.as_view(), name='profile')
+    path('profile/', ProfileView.as_view(), name='profile'),
+
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
