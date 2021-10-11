@@ -1,0 +1,17 @@
+[Unit]
+Description=daphne daemon
+
+[Service]
+WorkingDirectory=/srv/SogangFriend/
+
+Environment="DJANGO_SETTINGS_MODULE=SGFriend.settings"
+ExecStart=/srv/myvenv/bin/daphne -b 127.0.0.1 -p 8001 SGFriend.asgi:application
+
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=always
+PrivateTmp=true
+KillSignal=SIGQUIT
+
+[Install]
+WantedBy=multi-user.target
