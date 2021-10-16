@@ -1,10 +1,14 @@
 # SogangFriend
+교내의 고향 친구 및 이웃 친구를 찾는 웹사이트 개발 프로젝트
 
+--------------------
+## Database Relations
+![](https://user-images.githubusercontent.com/63971146/137588819-2a7a00fb-a4a7-41f3-b964-eb9ee7538e24.png)
+
+## 설치 Step
 Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 [파이참 학생 무료 Pro버전](https://celebro.tistory.com/1)
 
-## 설치 Step
---------------------
 ### 0. 이 repository clone
 명령어 : __git clone https://github.com/SogangFriend/SogangFriend.git__
 또는
