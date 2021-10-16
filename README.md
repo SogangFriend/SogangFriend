@@ -1,5 +1,9 @@
 # SogangFriend
 
+## 동네 친구 찾기 프로젝트
+위치를 기반으로 해 동네의 친구와, 취미가 맞는 사람들과 채팅을 할 수 있는 웹 사이트 제작. 
+
+-------------------
 Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 [파이참 학생 무료 Pro버전](https://celebro.tistory.com/1)
 
