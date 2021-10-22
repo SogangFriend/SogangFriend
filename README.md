@@ -5,6 +5,21 @@
 ## Database Relations
 ![](https://user-images.githubusercontent.com/63971146/137588819-2a7a00fb-a4a7-41f3-b964-eb9ee7538e24.png)
 
+## Design Prototype
+### Homepage
+<img src="https://user-images.githubusercontent.com/63971146/138401542-32426e82-e3cd-4a23-8a8e-2ca92723566f.png" width=70%/>
+
+### Signup page
+<img src="https://user-images.githubusercontent.com/63971146/138401722-38b0ea7c-f67c-470f-ae82-eb1e95657827.png" width=70%/>
+<img src="https://user-images.githubusercontent.com/63971146/138401808-0a5d7a2a-1d12-40dd-95a6-613624a902a0.png" width=70%/>
+
+### Chat page
+<img src="https://user-images.githubusercontent.com/63971146/138402138-0cf1185b-470f-4fc2-b98d-5d416757396a.png" width=70%/>
+
+## Used tools & Reference documents
+- [Django Channels](https://channels.readthedocs.io/en/stable/) for Chat Service
+- [Kakao map API]() for Map, Reverse Geocoding
+
 ## 설치 Step
 Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 [파이참 학생 무료 Pro버전](https://celebro.tistory.com/1)
