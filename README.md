@@ -17,10 +17,13 @@
 <img src="https://user-images.githubusercontent.com/63971146/138402138-0cf1185b-470f-4fc2-b98d-5d416757396a.png" width=70%/>
 
 ## Used tools & Reference documents
+- [Django mails](https://docs.djangoproject.com/en/3.2/topics/email/) for Email Authentication
 - [Django Channels](https://channels.readthedocs.io/en/stable/) for Chat Service
-- [Kakao map API]() for Map, Reverse Geocoding
+- [Kakao map API](https://apis.map.kakao.com/web/) for Map, Reverse Geocoding
 
-## 설치 Step
+
+
+## 설치 Guide
 Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 [파이참 학생 무료 Pro버전](https://celebro.tistory.com/1)
 
