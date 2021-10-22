@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, request
 from django.views.generic import *
 from Member.models import *
-from SGFriend.settings import STATIC_ROOT
+from SGFriend.settings import STATICFILES_DIRS
 import json
 # Create your views here.
 
@@ -20,7 +20,7 @@ class HomeView(LoginRequiredMixin, View):
         member_info = Member.objects.get(pk=member_id)  # pk : primary key
         # 서울특별시 금천구
         # 강원도 강릉시
-        file_path = STATIC_ROOT + "/gsons/"
+        file_path = STATICFILES_DIRS[0] + "/gsons/"
 
         if member_info.location.si.isGYorTB:
             file_path += member_info.location.si.name + "/" + member_info.location.gu.name + ".geojson"
