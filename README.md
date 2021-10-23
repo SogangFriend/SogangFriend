@@ -1,9 +1,10 @@
 # SogangFriend
-교내의 고향 친구 및 이웃 친구를 찾는 웹사이트 개발 프로젝트
+교내의 고향 친구 및 이웃 친구를 찾는 웹사이트 개발 프로젝트!
+
 
 --------------------
 ## Database Relations
-![](https://user-images.githubusercontent.com/63971146/137588819-2a7a00fb-a4a7-41f3-b964-eb9ee7538e24.png)
+![](https://user-images.githubusercontent.com/63971146/138544000-e98ce60d-86c2-4761-bc24-89b7d2432d43.png)
 
 ## Components
 - 이메일 인증을 통한 회원가입
@@ -28,6 +29,7 @@
 - [Kakao map API](https://apis.map.kakao.com/web/) for Map, Reverse Geocoding
 
 
+----------------------------------------------------------------------
 
 ## 설치 Guide
 Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
@@ -55,9 +57,7 @@ Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 ### 4. Django 설치
 명령어 : __pip install django__
 
-### 5. Member 폴더 아래에 migrations 폴더를 생성해줍니다. 그리고 migrations 폴더 아래에 __init__.py 파일을 생성해줍니다. (언더바 두개씩)
-
-### 6. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
+### 5. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
 명령어 : <br>__python manage.py makemigrations__<br>__python manage.py migrate__
 
         <window>
