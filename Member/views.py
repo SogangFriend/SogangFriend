@@ -13,7 +13,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from .forms import *
 from django.http import HttpResponse
-from mainApp.models import *
+from MainApp.models import *
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
 from rest_framework.views import APIView
