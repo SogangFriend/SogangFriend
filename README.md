@@ -5,6 +5,12 @@
 ## Database Relations
 ![](https://user-images.githubusercontent.com/63971146/137588819-2a7a00fb-a4a7-41f3-b964-eb9ee7538e24.png)
 
+## Components
+- 이메일 인증을 통한 회원가입
+- 위치 인증을 이용한 같은 동네 사용자 찾기
+- 같은 동네 사용자 간 취미 공유
+- 단체 채팅방, DM 기능
+
 ## Design Prototype
 ### Homepage
 <img src="https://user-images.githubusercontent.com/63971146/138401542-32426e82-e3cd-4a23-8a8e-2ca92723566f.png" width=70%/>
