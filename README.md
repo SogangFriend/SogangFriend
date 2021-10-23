@@ -1,9 +1,10 @@
 # SogangFriend
-교내의 고향 친구 및 이웃 친구를 찾는 웹사이트 개발 프로젝트
+교내의 고향 친구 및 이웃 친구를 찾는 웹사이트 개발 프로젝트!
+
 
 --------------------
 ## Database Relations
-![](https://user-images.githubusercontent.com/63971146/137588819-2a7a00fb-a4a7-41f3-b964-eb9ee7538e24.png)
+![](https://user-images.githubusercontent.com/63971146/138544000-e98ce60d-86c2-4761-bc24-89b7d2432d43.png)
 
 ## Components
 - 이메일 인증을 통한 회원가입
