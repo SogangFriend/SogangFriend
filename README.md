@@ -57,6 +57,8 @@ Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
 ### 4. Django 설치
 명령어 : __pip install django__
 
+        pip install -r .\requirements.txt
+
 ### 5. models가 수정된 커밋을 pull할 경우 migration을 만들어줘야함
 명령어 : <br>__python manage.py makemigrations__<br>__python manage.py migrate__
 
