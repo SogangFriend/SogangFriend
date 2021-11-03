@@ -8,15 +8,6 @@ from .forms import *
 from .models import *
 # Create your views here.
 
-
-class ChatHomeView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
-    redirect_field_name = '/chat/'
-
-    def get(self, request):
-        return render(request, 'chat/chat_home.html', {})
-
-
 class RoomCreateView(LoginRequiredMixin, View):
     login_url = '/member/login/'
     redirect_field_name = '/chat/create/'
