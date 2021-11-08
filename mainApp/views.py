@@ -18,6 +18,7 @@ class HomeView(LoginRequiredMixin, View):
     def get(self, request):
         member_id = request.session.get('Member')
         member_info = Member.objects.get(pk=member_id)  # pk : primary key
+        members = Member.objects.filter(location=member_info.location)
         # 서울특별시 금천구
         # 강원도 강릉시
         file_path = STATIC_ROOT + "/gsons/"
@@ -27,10 +28,10 @@ class HomeView(LoginRequiredMixin, View):
         else :
             file_path += member_info.location.do.name + "/" + member_info.location.si.name + ".geojson"
         
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
         return render(request, "homepage.html",
-                      {'member_info': member_info, 'json_data': json_data})  # 로그인을 했다면, home 출력
+                      {'member_info': member_info, 'json_data': json_data, 'members': members})  # 로그인을 했다면, home 출력
 
 # render <-> redirect
 # render는 html을 뿌려주는거고

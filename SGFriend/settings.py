@@ -50,8 +50,8 @@ ALLOWED_HOSTS = ['127.0.0.1', '.ap-northeast-2.compute.amazonaws.com', '.sogang-
 
 INSTALLED_APPS = [
     'channels',
-    'chat',
-    'mainApp',
+    'Chat',
+    'MainApp',
     'Member',
     'django.contrib.admin',
     'django.contrib.auth',

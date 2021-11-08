@@ -1,7 +1,7 @@
 from django.db import models
 
 from SGFriend import settings
-from mainApp.models import *
+from MainApp.models import *
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser, PermissionsMixin)
 from django.views.generic import CreateView, DetailView
 # Create your models here.
