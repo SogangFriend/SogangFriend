@@ -3,18 +3,45 @@
 {% block content %}
 
         <body>
+
+{#            <select onchange="if(this.value) location.href=(this.value);">#}
+{#                <label><input type="radio" value="">홈페이지</label>#}
+{#                <label><input type="radio" value="Member:member_list.html">People</label>#}
+{#                <label><input type="radio" value="Chat:room_list.html">Chat</label>#}
+{#            </select>#}
+
             <div>
                 <div class="left">
                     <div class="left_header">
-                        <div class="left_header1 lh_cell"><p class="lh_content">people</p></div>
-                        <div class="left_header2 lh_cell"><p class="lh_content">chat</p></div>
+                        <div class="left_header1 lh_cell"><p class="lh_content">people</p>
+{#                        <div><a hrdf="Member:member_list.html" name="top">People</a></div>#}
+{#                        <a href="Member:member_list.html"> People </a>#}
+
+
+                        </div>
+                        <div class="left_header2 lh_cell"><p class="lh_content">chat</p>
+
+
+
+                        </div>
                     </div>
+                
                     <div class="left_body">
-                        <div class="left_body1 lb_profile">profile</div>
-                        <div class="left_body2 lb_profile">profile</div>
-                        <div class="left_body3 lb_profile">profile</div>
-                        <div class="left_body4 lb_profile">profile</div>
-                        <div class="left_body5 lb_profile">profile</div>
+                        <select onchange="if(this.value) location.href=(this.value);">
+                        <option value="">홈페이지</option>
+                        <option value="Member/member_list.html">People</option>
+                        <option value="Chat/list">Chat</option>
+                        </select>
+
+                        {% for member in members %}
+                        <div class="left_body lb_profile">
+
+                            {{ member.name }}  <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>
+                        </div>
+
+                        {% endfor %}
+
+
                     </div>
                 </div>
                 <div class="right">

@@ -17,7 +17,7 @@ class ChatRoom(models.Model):
 
 class Member_ChatRoom(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    Chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
     member_timestamp = models.DateTimeField() # 멤버가 나간 시간 -> develop : 멤버가 지금 채팅방에 머물지 않고 있을 때
     unread = models.BooleanField(default=False)
 

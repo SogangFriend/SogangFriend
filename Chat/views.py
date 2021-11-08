@@ -26,6 +26,7 @@ class RoomCreateView(LoginRequiredMixin, View):
         form = self.form_class()
         return render(request, 'Chat/chat_form.html', {"form": form})
 
+
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -36,7 +37,7 @@ class RoomCreateView(LoginRequiredMixin, View):
 
             chatroom = ChatRoom.objects.create(name=room_name, creator=member,
                                                created_time=timezone.now(), location=member.location)
-            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
+            Member_ChatRoom.objects.create(member=member, Chat_room=chatroom, member_timestamp=timezone.now())
 
         return redirect('/Chat/list')
 
@@ -70,17 +71,18 @@ class EnterDMView(LoginRequiredMixin, View):
     def get(self, request, pk):
         target = Member.objects.get(pk=pk)
         me = Member.objects.get(pk=request.session.get('Member'))
-        mc = me.chats.filter(target=target, is_dm=True)
+        mc = me.Chats.filter(target=target, is_dm=True)
         if mc.count() != 0:
             chatroom = mc[0]
         else:
-            mc = target.chats.filter(target=me, is_dm=True)
+            mc = target.Chats.filter(target=me, is_dm=True)
             if mc.count() != 0:
                 chatroom = mc[0]
             else:
                 chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
                                                    created_time=timezone.now(), location=me.location,
                                                    is_dm=True, target=target)
+
                 Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
                 Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
         return render(request, 'Chat/room.html',

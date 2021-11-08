@@ -50,7 +50,7 @@ def activate(request, uid64, token):#계정활성화 함수
         user.is_active = True
         user.save()
         #return render(request, "homepage.html") #~님 환영합니다?
-        return render(request, "test2.html")
+        return redirect('/member/login')
     elif user is None: #이메일 인증 기한 지남
         return render(request, "Member/register.html")
     else: #이미 확인된 토큰 혹은 유효기간이 지난 토큰
