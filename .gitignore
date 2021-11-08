@@ -128,7 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
 /MainApp/migrations/*
 
 /myvenv/*
@@ -137,6 +136,7 @@ dmypy.json
 SGFriend/my_settings.py
 /Member/migrations/*
 #*.geojson
+
 /static/gsons/HangJeongDong_ver20210401.geojson
 
 Chat/migrations/*

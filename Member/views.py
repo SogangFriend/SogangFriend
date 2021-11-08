@@ -49,15 +49,15 @@ def activate(request, uid64, token):#계정활성화 함수
     if user is not None and account_activation_token.check_token(user, token): #유효성 검사
         user.is_active = True
         user.save()
-        #return render(request, "homepage.html") #~님 환영합니다?
         return redirect('/member/login')
+
     elif user is None: #이메일 인증 기한 지남
         return render(request, "Member/register.html")
     else: #이미 확인된 토큰 혹은 유효기간이 지난 토큰
         #return HttpResponse("invalid")
 
         # return render(request, 'Member/login.html')
-        return redirect(request, 'Member/login')
+        return redirect('/member/login')
 
 
 class RegisterView(APIView):

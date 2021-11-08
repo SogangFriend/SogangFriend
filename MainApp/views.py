@@ -33,18 +33,7 @@ class HomeView(LoginRequiredMixin, View):
         return render(request, "homepage.html",
                       {'member_info': member_info, 'json_data': json_data, 'members': members})  # 로그인을 했다면, home 출력
 
+
 # render <-> redirect
 # render는 html을 뿌려주는거고
 # redirect는 다시 그 url -> 뷰로
-
-
-class MemberListView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
-    redirect_field_name = '/'
-
-    def get(self, request):
-        member_id = request.session.get('Member')
-        member_info = Member.objects.get(pk=member_id)
-        members = Member.objects.filter(location=member_info.location)
-        return render(request, "member_list.html",
-                      {"members": members})
