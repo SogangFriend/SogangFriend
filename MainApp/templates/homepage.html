@@ -56,7 +56,7 @@
                 </div>
             </div>
         <script>
-            let polygonForLocation = null, polygonForBase = null;
+            let polygons = [];
             let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 
             let options = { //지도를 생성할 때 필요한 기본 옵션
@@ -64,6 +64,7 @@
                 level: 6 //지도의 레벨(확대, 축소 정도)
             };
             let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+            drawLocation(true);
 
             map.setZoomable(true);
             map.setDraggable(true);
@@ -72,14 +73,16 @@
             map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
             function clickCheck(id) {
-                polygonForLocation.setMap(null);
+                for (let i = 0; i < polygons.length; i++) {
+                    polygons[i].setMap(null);
+                }
+                polygons = [];
 
                 id === "gu" ? drawLocation(true)
                             : drawLocation(false);
             }
 
             function drawLocation(guFlag) {
-
                 const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");
                 const geoJson = JSON.parse(jsonStr);
 
@@ -90,37 +93,22 @@
                 $.each(data, function (index, val) {
                     if (!guFlag) {
                         if (val.properties.adm_nm.includes(dongName)) {
-                            displayArea(false, val.geometry.coordinates,
-                                        5, '#ff5900', 1, 'solid', '#ff7d3c', 0.1);
+                            displayArea(val.geometry.coordinates);
                         }
                     } else {
-                        displayArea(false, val.geometry.coordinates,
-                                    5, '#ff5900', 1, 'solid', '#ff7d3c', 0.1);
+                        displayArea(val.geometry.coordinates);
                     }
                 });
-            }
-
-            function displayArea(baseFlag, coordinates,
-                                 strokeWeight, strokeColor, strokeOpacity,
-                                 strokeStyle, fillColor, fillOpacity) {
-                if (baseFlag) {
-                    polygonForBase = makeMultiPolygon(coordinates,
-                                strokeWeight, strokeColor, strokeOpacity,
-                                strokeStyle, fillColor, fillOpacity);
-                    polygonForBase.setMap(map);
-                }
-
-                else {
-                    polygonForLocation = makeMultiPolygon(coordinates,
-                                strokeWeight, strokeColor, strokeOpacity,
-                                strokeStyle, fillColor, fillOpacity);
-                    polygonForLocation.setMap(map);
+                for (let i = 0; i < polygons.length; i++) {
+                    polygons[i].setMap(map);
                 }
             }
 
-            function makeMultiPolygon(coordinates,
-                                      strokeWeight, strokeColor, strokeOpacity,
-                                      strokeStyle, fillColor, fillOpacity) {
+            function displayArea(coordinates) {
+                polygons.push(makeMultiPolygon(coordinates));
+            }
+
+            function makeMultiPolygon(coordinates) {
                 let paths = [];
                 $.each(coordinates, function (index, val) {
                     let coordinates2 = [];
@@ -133,12 +121,12 @@
 
                 return new kakao.maps.Polygon({
                     path: paths,
-                    strokeWeight: strokeWeight,
-                    strokeColor: strokeColor,
-                    strokeOpacity: strokeOpacity,
-                    strokeStyle: strokeStyle,
-                    fillColor: fillColor,
-                    fillOpacity: fillOpacity
+                    strokeWeight: 5,
+                    strokeColor: '#ff5900',
+                    strokeOpacity: 1,
+                    strokeStyle: 'solid',
+                    fillColor: '#ff7d3c',
+                    fillOpacity: 0.5
                 });
             }
 
