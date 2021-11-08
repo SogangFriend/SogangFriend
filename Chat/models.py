@@ -15,12 +15,12 @@ class ChatRoom(models.Model):
     is_dm = models.BooleanField(default=False)
     target = models.ForeignKey(Member, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
+
 class Member_ChatRoom(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    Chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
     member_timestamp = models.DateTimeField() # 멤버가 나간 시간 -> develop : 멤버가 지금 채팅방에 머물지 않고 있을 때
     unread = models.BooleanField(default=False)
-
 
 
 class Message(models.Model):

@@ -6,5 +6,4 @@ urlpatterns = [
     path('', include('MainApp.urls')),
     path('member/', include('Member.urls', namespace='Member')),
     path('chat/', include('Chat.urls', namespace='Chat')),
-
 ]

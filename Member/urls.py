@@ -14,7 +14,8 @@ from django.conf.urls.static import static
 app_name ='Member'
 
 urlpatterns = [
-    path('register/', RegisterView.as_view()),
+    path('new/', RegisterView.as_view(), name='new'),
+
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', log_out),
 

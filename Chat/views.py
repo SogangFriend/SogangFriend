@@ -9,14 +9,6 @@ from .models import *
 # Create your views here.
 
 
-class ChatHomeView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
-    redirect_field_name = '/Chat/'
-
-    def get(self, request):
-        return render(request, 'Chat/Chat_home.html', {})
-
-
 class RoomCreateView(LoginRequiredMixin, View):
     login_url = '/member/login/'
     redirect_field_name = '/Chat/create/'
@@ -24,7 +16,7 @@ class RoomCreateView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = self.form_class()
-        return render(request, 'Chat/Chat_form.html', {"form": form})
+        return render(request, 'Chat/chat_form.html', {"form": form})
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -72,16 +64,17 @@ class EnterDMView(LoginRequiredMixin, View):
         me = Member.objects.get(pk=request.session.get('Member'))
         mc = me.Chats.filter(target=target, is_dm=True)
         if mc.count() != 0:
-            Chatroom = mc[0]
+            chatroom = mc[0]
         else:
             mc = target.Chats.filter(target=me, is_dm=True)
             if mc.count() != 0:
-                Chatroom = mc[0]
+                chatroom = mc[0]
             else:
-                Chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
+                chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
                                                    created_time=timezone.now(), location=me.location,
                                                    is_dm=True, target=target)
-                Member_ChatRoom.objects.create(member=me, Chat_room=Chatroom, member_timestamp=timezone.now())
-                Member_ChatRoom.objects.create(member=target, Chat_room=Chatroom, member_timestamp=timezone.now())
+
+                Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
+                Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
         return render(request, 'Chat/room.html',
-                      {'room_name': Chatroom.pk, 'member_pk': me.pk})
+                      {'room_name': chatroom.pk, 'member_pk': me.pk})
