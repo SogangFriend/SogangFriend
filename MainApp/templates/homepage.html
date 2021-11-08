@@ -30,7 +30,7 @@
                         <select onchange="if(this.value) location.href=(this.value);">
                         <option value="">홈페이지</option>
                         <option value="Member/member_list.html">People</option>
-                        <option value="Chat/list">Chat</option>
+                        <option value="chat/list">Chat</option>
                         </select>
 
                         {% for member in members %}
@@ -93,10 +93,10 @@
                 $.each(data, function (index, val) {
                     if (!guFlag) {
                         if (val.properties.adm_nm.includes(dongName)) {
-                            displayArea(val.geometry.coordinates);
+                            displayArea(guFlag, val.geometry.coordinates);
                         }
                     } else {
-                        displayArea(val.geometry.coordinates);
+                        displayArea(guFlag, val.geometry.coordinates);
                     }
                 });
                 for (let i = 0; i < polygons.length; i++) {
@@ -104,11 +104,11 @@
                 }
             }
 
-            function displayArea(coordinates) {
-                polygons.push(makeMultiPolygon(coordinates));
+            function displayArea(guFlag, coordinates) {
+                polygons.push(makeMultiPolygon(guFlag, coordinates));
             }
 
-            function makeMultiPolygon(coordinates) {
+            function makeMultiPolygon(guFlag, coordinates) {
                 let paths = [];
                 $.each(coordinates, function (index, val) {
                     let coordinates2 = [];
@@ -122,10 +122,10 @@
                 return new kakao.maps.Polygon({
                     path: paths,
                     strokeWeight: 5,
-                    strokeColor: '#ff5900',
+                    strokeColor: guFlag ? '#FFBB00' : '#ff5900',
                     strokeOpacity: 1,
                     strokeStyle: 'solid',
-                    fillColor: '#ff7d3c',
+                    fillColor: guFlag ? '#FFE271' : '#ff7d3c',
                     fillOpacity: 0.5
                 });
             }

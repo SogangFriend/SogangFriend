@@ -18,7 +18,6 @@ class RoomCreateView(LoginRequiredMixin, View):
         form = self.form_class()
         return render(request, 'Chat/chat_form.html', {"form": form})
 
-
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
