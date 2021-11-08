@@ -26,7 +26,6 @@ class HomeView(LoginRequiredMixin, View):
             file_path += member_info.location.si.name + "/" + member_info.location.gu.name + ".geojson"
         else :
             file_path += member_info.location.do.name + "/" + member_info.location.si.name + ".geojson"
-        
         with open(file_path, 'r') as f:
             json_data = json.load(f)
         return render(request, "homepage.html",

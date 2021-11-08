@@ -1,5 +1,7 @@
 <!-- 네비게이션바 -->
+{% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+
     <a class="navbar-brand" href="{% url 'Member:login' %}">서강프렌즈</a>
     <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -8,7 +10,6 @@
     <div class="collapse navbar-collapse flex-grow-0" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item ">
-                <a class="nav-link" href="{% url 'Member:profile' user.pk %}"> <span class="glyphicon glyphicon-heart"></span> {{user.username}}마이페이지</a>
 
             </li>
         </ul>
