@@ -1,11 +1,8 @@
-from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView, \
-    PasswordResetView
 from django.shortcuts import render, redirect, reverse, resolve_url
 from django.urls import reverse_lazy
 
-from .helpers import send_mail
+from .helpers import send_mail, email_auth_num
 from django.views.generic import *
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -29,15 +26,28 @@ INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 
 
 def mail_send(member, request, find):
-    send_mail(
-        "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
-        html=render_to_string('send_mail.html', {
-            "user": member,
-            'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),#pk를 자연수에서 bytes로 변환,인코드, bytes에서 str로 변환
-            'domain': request.META['HTTP_HOST'],
-            'token': account_activation_token.make_token(member),#token.py에서 만들었던 token 생성기로 token생성
-        })
-    )
+    if find:
+        auth_num = email_auth_num()
+        send_mail(
+            "{}님, 서강프렌드 비밀번호 재설정 메일입니다.".format(member.name), [member.email],
+            html=render_to_string('password_reset_mail.html', {
+                "user": member,
+                "uid": urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),
+                "domain": request.META['HTTP_HOST'],
+                "auth_num": auth_num
+            })
+        )
+        return auth_num
+    else:
+        send_mail(
+            "{}님의 회원가입 인증 메일입니다.".format(member.name), [member.email],
+            html=render_to_string('send_mail.html', {
+                "user": member,
+                'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),#pk를 자연수에서 bytes로 변환,인코드, bytes에서 str로 변환
+                'domain': request.META['HTTP_HOST'],
+                'token': account_activation_token.make_token(member),#token.py에서 만들었던 token 생성기로 token생성
+            })
+        )
 
 
 def activate(request, uid64, token):#계정활성화 함수
@@ -63,7 +73,7 @@ def activate(request, uid64, token):#계정활성화 함수
 class RegisterView(APIView):
     def get(self, request):
         return render(request, 'Member/register.html')
-      
+
     def post(self, request):
         name = request.POST.get('name', '')
         student_number = request.POST.get('student_number', '')
@@ -150,51 +160,6 @@ def log_out(request):
     # request.session.pop('Member')
     return redirect('/')
 
-#password change
-class UserPasswordResetView(PasswordResetView):
-    template_name = 'Member/password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
-    success_url = reverse_lazy('Member:password_reset_done')
-    form_class = PasswordResetForm
-    email_template_name= 'Member/password_reset_email.html'
-    subject_template_name= '서강프렌드 비밀번호 재설정'
-
-    def form_valid(self, form):
-        if User.objects.filter(email=self.request.POST.get("email")).exists():
-            return super().form_valid(form)
-        else:
-            return render(self.request, 'Member/password_reset_done_fail.html')
-
-
-class UserPasswordResetDoneView(PasswordResetDoneView):
-    template_name = 'Member/password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
-
-
-class MySetPasswordForm(SetPasswordForm):
-    def save(self, *args, commit=True, **kwargs):
-        user = super().save(*args, commit=False, **kwargs)
-        user.is_active = True
-        if commit:
-            user.save()
-        return user
-
-
-class UserPasswordResetConfirmView(PasswordResetConfirmView):
-    form_class = MySetPasswordForm
-    success_url=reverse_lazy('Member:password_reset_complete')
-    template_name = 'Member/password_reset_confirm.html'
-
-    def form_valid(self, form):
-        return super().form_valid(form)
-
-
-class UserPasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'Member/password_reset_complete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['login_url'] = resolve_url('Member:login')
-        return context
-
 
 class ProfileView(LoginRequiredMixin, View):
     login_url = '/member/login/'
@@ -204,3 +169,59 @@ class ProfileView(LoginRequiredMixin, View):
         member_pk = request.session.get('Member')
         member = Member.objects.get(pk=member_pk)
         return render(request, 'Member/profile.html', {'member': member})
+
+
+class PasswordResetView(View):
+    def get(self, request):
+        form = EmailForm()
+        return render(request, 'Member/password_email_form.html', {'form': form})
+
+    def post(self, request):
+        flag = request.POST.get('flag', 'new_password')
+        if flag == "email":
+            email = request.POST.get('email')
+            member = Member.objects.filter(email=email)
+            if member.count() == 0:
+                form = EmailForm()
+                return render(request, 'Member/password_email_form.html',
+                              {'form': form,
+                               'error': "해당하는 이메일이 없습니다.\n다시 입력해주세요."})
+
+            else:
+                form = AuthNumForm()
+                auth_num = mail_send(member[0], request, True)
+                return render(request, 'Member/password_auth_form.html',
+                              {'form': form, 'auth_num': auth_num, 'email': email})
+        elif flag == "auth_num":
+            email = request.POST.get('email')
+            generated = request.POST.get('generated_auth_num')
+            input_num = request.POST.get('auth_num')
+            if generated != input_num:
+                form = EmailForm()
+                return render(request, 'Member/password_email_form.html',
+                              {'form': form,
+                               'error': "인증번호가 다릅니다."})
+            else:
+                target_member = Member.objects.get(email=email)
+                form = PasswordResetForm(target_member)
+                request.session['auth'] = target_member.pk
+            return render(request, 'Member/password_new_form.html', {'form': form})
+        else:
+            member_pk = request.session['auth']
+            member = Member.objects.get(pk=member_pk)
+            login(request, member)
+            form = PasswordResetForm(member, request.POST)
+
+            if form.is_valid():
+                form.save()
+                message = "비밀번호 변경완료! 변경된 비밀번호로 로그인하세요."
+                logout(request)
+                return render(request, "Member/password_reset_done.html", {"message": message})
+            else:
+                logout(request)
+                request.session['auth'] = member_pk
+                form = PasswordResetForm()
+                return render(request, 'Member/password_new_form.html',
+                              {'form': form, 'error': "비밀번호가 일치하지 않습니다. 다시 입력해주세요."})
+
+

@@ -1,8 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
 
+
 class TestForm(forms.Form):
     location = forms.CharField(label='Location', max_length=50)
+
 
 class UserForm(forms.ModelForm):
     class Meta:
