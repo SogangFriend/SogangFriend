@@ -23,9 +23,9 @@ urlpatterns = [
 
     path('activate/<str:uid64>/<str:token>/', activate, name='activate'),
 
-    path('profile/', ProfileView.as_view(), name='profile'),
 
-
+    path('mypage/', MyPageView.as_view(), name='my_page'),
+    path('mypage/password/', PasswordChangeView.as_view(), name='password_change')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

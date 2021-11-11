@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+    <form method="POST" action="{% url 'Member:my_page' %}">
+        {% csrf_token %}
+        <span style="color:red;"><strong>{{ error }}</strong> </span>
+        {{ form.as_table }}
+        <input type="submit" value="변경">
+    </form>
+    <a href="{% url 'Member:password_change' %}">
+         <button type="button" class="btn btn-default">비밀번호 변경</button>
+    </a>
+{#        <h2>{{member.profile.username}}</h2>#}
+{##}
+{#        <h3> 닉네임: {{member.name}} <br></h3>#}
+{#        <h3> 학번: {{member.student_number}} <br></h3>#}
+{#        <h3> 주소: {{member.location.si.name}} {{ member.location.gu.name }} {{ member.location.dong.name }} <br></h3>#}
+{#        <h3> 자기소개: {{member.introduction}} <br></h3>#}
+
+
+{% endblock %}

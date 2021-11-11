@@ -21,8 +21,6 @@ from django.views.generic import CreateView, DetailView
 from django.shortcuts import render
 
 User = get_user_model()
-INTERNAL_RESET_URL_TOKEN = 'set-password'
-INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
 
 
 def mail_send(member, request, find):
@@ -161,14 +159,40 @@ def log_out(request):
     return redirect('/')
 
 
-class ProfileView(LoginRequiredMixin, View):
+class MyPageView(LoginRequiredMixin, View):
     login_url = '/member/login/'
-    redirect_field_name = '/profle/'
+    redirect_field_name = '/member/mypage/'
+
+    form_class = EditProfileView
 
     def get(self, request):
-        member_pk = request.session.get('Member')
+        member_pk = request.session['Member']
         member = Member.objects.get(pk=member_pk)
-        return render(request, 'Member/profile.html', {'member': member})
+        form = self.form_class(initial={'name': member.name, 'email': member.email,
+                                        'password': member.password, 'introduction': member.introduction,
+                                        'location': member.location.si.name + " " + member.location.gu.name + " " +
+                                                    member.location.dong.name})
+        return render(request, 'Member/my_page.html', {'form': form})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            introduction = form.cleaned_data['introduction']
+            member_pk = request.session['Member']
+            target_member = Member.objects.get(pk=member_pk)
+            target_member.name = name
+            target_member.introduction = introduction
+            target_member.save()
+        return redirect('member/mypage/')
+
+
+class PasswordChangeView(View):
+    form_class = PasswordResetForm
+
+    def get(self, request):
+        form = self.form_class()
+        return render(request, 'Member/password_new_form.html', {'form': form})
 
 
 class PasswordResetView(View):
@@ -204,10 +228,10 @@ class PasswordResetView(View):
             else:
                 target_member = Member.objects.get(email=email)
                 form = PasswordResetForm(target_member)
-                request.session['auth'] = target_member.pk
+                request.session['Member'] = target_member.pk
             return render(request, 'Member/password_new_form.html', {'form': form})
         else:
-            member_pk = request.session['auth']
+            member_pk = request.session['Member']
             member = Member.objects.get(pk=member_pk)
             login(request, member)
             form = PasswordResetForm(member, request.POST)
@@ -219,7 +243,7 @@ class PasswordResetView(View):
                 return render(request, "Member/password_reset_done.html", {"message": message})
             else:
                 logout(request)
-                request.session['auth'] = member_pk
+                request.session['Member'] = member_pk
                 form = PasswordResetForm()
                 return render(request, 'Member/password_new_form.html',
                               {'form': form, 'error': "비밀번호가 일치하지 않습니다. 다시 입력해주세요."})

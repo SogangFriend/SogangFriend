@@ -86,3 +86,34 @@ class PasswordResetForm(SetPasswordForm):
         self.fields['new_password2'].widget.attrs.update({
             'class': 'form-control'
         })
+
+
+class EditProfileView(forms.Form):
+    name = forms.CharField()
+    email = forms.EmailField(widget=forms.EmailInput)
+    location = forms.CharField()
+    introduction = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        fields = ['name', 'email', 'location', 'introduction']
+
+    def __init__(self, *args, **kwargs):
+        super(EditProfileView, self).__init__(*args, **kwargs)
+        self.fields['name'].label = "닉네임"
+        self.fields['name'].widget.attrs.update({
+            'class': 'form-control'
+        })
+        self.fields['email'].label = "이메일"
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'readonly': 'True'
+        })
+        self.fields['location'].label = "주소"
+        self.fields['location'].widget.attrs.update({
+            'class': 'form-control',
+            'readonly': 'True'
+        })
+        self.fields['introduction'].label = "자기소개"
+        self.fields['introduction'].widget.attrs.update({
+            'class': 'form-control'
+        })
