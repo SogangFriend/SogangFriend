@@ -184,7 +184,7 @@ class MyPageView(LoginRequiredMixin, View):
             target_member.name = name
             target_member.introduction = introduction
             target_member.save()
-        return redirect('member/mypage/')
+        return redirect('/member/mypage/')
 
 
 class PasswordChangeView(View):
