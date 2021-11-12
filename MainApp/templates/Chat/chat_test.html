@@ -125,7 +125,7 @@
         chatSocket 연결
          */
         chatSocket = new WebSocket(
-            'ws://' + window.location.host +
+            'wss://' + window.location.host +
             '/ws/chat/' + roomName + '/' + member + '/');
 
             chatSocket.onmessage = function(e) {
