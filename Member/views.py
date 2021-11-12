@@ -249,3 +249,9 @@ class PasswordResetView(View):
                               {'form': form, 'error': "비밀번호가 일치하지 않습니다. 다시 입력해주세요."})
 
 
+class MemberListView(View):
+    def get(self,request):
+
+
+        members = Member.objects.all()
+        return render(request, 'Member/member_list.html', {"members":members})

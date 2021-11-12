@@ -28,7 +28,7 @@ class RoomCreateView(LoginRequiredMixin, View):
 
             chatroom = ChatRoom.objects.create(name=room_name, creator=member,
                                                created_time=timezone.now(), location=member.location)
-            Member_ChatRoom.objects.create(member=member, Chat_room=chatroom, member_timestamp=timezone.now())
+            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
 
         return redirect('/Chat/list')
 
