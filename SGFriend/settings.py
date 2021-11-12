@@ -96,7 +96,7 @@ ROOT_URLCONF = 'SGFriend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(os.path.join(BASE_DIR, 'MainApp'), 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -164,7 +164,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 DEFAULT_FROM_EMAIL = 'sogangfriend@naver.com'
 
 MEDIA_URL = '/media/'
@@ -172,3 +171,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 import mimetypes
 mimetypes.add_type("text/css", ".css", True)
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}

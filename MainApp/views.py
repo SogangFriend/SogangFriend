@@ -1,11 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.http import HttpResponse, request
 from django.views.generic import *
 from Member.models import *
-from SGFriend.settings import STATICFILES_DIRS
-import json
+from django.core.cache import cache
 # Create your views here.
 
 # 컨트롤러 역할
@@ -21,17 +18,16 @@ class HomeView(LoginRequiredMixin, View):
         members = Member.objects.filter(location=member_info.location)
         # 서울특별시 금천구
         # 강원도 강릉시
-        file_path = STATICFILES_DIRS[0] + "/gsons/"
+        key = member_info.location.si.name
 
         if member_info.location.si.isGYorTB:
-            file_path += member_info.location.si.name + "/" + member_info.location.gu.name + ".geojson"
-        else :
-            file_path += member_info.location.do.name + "/" + member_info.location.si.name + ".geojson"
+            key += "_" + member_info.location.gu.name
+        else:
+            key = member_info.location.do.name + "_" + key
 
-        with open(file_path, 'r', encoding='utf-8') as f:
-            json_data = json.load(f)
+        coords = cache.get(key)
         return render(request, "homepage.html",
-                      {'member_info': member_info, 'json_data': json_data, 'members': members})  # 로그인을 했다면, home 출력
+                      {'member_info': member_info, 'json_data': {'location': coords}, 'members': members})  # 로그인을 했다면, home 출력
 
 
 # render <-> redirect
