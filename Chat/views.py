@@ -28,7 +28,7 @@ class RoomCreateView(LoginRequiredMixin, View):
 
             chatroom = ChatRoom.objects.create(name=room_name, creator=member,
                                                created_time=timezone.now(), location=member.location)
-            Member_ChatRoom.objects.create(member=member, Chat_room=chatroom, member_timestamp=timezone.now())
+            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
 
         return redirect('/Chat/list')
 
@@ -62,11 +62,11 @@ class EnterDMView(LoginRequiredMixin, View):
     def get(self, request, pk):
         target = Member.objects.get(pk=pk)
         me = Member.objects.get(pk=request.session.get('Member'))
-        mc = me.Chats.filter(target=target, is_dm=True)
+        mc = me.chats.filter(target=target, is_dm=True)
         if mc.count() != 0:
             chatroom = mc[0]
         else:
-            mc = target.Chats.filter(target=me, is_dm=True)
+            mc = target.chats.filter(target=me, is_dm=True)
             if mc.count() != 0:
                 chatroom = mc[0]
             else:

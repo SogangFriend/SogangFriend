@@ -2,45 +2,60 @@
 
 {% block content %}
 
-        <body>
 
-{#            <select onchange="if(this.value) location.href=(this.value);">#}
-{#                <label><input type="radio" value="">홈페이지</label>#}
-{#                <label><input type="radio" value="Member:member_list.html">People</label>#}
-{#                <label><input type="radio" value="Chat:room_list.html">Chat</label>#}
-{#            </select>#}
 
             <div>
                 <div class="left">
-                    <div class="left_header">
-                        <div class="left_header1 lh_cell"><p class="lh_content">people</p>
-{#                        <div><a hrdf="Member:member_list.html" name="top">People</a></div>#}
-{#                        <a href="Member:member_list.html"> People </a>#}
+{#                    <div class="left_header">#}
+{#                        <div class="left_header1 lh_cell">#}
+{#                            <p class="lh_content">people</p>#}
+{#                        <button type="button" class="lh_content" style="display:block;">People</button>#}
+{#                        </div>#}
+{##}
+{#                        <div class="left_header2 lh_cell">#}
+{#                            <p class="lh_content">chat</p>#}
+{#                        <button type="button" class="lh_content" onClick=" " style="display:block">Chat</button>#}
+                        <div class="left_header">
+                          <ul class="list">
+                            <li class="is_on">
+                              <a href="#people" class="lh_content">People</a>
+                            </li>
 
-
+                            <li>
+                              <a href="#chat" class="lh_content">Chat</a>
+                            </li>
+                          </ul>
                         </div>
-                        <div class="left_header2 lh_cell"><p class="lh_content">chat</p>
-
-
-
-                        </div>
-                    </div>
-                
                     <div class="left_body">
-                        <select onchange="if(this.value) location.href=(this.value);">
-                        <option value="">홈페이지</option>
-                        <option value="Member/member_list.html">People</option>
-                        <option value="chat/list">Chat</option>
-                        </select>
+                                {% for member in members %}
+                                 <div id="people" class="lb_profile" style="display:block;">
+                                     {{ member.name }} <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>
+                                 </div>
+                                 {% endfor %}
 
-                        {% for member in members %}
-                        <div class="left_body lb_profile">
+                                {% for chat in chats %}
+                                  <div id="chat" class="lb_profile" style="display: none;">
+                                      {{ chat.name }}
+                                  </div>
+                                {% endfor %}
+                             </div>
+{#                    </div>#}
 
-                            {{ member.name }}  <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>
-                        </div>
-
-                        {% endfor %}
-
+{#                            {% for member in members %}#}
+{#                            <div class="left_body lb_profile">#}
+{##}
+{#                                {{ member.name }}  <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>#}
+{#                            </div>#}
+{#                            {% endfor %}#}
+{##}
+{##}
+{##}
+{#                             {% for chat_room in chat_rooms %}#}
+{#                            <div class="left_body lb_profile">#}
+{##}
+{#                                {{ chat_room.name }} <a href="{% url 'Chat:list'  %}">enter chat room</a>#}
+{#                           </div>#}
+{#                            {% endfor %}#}
 
                     </div>
                 </div>
@@ -130,6 +145,35 @@
                 });
             }
 
+            const tabList = document.querySelectorAll('.left_header .list li');
+            const contents = document.querySelectorAll('.left_body .lb_profile')
+            let activeCont = ''; // 현재 활성화 된 컨텐츠 (기본:#tab1 활성화)
+
+            for(var i = 0; i < tabList.length; i++){
+              tabList[i].querySelector('.lh_content').addEventListener('click', function(e){
+                e.preventDefault();
+                for(var j = 0; j < contents.length; j++){
+                  // 나머지 버튼 클래스 제거
+                    if(j < tabList.length) tabList[j].classList.remove('is_on');
+
+                  // 나머지 컨텐츠 display:none 처리
+                  contents[j].style.display = 'none';
+
+                }
+
+                // 버튼 관련 이벤트
+                this.parentNode.classList.add('is_on');
+
+                // 버튼 클릭시 컨텐츠 전환
+                activeCont = this.getAttribute('href');
+                let l = document.querySelectorAll(activeCont);
+
+                for(let j = 0; j < l.length;j++) {
+                    l[j].style.display = 'block';
+                    console.log(l[j]);
+                }
+              });
+            }
 
         </script>
 {% endblock %}

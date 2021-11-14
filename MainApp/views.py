@@ -6,6 +6,7 @@ from django.views.generic import *
 from Member.models import *
 from SGFriend.settings import STATICFILES_DIRS
 import json
+from Chat.models import *
 # Create your views here.
 
 # 컨트롤러 역할
@@ -19,6 +20,7 @@ class HomeView(LoginRequiredMixin, View):
         member_id = request.session.get('Member')
         member_info = Member.objects.get(pk=member_id)  # pk : primary key
         members = Member.objects.filter(location=member_info.location)
+        chats = ChatRoom.objects.all()
         # 서울특별시 금천구
         # 강원도 강릉시
         file_path = STATICFILES_DIRS[0] + "/gsons/"
@@ -31,7 +33,7 @@ class HomeView(LoginRequiredMixin, View):
         with open(file_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
         return render(request, "homepage.html",
-                      {'member_info': member_info, 'json_data': json_data, 'members': members})  # 로그인을 했다면, home 출력
+                      {'member_info': member_info, 'json_data': json_data, 'members': members, 'chats': chats})  # 로그인을 했다면, home 출력
 
 
 # render <-> redirect
