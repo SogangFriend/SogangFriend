@@ -5,5 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('MainApp.urls')),
     path('member/', include('Member.urls', namespace='Member')),
-    path('chat/', include('Chat.urls', namespace='Chat')),
+    path('Chat/', include('Chat.urls', namespace='Chat')),
 ]
