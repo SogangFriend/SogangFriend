@@ -49,6 +49,8 @@
                 </div>
             </div>
         <script>
+            const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");
+            const data = JSON.parse(jsonStr)['location'];
             let polygons = [];
             let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 
@@ -86,22 +88,38 @@
             }
 
             function drawLocation(guFlag) {
-                const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");
-                const geoJson = JSON.parse(jsonStr);
+                {#const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");#}
+                {#const geoJson = JSON.parse(jsonStr);#}
+                {##}
+                {#let data = geoJson.features;#}
+                {#let dongName= '{{ member_info.location.dong.name }}';#}
+                {#dongName = dongName.slice(0, dongName.length-1);#}
+                {##}
+                {#$.each(data, function (index, val) {#}
+                {#    if (!guFlag) {#}
+                {#        if (val.properties.adm_nm.includes(dongName)) {#}
+                {#            displayArea(guFlag, val.geometry.coordinates);#}
+                {#        }#}
+                {#    } else {#}
+                {#        displayArea(guFlag, val.geometry.coordinates);#}
+                {#    }#}
+                {# });#}
+                {##}
 
-                let data = geoJson.features;
                 let dongName= '{{ member_info.location.dong.name }}';
                 dongName = dongName.slice(0, dongName.length-1);
-
-                $.each(data, function (index, val) {
-                    if (!guFlag) {
-                        if (val.properties.adm_nm.includes(dongName)) {
-                            displayArea(guFlag, val.geometry.coordinates);
+                if(!guFlag) {
+                    for (let i = 0; i < data.length; i++) {
+                        if(data[i]['name'].includes(dongName)) {
+                            displayArea(guFlag, data[i]['coords']);
                         }
-                    } else {
-                        displayArea(guFlag, val.geometry.coordinates);
                     }
-                });
+                } else {
+                    for (let i = 0; i < data.length; i++) {
+                        displayArea(guFlag, data[i]['coords']);
+                    }
+                }
+
                 for (let i = 0; i < polygons.length; i++) {
                     polygons[i].setMap(map);
                 }

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
+from django.contrib.auth.forms import SetPasswordForm
 from .models import Member
 
 
@@ -44,19 +44,76 @@ class LoginForm(forms.Form):
     email = forms.CharField(label="Email", max_length=100)
     password = forms.CharField(label="Password", widget=forms.PasswordInput(), required=True)
 
-#class ProfileUpdateForm(forms.ModelForm):
-#    profile_image = forms.ImageField(required=False)
 
- #   class Meta:
-#        model = Member
-#        fields = ['intro','profile_image']
+class EmailForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput)
 
-#        widgets = {
-#            'intro': forms.TextInput(attrs={'class': 'form-control'}),
-#            'profile_image' : forms.ClearableFileInput(attrs={'class': 'form-control-file', 'onchange': 'readURL(this);'}),
-#        }
+    class Meta:
+        fields = ['email']
 
-#        labels = {
- #           'profile_image': '프로필 사진',
-#            'intro': '인사말',
- #       }
+    def __init__(self, *args, **kwarg):
+        super(EmailForm, self).__init__(*args, **kwarg)
+        self.fields['email'].label = '이메일'
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'id': 'pw_form_email',
+        })
+
+
+class AuthNumForm(forms.Form):
+    auth_num = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        fields = ['auth_num']
+
+    def __init__(self, *args, **kwargs):
+        super(AuthNumForm, self).__init__(*args, **kwargs)
+        self.fields['auth_num'].label = '인증번호'
+        self.fields['auth_num'].widget.attrs.update({
+            'class': 'form-control',
+            'id': 'auth_num',
+        })
+
+
+class PasswordResetForm(SetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super(PasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['new_password1'].label = "새 비밀번호"
+        self.fields['new_password1'].widget.attrs.update({
+            'class': 'form-control'
+        })
+        self.fields['new_password2'].label = "새 비밀번호 확인"
+        self.fields['new_password2'].widget.attrs.update({
+            'class': 'form-control'
+        })
+
+
+class EditProfileView(forms.Form):
+    name = forms.CharField()
+    email = forms.EmailField(widget=forms.EmailInput)
+    location = forms.CharField()
+    introduction = forms.CharField(widget=forms.TextInput)
+
+    class Meta:
+        fields = ['name', 'email', 'location', 'introduction']
+
+    def __init__(self, *args, **kwargs):
+        super(EditProfileView, self).__init__(*args, **kwargs)
+        self.fields['name'].label = "닉네임"
+        self.fields['name'].widget.attrs.update({
+            'class': 'form-control'
+        })
+        self.fields['email'].label = "이메일"
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'readonly': 'True'
+        })
+        self.fields['location'].label = "주소"
+        self.fields['location'].widget.attrs.update({
+            'class': 'form-control',
+            'readonly': 'True'
+        })
+        self.fields['introduction'].label = "자기소개"
+        self.fields['introduction'].widget.attrs.update({
+            'class': 'form-control'
+        })

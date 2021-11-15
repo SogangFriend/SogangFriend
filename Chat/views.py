@@ -11,7 +11,7 @@ from .models import *
 
 class RoomCreateView(LoginRequiredMixin, View):
     login_url = '/member/login/'
-    redirect_field_name = '/Chat/create/'
+    redirect_field_name = '/chat/create/'
     form_class = ChatRoomForm
 
     def get(self, request):
@@ -33,21 +33,21 @@ class RoomCreateView(LoginRequiredMixin, View):
         return redirect('/Chat/list')
 
       
-class RoomView(LoginRequiredMixin, View):
+class ChatView(LoginRequiredMixin, View):
     login_url = '/member/login/'
-    redirect_field_name = '/Chat/'
+    redirect_field_name = '/chat/'
 
-    def get(self, request, room_name):
-        if ChatRoom.objects.filter(pk=room_name).count() == 0:
-            return HttpResponse('방이 없습니다')
+    def get(self, request):
         member_pk = request.session.get('Member')
-        return render(request, 'Chat/room.html',
-                      {'room_name': room_name, 'member_pk': member_pk})
+        member = Member.objects.get(pk=member_pk)
+        rooms = Member_ChatRoom.objects.filter(member=member)
+        return render(request, 'Chat/chat_test.html',
+                      {'rooms': rooms, 'member_pk': member_pk})
 
 
 class ChatListView(LoginRequiredMixin, View):
     login_url = '/member/login/'
-    redirect_field_name = '/Chat/list/'
+    redirect_field_name = '/chat/list/'
 
     def get(self, request):
         rooms = ChatRoom.objects.all()
@@ -57,7 +57,7 @@ class ChatListView(LoginRequiredMixin, View):
 
 class EnterDMView(LoginRequiredMixin, View):
     login_url = '/member/login/'
-    redirect_field_name = '/Chat/list/'
+    redirect_field_name = '/chat/list/'
 
     def get(self, request, pk):
         target = Member.objects.get(pk=pk)
