@@ -44,9 +44,12 @@ class HomeView(LoginRequiredMixin, View):
                     }
                     coords.append(data)
                 cache.set(key, coords)
+            data = {'location': coords}
+        else:
+            data = {'location': cache.get(key)}
 
         return render(request, "homepage.html",
-                      {'member_info': member_info, 'json_data': {'location': coords},
+                      {'member_info': member_info, 'json_data': data,
                        'members': members})  # 로그인을 했다면, home 출력
 
 # render <-> redirect
