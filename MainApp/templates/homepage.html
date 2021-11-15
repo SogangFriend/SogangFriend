@@ -9,23 +9,34 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-        <body>
 
 
             <div>
                 <div class="left">
-                    <div class="left_header">
-                        <button class="left_header1 lh_cell" onclick="location.href='Member/member_list.html'">PEOPLE</button>
-                        <button class="left_header2 lh_cell" onclick="location.href='chat/list'">CHAT</button>
-                    </div>
-                
-                    <div class="left_body">
-                        {% for member in members %}
-                        <div class="left_body lb_profile">
-                            <p>{{ member.name }} <a href="{% url 'Chat:dm' pk=member.pk %}" style="float: right">dm 보내기</a></p>
-                            <p>자기소개: {{ member.introduction }}</p>
+                        <div class="left_header">
+                          <ul class="list">
+                            <li class="is_on">
+                              <a href="#people" class="lh_content">People</a>
+                            </li>
+
+                            <li>
+                              <a href="#chat" class="lh_content">Chat</a>
+                            </li>
+                          </ul>
                         </div>
-                        {% endfor %}
+                    <div class="left_body">
+                                {% for member in members %}
+                                 <div id="people" class="lb_profile" style="display:block;">
+                                     {{ member.name }} <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>
+                                 </div>
+                                 {% endfor %}
+
+                                {% for chat in chats %}
+                                  <div id="chat" class="lb_profile" style="display: none;">
+                                      {{ chat.name }}
+                                  </div>
+                                {% endfor %}
+                             </div>
                     </div>
                 </div>
                 <div class="right">
@@ -122,6 +133,35 @@
                 });
             }
 
+            const tabList = document.querySelectorAll('.left_header .list li');
+            const contents = document.querySelectorAll('.left_body .lb_profile')
+            let activeCont = ''; // 현재 활성화 된 컨텐츠 (기본:#tab1 활성화)
+
+            for(var i = 0; i < tabList.length; i++){
+              tabList[i].querySelector('.lh_content').addEventListener('click', function(e){
+                e.preventDefault();
+                for(var j = 0; j < contents.length; j++){
+                  // 나머지 버튼 클래스 제거
+                    if(j < tabList.length) tabList[j].classList.remove('is_on');
+
+                  // 나머지 컨텐츠 display:none 처리
+                  contents[j].style.display = 'none';
+
+                }
+
+                // 버튼 관련 이벤트
+                this.parentNode.classList.add('is_on');
+
+                // 버튼 클릭시 컨텐츠 전환
+                activeCont = this.getAttribute('href');
+                let l = document.querySelectorAll(activeCont);
+
+                for(let j = 0; j < l.length;j++) {
+                    l[j].style.display = 'block';
+                    console.log(l[j]);
+                }
+              });
+            }
 
         </script>
 {% endblock %}

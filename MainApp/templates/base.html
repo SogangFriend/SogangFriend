@@ -37,7 +37,7 @@
                 width: 30%;
                 float: left;
                 box-sizing: border-box;
-                background: #8977ad;
+                {#background: #8977ad;#}
             }
             div.right {
                 width: 70%;
@@ -46,8 +46,11 @@
                 background: #ece6cc;
             }
             .left_header{
-                background-color: #fff;
-                height: 10%;
+                {#background-color: #fff;#}
+                {#height: 10%;#}
+                background-color: white;
+                border: 1px solid white;
+                height: 5%;
             }
 
             .lh_cell{
@@ -82,6 +85,22 @@
                 padding-top: 7.5%;
             }
 
+            {#.list{overflow:hidden;}#}
+            .list li{
+                list-style: none;
+                float:left; {# 가로정렬 #}
+                {#display: inline; #}
+                width: 50%;
+                height: 46px ;
+                margin-right:auto;
+                box-sizing: border-box;
+                border: 1px solid black;
+                text-align:center;
+            }
+            .list li.is_on .lh_content{
+                font-weight:bold;
+                color:#F5D300;
+            }
         </style>
     </head>
     <body>
