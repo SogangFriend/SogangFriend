@@ -1,20 +1,18 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/53a8c415f1.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 
 
             <div>
                 <div class="left">
-{#                    <div class="left_header">#}
-{#                        <div class="left_header1 lh_cell">#}
-{#                            <p class="lh_content">people</p>#}
-{#                        <button type="button" class="lh_content" style="display:block;">People</button>#}
-{#                        </div>#}
-{##}
-{#                        <div class="left_header2 lh_cell">#}
-{#                            <p class="lh_content">chat</p>#}
-{#                        <button type="button" class="lh_content" onClick=" " style="display:block">Chat</button>#}
                         <div class="left_header">
                           <ul class="list">
                             <li class="is_on">
@@ -39,38 +37,20 @@
                                   </div>
                                 {% endfor %}
                              </div>
-{#                    </div>#}
-
-{#                            {% for member in members %}#}
-{#                            <div class="left_body lb_profile">#}
-{##}
-{#                                {{ member.name }}  <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>#}
-{#                            </div>#}
-{#                            {% endfor %}#}
-{##}
-{##}
-{##}
-{#                             {% for chat_room in chat_rooms %}#}
-{#                            <div class="left_body lb_profile">#}
-{##}
-{#                                {{ chat_room.name }} <a href="{% url 'Chat:list'  %}">enter chat room</a>#}
-{#                           </div>#}
-{#                            {% endfor %}#}
-
                     </div>
                 </div>
                 <div class="right">
                     <div class="member_info" style="height: 5%; float: left;">
-                        <p>
-                            <input type="radio" name="range" id="gu" onclick="clickCheck(this.id)" checked="checked"/> <span>구까지</span>
-                            <input type="radio" name="range" id="dong" onclick="clickCheck(this.id)"/> <span>동까지</span>
-                        </p>
+                            <input type="radio" name="range" id="gu" onclick="clickCheck(this.id)" checked="checked" style="margin-top: 20px; margin-left: 5px"/> <span>구까지 범위 표시</span>
+                            <input type="radio" name="range" id="dong" onclick="clickCheck(this.id)"/> <span>동까지 범위 표시</span>
                     </div>
                     <div id="map" style="width:100%; height: 95%; display: block;"></div>
                     <!-- 지도타입 컨트롤 div 입니다 -->
                 </div>
             </div>
         <script>
+            const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");
+            const data = JSON.parse(jsonStr)['location'];
             let polygons = [];
             let container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 
@@ -81,8 +61,18 @@
             let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
             drawLocation(true);
 
-            map.setZoomable(true);
-            map.setDraggable(true);
+            map.setZoomable(false);
+            map.setDraggable(false);
+
+            var customOverlay = new kakao.maps.CustomOverlay({
+                map: map,
+                content: '<div style="padding: 5px; background:#fff;">' +
+                    '내 위치: {{ member_info.location.si.name }} {{ member_info.location.gu.name }} {{ member_info.location.dong.name }}' +
+                    '</div>',
+                position: new kakao.maps.LatLng(37.462932227677896, 126.899851798148), // 커스텀 오버레이를 표시할 좌표 - 항상 맵 위의 고정 위치에 띄울 방법...?
+                xAnchor: 0, // 컨텐츠의 x 위치
+                yAnchor: 13 // 컨텐츠의 y 위치
+		    });
                 // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
             let zoomControl = new kakao.maps.ZoomControl();
             map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
@@ -98,22 +88,38 @@
             }
 
             function drawLocation(guFlag) {
-                const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");
-                const geoJson = JSON.parse(jsonStr);
+                {#const jsonStr = "{{ json_data | escapejs }}".replaceAll("\'", "\"");#}
+                {#const geoJson = JSON.parse(jsonStr);#}
+                {##}
+                {#let data = geoJson.features;#}
+                {#let dongName= '{{ member_info.location.dong.name }}';#}
+                {#dongName = dongName.slice(0, dongName.length-1);#}
+                {##}
+                {#$.each(data, function (index, val) {#}
+                {#    if (!guFlag) {#}
+                {#        if (val.properties.adm_nm.includes(dongName)) {#}
+                {#            displayArea(guFlag, val.geometry.coordinates);#}
+                {#        }#}
+                {#    } else {#}
+                {#        displayArea(guFlag, val.geometry.coordinates);#}
+                {#    }#}
+                {# });#}
+                {##}
 
-                let data = geoJson.features;
                 let dongName= '{{ member_info.location.dong.name }}';
                 dongName = dongName.slice(0, dongName.length-1);
-
-                $.each(data, function (index, val) {
-                    if (!guFlag) {
-                        if (val.properties.adm_nm.includes(dongName)) {
-                            displayArea(guFlag, val.geometry.coordinates);
+                if(!guFlag) {
+                    for (let i = 0; i < data.length; i++) {
+                        if(data[i]['name'].includes(dongName)) {
+                            displayArea(guFlag, data[i]['coords']);
                         }
-                    } else {
-                        displayArea(guFlag, val.geometry.coordinates);
                     }
-                });
+                } else {
+                    for (let i = 0; i < data.length; i++) {
+                        displayArea(guFlag, data[i]['coords']);
+                    }
+                }
+
                 for (let i = 0; i < polygons.length; i++) {
                     polygons[i].setMap(map);
                 }

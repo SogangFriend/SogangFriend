@@ -1,21 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 <link href="../../../static/admin/css/chat.css" rel="stylesheet">
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+{#<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">#}
+{#<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>#}
+{#<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>#}
 <!------ Include the above in your HEAD tag ---------->
 
-
-<html>
-<head>
-
 <meta charset="utf-8">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+{#<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">#}
 
-</head>
-<body>
 <div class="container">
-<h3 class=" text-left">서강프렌즈</h3>
-<div class="messaging">
+    <h3 class=" text-left">채팅</h3>
+    <div class="messaging">
       <div class="inbox_msg">
         <div class="inbox_people">
           <div class="headind_srch">
@@ -31,130 +28,169 @@
             </div>
           </div>
           <div class="inbox_chat">
-            <div class="chat_list active_chat">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="../../../static/SogangFriend/images/default_profile.png" alt="sogang"> </div>
-                <div class="chat_ib">
-                  <h5>Sogang_friend <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
+          {% for room in rooms %}
+            <div class="chat_list" style="cursor: pointer" onclick="chatRoom({{ room.chat_room.pk }})">
+                <div class="chat_people">
+                    <div class="chat_img"> <img src="{% static '/images/default_profile.png' %}" alt="sogang"> </div>
+                    <div class="chat_ib">
+                      <h5>{{ room.chat_room.target.name }}<span class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
+    {#                  <p>안녕하세요!</p>#}
+                    </div>
                 </div>
-              </div>
             </div>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
-                </div>
-              </div>
-            </div>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
-                </div>
-              </div>
-            </div>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
-                </div>
-              </div>
-            </div>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
-                </div>
-              </div>
-            </div>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
-                </div>
-              </div>
-            </div>
-            <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
-                </div>
-              </div>
-            </div>
-              <div class="chat_list">
-              <div class="chat_people">
-                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-                <div class="chat_ib">
-                  <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                  <p>안녕하세요!</p>
-                </div>
-              </div>
-            </div>
+          {% endfor %}
           </div>
         </div>
         <div class="mesgs">
           <div class="msg_history">
-            <div class="incoming_msg">
-              <div class="incoming_msg_img"> <img src="../../../static/SogangFriend/images/default_profile.png" alt="sunil"> </div>
-              <div class="received_msg">
-                <div class="received_withd_msg">
-                  <p>Test which is a new approach to have all
-                    solutions</p>
-                  <span class="time_date"> 11:01 AM    |    June 9</span></div>
-              </div>
-            </div>
-            <div class="outgoing_msg">
-              <div class="sent_msg">
-                <p>Test which is a new approach to have all
-                  solutions</p>
-                <span class="time_date"> 11:01 AM    |    June 9</span> </div>
-            </div>
-            <div class="incoming_msg">
-              <div class="incoming_msg_img"> <img src="../../../static/SogangFriend/images/default_profile.png" alt="sunil"> </div>
-              <div class="received_msg">
-                <div class="received_withd_msg">
-                  <p>Test, which is a new approach to have</p>
-                  <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-              </div>
-            </div>
-            <div class="outgoing_msg">
-              <div class="sent_msg">
-                <p>Test, which is a new approach to have</p>
-                <span class="time_date"> 11:01 AM    |    Today</span> </div>
-            </div>
-            <div class="incoming_msg">
-              <div class="incoming_msg_img"> <img src="../../../static/SogangFriend/images/default_profile.png" alt="sunil"> </div>
-              <div class="received_msg">
-                <div class="received_withd_msg">
-                  <p>We work directly with our designers and suppliers,
-                    and sell direct to you, which means quality, exclusive
-                    products, at a price anyone can afford.</p>
-                  <span class="time_date"> 11:01 AM    |    Today</span></div>
-              </div>
-            </div>
+
           </div>
           <div class="type_msg">
             <div class="input_msg_write">
-              <input type="text" class="write_msg" placeholder="메시지 입력" />
-              <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+              <input type="text" id="write_msg" class="write_msg" placeholder="메시지 입력" />
+              <button id="msg_send_btn" class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
             </div>
           </div>
         </div>
       </div>
+    </div>
+</div>
 
-    </div></div>
-    </body>
-    </html>
+
+<script>
+    let msgHistory = document.getElementsByClassName("msg_history")[0];
+    let rms = [
+        {% for room in rooms %}
+        {
+            pk: {{ room.chat_room.pk }},
+            msgs: [
+                {% for msg in room.chat_room.message_set.all %}
+                    {
+                        sender: "{{ msg.sender.pk }}",
+                        message: "{{ msg.message }}",
+                        timestamp: "{{ msg.timestamp }}"
+                    },
+                {% endfor %}
+            ]
+        },
+        {% endfor %}
+    ];
+
+    function chatRoom(pk) {
+        while(msgHistory.firstChild) {
+            msgHistory.removeChild(msgHistory.firstChild);
+        }
+
+        let roomName = pk;
+        let member = "{{ member_pk }}";
+
+        /*
+        Msg log 에 History 불러오기
+         */
+        for(let i = 0; i < rms.length; i++) {
+            if(rms[i].pk === pk) {
+                for (let j = 0; j < rms[i].msgs.length; j++) {
+                    let newMsg = document.createElement('div');
+                    rms[i].msgs[j].sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
+                                                     : newMsg.setAttribute('class', 'incoming_msg');
+                    let innerNewMsg = document.createElement('div');
+                    rms[i].msgs[j].sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
+                                                     : innerNewMsg.setAttribute('class', 'received_msg');
+
+                    let msg = document.createElement('div');
+                    if(rms[i].msgs[j].sender !== member) msg.setAttribute('class', 'received_withd_msg');
+
+                    let p = document.createElement('p');
+                    let text = document.createTextNode(rms[i].msgs[j].message);
+
+                    let time = document.createElement('span');
+                    let timeText = document.createTextNode(rms[i].msgs[j].timestamp);
+
+                    p.appendChild(text);
+                    time.setAttribute('class', 'time_date');
+                    time.appendChild(timeText);
+
+                    msg.appendChild(p);
+                    msg.appendChild(time);
+
+                    innerNewMsg.appendChild(msg);
+                    newMsg.appendChild(innerNewMsg);
+
+                    msgHistory.appendChild(newMsg);
+                }
+            }
+        }
+
+        /*
+        chatSocket 연결
+         */
+        chatSocket = new WebSocket(
+            'ws://' + window.location.host +
+            '/ws/chat/' + roomName + '/' + member + '/');
+
+            chatSocket.onmessage = function(e) {
+            let data = JSON.parse(e.data);
+            let sender = data['sender'];
+            let message = data['message'];
+            let timestamp = data['timestamp'];
+
+            let newMsg = document.createElement('div');
+            sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
+                              : newMsg.setAttribute('class', 'incoming_msg');
+            let innerNewMsg = document.createElement('div');
+            sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
+                              : innerNewMsg.setAttribute('class', 'received_msg');
+
+            let msg = document.createElement('div');
+            if(member !== sender) msg.setAttribute('class', 'received_withd_msg');
+
+
+            let p = document.createElement('p');
+            let text = document.createTextNode(message);
+
+            let time = document.createElement('span');
+            let timeText = document.createTextNode(timestamp);
+
+            p.appendChild(text);
+            time.setAttribute('class', 'time_date');
+            time.appendChild(timeText);
+
+            msg.appendChild(p);
+            msg.appendChild(time);
+
+            innerNewMsg.appendChild(msg);
+            newMsg.appendChild(innerNewMsg);
+
+            msgHistory.appendChild(newMsg);
+        };
+
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+            console.error(e);
+        };
+
+        document.querySelector('#write_msg').focus();
+        document.querySelector('#write_msg').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#msg_send_btn').click();
+            }
+        };
+
+        document.querySelector('#msg_send_btn').onclick = function(e) {
+            let messageInputDom = document.querySelector('#write_msg');
+            let message = messageInputDom.value;
+
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'sender' : "{{ member_pk }}"
+            }));
+
+            messageInputDom.value = '';
+        };
+    }
+
+
+</script>
+
+{% endblock %}

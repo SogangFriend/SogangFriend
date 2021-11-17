@@ -48,7 +48,6 @@ class Member(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(blank=True, null=True)
   
     is_active = models.BooleanField(
-        'active',
         default=False,  #이메일 인증 전까지는 False인 상태
         help_text="")
     is_admin = models.BooleanField(default=False)

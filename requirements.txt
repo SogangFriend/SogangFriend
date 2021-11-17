@@ -3,4 +3,4 @@ channels
 channels_redis
 six
 Pillow
-django
+django_redis

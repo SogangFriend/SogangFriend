@@ -1,6 +1,9 @@
-from django.core.mail import EmailMultiAlternatives
+import string
 import threading
+import random
+
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 
 
 class EmailThread(threading.Thread):
@@ -25,3 +28,9 @@ def send_mail(subject, recipient_list, body='', from_email= settings.EMAIL_HOST_
     EmailThread(subject, body, from_email, recipient_list, fail_silently, html).start()
 
 
+def email_auth_num():
+    pool = string.ascii_letters + string.digits
+    auth_num = ""
+    for i in range(8):
+        auth_num += random.choice(pool)
+    return auth_num

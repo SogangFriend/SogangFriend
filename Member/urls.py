@@ -19,14 +19,13 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', log_out),
 
-    path('password_reset_confirm/<uidb64>/<token>/', UserPasswordResetConfirmView.as_view(), name="password_reset_confirm"),
-    path('password_reset_complete/', UserPasswordResetCompleteView.as_view(), name="password_reset_complete"),
-    path('password_reset/', UserPasswordResetView.as_view(), name="password_reset"),
-    path('password_reset_done/', UserPasswordResetDoneView.as_view(), name="password_reset_done"),
+    path('password/', PasswordResetView.as_view(), name='password'),
+
     path('activate/<str:uid64>/<str:token>/', activate, name='activate'),
-    path('profile/', ProfileView.as_view(), name='profile'),
 
 
+    path('mypage/', MyPageView.as_view(), name='my_page'),
+    path('mypage/password/', PasswordChangeView.as_view(), name='password_change')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
