@@ -16,7 +16,11 @@
             <h2>회원가입하고</h2>
             <h2>인생친구 만들어 볼까요?</h2>
             <h4>*표시는 필수 사항입니다.</h4>
-
+            {% if error %}
+                <script type="text/javascript">
+                    alert("{{ error }}");
+                </script>
+            {% endif %}
             <div class = "col-12 ">
                 <form method = "POST" action = "">
                     {% csrf_token %}
@@ -60,7 +64,7 @@
                         <p><button type="submit" class="btn">이메일 인증하고 가입 완료</button></p>
 
                         <div class = "col-12 text-center">
-                            이미 회원이신가요? <a href="{% url 'Member:login'%}" > 로그인하기 </a>
+                            이미 회원이신가요? <a href="{% url 'login'%}" > 로그인하기 </a>
                         </div>
                     </div>
                </form>

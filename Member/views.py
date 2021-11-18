@@ -68,14 +68,15 @@ class RegisterView(View):
         re_password = request.POST.get('re_password', '')
         introduction = request.POST.get('introduction', '')
 
-        res_data = {}
+        error_message = None
         if not (name and email and password and re_password and location and introduction):
             # return HttpResponse('필수문항(*)을 입력해 주세요.')
-            res_data['error'] = "필수문항(*)을 입력해 주세요."
-        if password != re_password:
+            error_message = "필수문항(*)을 입력해 주세요."
+        elif password != re_password:
             # return HttpResponse('비밀번호가 다릅니다.')
-            res_data['error'] = '비밀번호가 다릅니다.'
-
+            error_message = '비밀번호가 다릅니다.'
+        elif not email.endswith('@sogang.ac.kr'):
+            error_message = '서강대학교 이메일을 사용해주세요.'
         else:
             location_info = str(location).split(' ')
             # 수정 필요 이미 있는지 검사
@@ -110,7 +111,7 @@ class RegisterView(View):
             user.save()
             mail_send(user, request, False)
             return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
-        return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
+        return render(request, 'Member/register.html', {'error': error_message})  # register를 요청받으면 register.html 로 응답.
 
 
 class LoginView(View):
