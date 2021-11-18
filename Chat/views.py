@@ -10,7 +10,7 @@ from .models import *
 
 
 class RoomCreateView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
+    login_url = '/login/'
     redirect_field_name = '/chat/create/'
     form_class = ChatRoomForm
 
@@ -23,7 +23,7 @@ class RoomCreateView(LoginRequiredMixin, View):
         if form.is_valid():
             room_name = form.cleaned_data['room_name']
             nick_name = form.cleaned_data['nick_name']
-            member_pk = request.session.get('Member')
+            member_pk = request.session.get('member')
             member = Member.objects.get(pk=member_pk)
 
             chatroom = ChatRoom.objects.create(name=room_name, creator=member,
@@ -34,11 +34,11 @@ class RoomCreateView(LoginRequiredMixin, View):
 
       
 class ChatView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
+    login_url = '/login/'
     redirect_field_name = '/chat/'
 
     def get(self, request):
-        member_pk = request.session.get('Member')
+        member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         rooms = Member_ChatRoom.objects.filter(member=member)
         return render(request, 'Chat/chat_test.html',
@@ -46,7 +46,7 @@ class ChatView(LoginRequiredMixin, View):
 
 
 class ChatListView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
+    login_url = '/login/'
     redirect_field_name = '/chat/list/'
 
     def get(self, request):
@@ -56,12 +56,12 @@ class ChatListView(LoginRequiredMixin, View):
 
 
 class EnterDMView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
+    login_url = '/login/'
     redirect_field_name = '/chat/list/'
 
     def get(self, request, pk):
         target = Member.objects.get(pk=pk)
-        me = Member.objects.get(pk=request.session.get('Member'))
+        me = Member.objects.get(pk=request.session.get('member'))
         mc = me.chats.filter(target=target, is_dm=True)
         if mc.count() != 0:
             chatroom = mc[0]

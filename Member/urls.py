@@ -16,12 +16,9 @@ app_name ='Member'
 urlpatterns = [
     path('new/', RegisterView.as_view(), name='new'),
 
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', log_out),
-
     path('password/', PasswordResetView.as_view(), name='password'),
 
-    path('activate/<str:uid64>/<str:token>/', activate, name='activate'),
+    path('activate/<str:uid64>/', activate, name='activate'),
 
 
     path('mypage/', MyPageView.as_view(), name='my_page'),

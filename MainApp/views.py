@@ -14,11 +14,11 @@ from django.core.cache import cache
 
 
 class HomeView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
+    login_url = '/login/'
     redirect_field_name = '/'
 
     def get(self, request):
-        member_id = request.session.get('Member')
+        member_id = request.session.get('member')
         member_info = Member.objects.get(pk=member_id)  # pk : primary key
         members = Member.objects.filter(location=member_info.location)
         chats = ChatRoom.objects.filter(location=member_info.location)
