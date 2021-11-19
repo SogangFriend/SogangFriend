@@ -41,7 +41,7 @@ h2 {
     position: relative;
     top: 100%;
     color: black;
-    font-size: 25px;
+    font-size: 35px;
     font-weight: bold;
     margin-left: 7%;
 
@@ -50,7 +50,7 @@ h4 {
     position: relative;
     top: 11%;
     color: black;
-    font-size: 10px;
+    font-size: 20px;
     margin-left: 7%;
 }
 
@@ -75,7 +75,7 @@ h4 {
     position:absolute;
     width:300px;
     height:400px;
-    padding: 30px, 20px;
+    padding: 30px;
     background-color:#FFFFFF;
     text-align:center;
     top:50%;
@@ -96,7 +96,7 @@ h4 {
 }
 
 .id {
-    width: 100%;
+    width: 90%;
     border:none;
     outline:none;
     color: #636e72;
@@ -112,8 +112,7 @@ h4 {
     margin-bottom: 40px;
     width:80%;
     height:40px;
-    background: black;
-    background-position: left;
+    background: black left;
     background-size: 200%;
     color:white;
     font-weight: bold;
@@ -123,6 +122,16 @@ h4 {
     display:inline;
     margin-left: 30px;
 
+}
+
+.form-control{
+    position:relative;
+    left:40%;
+    transform: translateX(-50%);
+    width:80%;
+    height:40px;
+    margin-left: 30px;
+    margin-bottom: 5px;
 }
 
 .btn:hover {

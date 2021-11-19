@@ -24,27 +24,33 @@
             <h2>언택트 시대,</h2>
             <h2>친구 어떻게 사귀세요?</h2>
         </div>
+        <br>
         <h4>지금 내 주변의 서강대생을 만나보세요!</h4>
-        <br><br><br>
+        <br><br><br><br>
+
         <form method = "POST" action = "">
 
             {% csrf_token %}
-            {{form}}
+            {% for field in form %}
             <div class="form-group">
+                <label for="{{ field.id_for_label }}" style="margin-left: 30px">{{ field.label }} </label>
+                <input type="{{ field.field.widget.input_type }}" class ="form-control" id="{{ field.id_for_label }}"
+                name="{{ field.name }}">
+                {% endfor %}
                 <span style="color:red;"><strong>{{ error }}</strong> </span>
-                    <br>
+                <br>
                     <button type="submit" class="btn btn-dark btn-lg">로그인</button>
                     <div class="checkbox">
-                        <p style="margin-left:3em"> <input type="checkbox" name="" id="">
-                            <h3>자동로그인</h3> <a href="{% url 'Member:password' %}" style="margin-left:18em">비밀번호 찾기</a></p>
+                        <p style="margin-left:3em"> <input type="checkbox" name="" id="">   자동로그인</p>
+                        <a href="{% url 'Member:password' %}" style="margin-left:70%; color: gray;">비밀번호 찾기</a>
                     </div>
-
-                    <br>
+                <br>
                     <div class="bottomText">
                         아직 회원이 아니신가요? <a href="{% url 'Member:new'%}">  가입하기 </a>
                     </div>
-                </form>
             </div>
+        </form>
     </div>
+</div>
 </body>
 {% endblock %}
