@@ -31,7 +31,7 @@
             div.left, div.right {
                 width: 100%;
                 height: 960px;
-                border: 1px solid #ffb300;
+                border: 0.3px solid #f6f6f6;
             }
             div.left {
                 width: 30%;
@@ -47,19 +47,19 @@
             }
             .left_header{
                 {#background-color: #fff;#}
-                {#height: 10%;#}
                 background-color: white;
-                border: 1px solid white;
+                {#border: 1px solid #f6f6f6;#}
                 height: 5%;
             }
 
             .lh_cell{
                 float: left;
-                width: 50%;
+                width: 100%;
                 height: 100%;
                 background-color: white;
-                border: 1px solid #ffb300;
+                {#border: 1px solid #ffb300;#}
                 outline: none;
+
                 color: #FFBB00;
             }
             .lh_cell:focus{
@@ -70,37 +70,102 @@
             }
             .left_body {
                 background-color: white;
-                height: 90%;
-                overflow: auto;
+                height: 80%;
+                overflow: hidden;
             }
             .lb_profile {
                 float: left;
                 width: 100%;
                 height: 10%;
                 box-sizing: border-box;
-                border: 2px solid #f6f6f6;
+                border-bottom: 2px solid #f6f6f6;
+                color: black;
+                font-weight:bold;
+                padding-top: 5%;
+                padding-bottom: 3%;
             }
             .lh_content {
                 text-align: center;
                 padding-top: 7.5%;
+                border: 1px solid black;
+                outline: none;
+                color: #636e72;
+
             }
 
-            {#.list{overflow:hidden;}#}
-            .list li{
+           .tab_menu{
+               padding:10px;
+               letter-spacing:-0.5px;
+               {#background-color: #f6f6f6;#}
+               {#height: 25px;#}
+               {#overflow:hidden;#}
+           }
+
+           .tab_menu .list{
+               overflow:hidden;
+               {#height: 10%;#}
+               {#box-sizing: border-box;#}
+               {# border: 1px solid black;#}
+           }
+            .tab_menu .list li{
+                padding-top:-10px;
                 list-style: none;
                 float:left; {# 가로정렬 #}
-                {#display: inline; #}
+                {#display: inline-block;#}
                 width: 50%;
-                height: 46px ;
-                margin-right:auto;
-                box-sizing: border-box;
-                border: 1px solid black;
+                height: 25px ; {# 25px #}
+                {#margin-right:auto;#}
+                {#box-sizing: border-box;#}
+                {#border: 1px solid red;#}
                 text-align:center;
+                position:relative;left:-10.5px;
             }
-            .list li.is_on .lh_content{
+
+            .tab_menu .list li.is_on .btn{
                 font-weight:bold;
                 color:#F5D300;
+                float:left;
+                background-color:white;
+                width: 100%;
+                height: 25px;
+                {#outline: black;#}
+                {#padding: 0;#}
+                border-bottom: inset 3px;
+                border-bottom-color: #FFBB00;
             }
+            .tab_menu .list .btn{
+                font-size: 15px;
+                color:gray;
+                float:left;
+                background-color:white;
+                width: 100%;
+                height: 100%;
+                outline: none;
+                {#border: none;#}
+                padding: 0;
+                cursor:default;
+                border-bottom: 2px solid #f6f6f6;
+                {#display:inline-block;#}
+                {#margin-inside: 5px;#}
+
+
+            }
+
+            .people_info_txt{
+                font-size:12px;
+                color:#636e72;
+                font-family:'굴림';
+                font-weight:bold;
+            }
+            .people_img {
+                float: left;
+                width: 60px;
+                height: 60px;
+                border-radius: 10%;
+                overflow: hidden;
+                {#padding-top:20px;#}
+            }
+
         </style>
     </head>
     <body>
