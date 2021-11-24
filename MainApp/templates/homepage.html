@@ -1,55 +1,48 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/53a8c415f1.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-        <body>
 
-{#            <select onchange="if(this.value) location.href=(this.value);">#}
-{#                <label><input type="radio" value="">홈페이지</label>#}
-{#                <label><input type="radio" value="Member:member_list.html">People</label>#}
-{#                <label><input type="radio" value="Chat:room_list.html">Chat</label>#}
-{#            </select>#}
 
             <div>
                 <div class="left">
-                    <div class="left_header">
-                        <div class="left_header1 lh_cell"><p class="lh_content">people</p>
-{#                        <div><a hrdf="Member:member_list.html" name="top">People</a></div>#}
-{#                        <a href="Member:member_list.html"> People </a>#}
+                        <div class="left_header">
+                          <ul class="list">
+                            <li class="is_on">
+                              <a href="#people" class="lh_content">People</a>
+                            </li>
 
-
+                            <li>
+                              <a href="#chat" class="lh_content">Chat</a>
+                            </li>
+                          </ul>
                         </div>
-                        <div class="left_header2 lh_cell"><p class="lh_content">chat</p>
-
-
-
-                        </div>
-                    </div>
-                
                     <div class="left_body">
-                        <select onchange="if(this.value) location.href=(this.value);">
-                        <option value="">홈페이지</option>
-                        <option value="Member/member_list.html">People</option>
-                        <option value="chat/list">Chat</option>
-                        </select>
+                                {% for member in members %}
+                                 <div id="people" class="lb_profile" style="display:block;">
+                                     {{ member.name }} <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>
+                                 </div>
+                                 {% endfor %}
 
-                        {% for member in members %}
-                        <div class="left_body lb_profile">
-
-                            {{ member.name }}  <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>
-                        </div>
-
-                        {% endfor %}
-
-
+                                {% for chat in chats %}
+                                  <div id="chat" class="lb_profile" style="display: none;">
+                                      {{ chat.name }}
+                                  </div>
+                                {% endfor %}
+                             </div>
                     </div>
                 </div>
                 <div class="right">
                     <div class="member_info" style="height: 5%; float: left;">
-                        <p>
-                            <input type="radio" name="range" id="gu" onclick="clickCheck(this.id)" checked="checked"/> <span>구까지</span>
-                            <input type="radio" name="range" id="dong" onclick="clickCheck(this.id)"/> <span>동까지</span>
-                        </p>
+                            <input type="radio" name="range" id="gu" onclick="clickCheck(this.id)" checked="checked" style="margin-top: 20px; margin-left: 5px"/> <span>구까지 범위 표시</span>
+                            <input type="radio" name="range" id="dong" onclick="clickCheck(this.id)"/> <span>동까지 범위 표시</span>
                     </div>
                     <div id="map" style="width:100%; height: 95%; display: block;"></div>
                     <!-- 지도타입 컨트롤 div 입니다 -->
@@ -68,8 +61,18 @@
             let map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
             drawLocation(true);
 
-            map.setZoomable(true);
-            map.setDraggable(true);
+            map.setZoomable(false);
+            map.setDraggable(false);
+
+            var customOverlay = new kakao.maps.CustomOverlay({
+                map: map,
+                content: '<div style="padding: 5px; background:#fff;">' +
+                    '내 위치: {{ member_info.location.si.name }} {{ member_info.location.gu.name }} {{ member_info.location.dong.name }}' +
+                    '</div>',
+                position: new kakao.maps.LatLng(37.462932227677896, 126.899851798148), // 커스텀 오버레이를 표시할 좌표 - 항상 맵 위의 고정 위치에 띄울 방법...?
+                xAnchor: 0, // 컨텐츠의 x 위치
+                yAnchor: 13 // 컨텐츠의 y 위치
+		    });
                 // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
             let zoomControl = new kakao.maps.ZoomControl();
             map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
@@ -148,6 +151,35 @@
                 });
             }
 
+            const tabList = document.querySelectorAll('.left_header .list li');
+            const contents = document.querySelectorAll('.left_body .lb_profile')
+            let activeCont = ''; // 현재 활성화 된 컨텐츠 (기본:#tab1 활성화)
+
+            for(var i = 0; i < tabList.length; i++){
+              tabList[i].querySelector('.lh_content').addEventListener('click', function(e){
+                e.preventDefault();
+                for(var j = 0; j < contents.length; j++){
+                  // 나머지 버튼 클래스 제거
+                    if(j < tabList.length) tabList[j].classList.remove('is_on');
+
+                  // 나머지 컨텐츠 display:none 처리
+                  contents[j].style.display = 'none';
+
+                }
+
+                // 버튼 관련 이벤트
+                this.parentNode.classList.add('is_on');
+
+                // 버튼 클릭시 컨텐츠 전환
+                activeCont = this.getAttribute('href');
+                let l = document.querySelectorAll(activeCont);
+
+                for(let j = 0; j < l.length;j++) {
+                    l[j].style.display = 'block';
+                    console.log(l[j]);
+                }
+              });
+            }
 
         </script>
 {% endblock %}

@@ -30,7 +30,7 @@ class RoomCreateView(LoginRequiredMixin, View):
                                                created_time=timezone.now(), location=member.location)
             Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
 
-        return redirect('/Chat/list')
+        return redirect('/chat/list')
 
       
 class ChatView(LoginRequiredMixin, View):

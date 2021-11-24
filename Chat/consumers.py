@@ -89,7 +89,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_member_chatroom(self):
         member = Member.objects.get(pk=self.member)
         room = ChatRoom.objects.get(pk=self.room_name)
-        return Member_ChatRoom.objects.get(member=member, Chat_room=room)
+        return Member_ChatRoom.objects.get(member=member, chat_room=room)
 
     @database_sync_to_async
     def set_member_timestamp(self, mc):
