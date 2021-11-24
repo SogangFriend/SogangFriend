@@ -70,12 +70,10 @@ class RegisterView(View):
 
         error_message = None
         if not (name and email and password and re_password and location and introduction):
-            # return HttpResponse('필수문항(*)을 입력해 주세요.')
             error_message = "필수문항(*)을 입력해 주세요."
         elif password != re_password:
-            # return HttpResponse('비밀번호가 다릅니다.')
             error_message = '비밀번호가 다릅니다.'
-        elif not email.endswith('@sogang.ac.kr'):
+        elif not (email.endswith('@sogang.ac.kr') or email.endswith('@u.sogang.ac.kr')):
             error_message = '서강대학교 이메일을 사용해주세요.'
         else:
             location_info = str(location).split(' ')
