@@ -38,7 +38,7 @@
     right: 45%;
 }
 
-h2 {
+.class_h2 {
     position: relative;
     top: 100%;
     color: black;
@@ -46,8 +46,8 @@ h2 {
     font-weight: bold;
 
     margin-left: 7%;
-
 }
+
 h4 {
     position: relative;
     top: 11%;
