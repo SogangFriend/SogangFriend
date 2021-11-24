@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<body width="100%" height="100%">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Document</title>
@@ -20,19 +19,16 @@
 
 <div class="wrap">
     <div class="login">
-        <div class="h2">
+        <form method = "POST" action = "">
+            <div class="form-group">
+            <div class="h2">
             <h2>언택트 시대,</h2>
             <h2>친구 어떻게 사귀세요?</h2>
-        </div>
-        <br>
-        <h4>지금 내 주변의 서강대생을 만나보세요!</h4>
-        <br><br><br><br>
-
-        <form method = "POST" action = "">
-
-            {% csrf_token %}
-            {% for field in form %}
-            <div class="form-group">
+            </div>
+            <br>
+            <h4>지금 내 주변의 서강대생을 만나보세요!</h4>
+                {% csrf_token %}
+                {% for field in form %}
                 <label for="{{ field.id_for_label }}" style="margin-left: 30px">{{ field.label }} </label>
                 <input type="{{ field.field.widget.input_type }}" class ="form-control" id="{{ field.id_for_label }}"
                 name="{{ field.name }}">
