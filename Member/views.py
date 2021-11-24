@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, reverse, resolve_url
-from django.urls import reverse_lazy
 
 from .helpers import send_mail, email_auth_num
 from django.views.generic import *
@@ -12,13 +11,7 @@ from .forms import *
 from django.http import HttpResponse
 from MainApp.models import *
 from django.utils.encoding import force_bytes, force_text
-from .tokens import account_activation_token
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from django.shortcuts import get_object_or_404
-from django.views.generic import CreateView, DetailView
-from django.shortcuts import render
+
 
 User = get_user_model()
 
@@ -43,32 +36,26 @@ def mail_send(member, request, find):
                 "user": member,
                 'uid': urlsafe_base64_encode(force_bytes(member.pk)).encode().decode(),#pk를 자연수에서 bytes로 변환,인코드, bytes에서 str로 변환
                 'domain': request.META['HTTP_HOST'],
-                'token': account_activation_token.make_token(member),#token.py에서 만들었던 token 생성기로 token생성
             })
         )
 
 
-def activate(request, uid64, token):#계정활성화 함수
+def activate(request, uid64):#계정활성화 함수
     try:
         uid = force_text(urlsafe_base64_decode(uid64)) #decode해서 user 불러옴
         user = Member.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, Member.DoesNotExist):
         user = None
-    if user is not None and account_activation_token.check_token(user, token): #유효성 검사
+    if user is not None: #유효성 검사
         user.is_active = True
         user.save()
-        return redirect('/member/login')
+        return redirect('/login')
 
-    elif user is None: #이메일 인증 기한 지남
+    else: #이메일 인증 기한 지남
         return render(request, "Member/register.html")
-    else: #이미 확인된 토큰 혹은 유효기간이 지난 토큰
-        #return HttpResponse("invalid")
-
-        # return render(request, 'Member/login.html')
-        return redirect('/member/login')
 
 
-class RegisterView(APIView):
+class RegisterView(View):
     def get(self, request):
         return render(request, 'Member/register.html')
 
@@ -81,49 +68,35 @@ class RegisterView(APIView):
         re_password = request.POST.get('re_password', '')
         introduction = request.POST.get('introduction', '')
 
-        res_data = {}
+        error_message = None
         if not (name and email and password and re_password and location and introduction):
-            # return HttpResponse('필수문항(*)을 입력해 주세요.')
-            res_data['error'] = "필수문항(*)을 입력해 주세요."
-        if password != re_password:
-            # return HttpResponse('비밀번호가 다릅니다.')
-            res_data['error'] = '비밀번호가 다릅니다.'
-
+            error_message = "필수문항(*)을 입력해 주세요."
+        elif password != re_password:
+            error_message = '비밀번호가 다릅니다.'
+        elif not (email.endswith('@sogang.ac.kr') or email.endswith('@u.sogang.ac.kr')):
+            error_message = '서강대학교 이메일을 사용해주세요.'
         else:
             location_info = str(location).split(' ')
-            # 수정 필요 이미 있는지 검사
-            s = Si.objects.filter(name=location_info[0])
-            if s.count() != 0: # 이미 있으면
-                s = s[0]
-            else:
-                s = Si(name=location_info[0], isGYorTB=True)  # 수정 필요 나중에 특별시 광역시 검사 로직 이거 지금 생성자
-                s.save()
-            g = Gu.objects.filter(name=location_info[1])
-            if g.count() != 0:
-                g = g[0]
-            else:
-                g = Gu(name=location_info[1], si=s)
-                g.save()
-            d = Dong.objects.filter(name=location_info[2])
-            if d.count() != 0:
-                d = d[0]
-            else:
-                d = Dong(name=location_info[2], si=s, gu=g)
-                d.save()
-            loc = Location.objects.filter(si=s, gu=g, dong=d)
-            if loc.count() != 0:
+            si = location_info[0]
+            gu = location_info[1]
+            dong = location_info[2]
+            isGYorTB = False
+            if si[:-4:-1] == "특별시" or si[:-4:-1] == "광역시":
+                isGYorTB = True
+            loc = Location.objects.filter(si=si, gu=gu, dong=dong, isGYorTB=isGYorTB)
+            if loc.count != 0:
                 loc = loc[0]
             else:
-                loc = Location(si=s, gu=g, dong=d)
+                loc = Location(si=si, gu=gu, dong=dong)
                 loc.save()
 
-            user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number, loc=loc, introduction=introduction)
+            user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number,
+                                            loc=loc, introduction=introduction)
 
             user.save()
             mail_send(user, request, False)
-            token = Token.objects.create(user=user)
-            # return render(request, 'Member/register_mail.html')
-        return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
+            return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
+        return render(request, 'Member/register.html', {'error': error_message})  # register를 요청받으면 register.html 로 응답.
 
 
 class LoginView(View):
@@ -131,6 +104,8 @@ class LoginView(View):
     form_class = LoginForm
 
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('/')
         form = self.form_class()
         return render(request, 'Member/login.html', {'form': form})
 
@@ -141,10 +116,8 @@ class LoginView(View):
             login_password = form.cleaned_data['password']
             member = authenticate(email=login_email, password=login_password)
             if member is not None:
-                token = Token.objects.get(user=member)
-                Response({"Token": token.key})
                 login(request, member)
-                request.session['Member'] = member.pk
+                request.session['member'] = member.pk
                 return redirect('/')
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
@@ -155,23 +128,22 @@ class LoginView(View):
 
 def log_out(request):
     logout(request)
-    # request.session.pop('Member')
     return redirect('/')
 
 
 class MyPageView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
+    login_url = '/login/'
     redirect_field_name = '/member/mypage/'
 
     form_class = EditProfileView
 
     def get(self, request):
-        member_pk = request.session['Member']
+        member_pk = request.session['member']
         member = Member.objects.get(pk=member_pk)
         form = self.form_class(initial={'name': member.name, 'email': member.email,
                                         'password': member.password, 'introduction': member.introduction,
-                                        'location': member.location.si.name + " " + member.location.gu.name + " " +
-                                                    member.location.dong.name})
+                                        'location': member.location.si + " " + member.location.gu + " " +
+                                                    member.location.dong})
         return render(request, 'Member/my_page.html', {'form': form})
 
     def post(self, request):
@@ -179,7 +151,7 @@ class MyPageView(LoginRequiredMixin, View):
         if form.is_valid():
             name = form.cleaned_data['name']
             introduction = form.cleaned_data['introduction']
-            member_pk = request.session['Member']
+            member_pk = request.session['member']
             target_member = Member.objects.get(pk=member_pk)
             target_member.name = name
             target_member.introduction = introduction
@@ -228,10 +200,10 @@ class PasswordResetView(View):
             else:
                 target_member = Member.objects.get(email=email)
                 form = PasswordResetForm(target_member)
-                request.session['Member'] = target_member.pk
+                request.session['member'] = target_member.pk
             return render(request, 'Member/password_new_form.html', {'form': form})
         else:
-            member_pk = request.session['Member']
+            member_pk = request.session['member']
             member = Member.objects.get(pk=member_pk)
             login(request, member)
             form = PasswordResetForm(member, request.POST)
@@ -243,7 +215,7 @@ class PasswordResetView(View):
                 return render(request, "Member/password_reset_done.html", {"message": message})
             else:
                 logout(request)
-                request.session['Member'] = member_pk
+                request.session['member'] = member_pk
                 form = PasswordResetForm()
                 return render(request, 'Member/password_new_form.html',
                               {'form': form, 'error': "비밀번호가 일치하지 않습니다. 다시 입력해주세요."})
@@ -253,3 +225,12 @@ class MemberListView(View):
     def get(self, request):
         members = Member.objects.all()
         return render(request, 'Member/member_list.html', {"members": members})
+
+      
+class RetryMailView(View):
+    def get(self, request, email):
+        member = Member.objects.get(email=email)
+        mail_send(member, request, False)
+        return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
+
+

@@ -14,25 +14,25 @@ from django.core.cache import cache
 
 
 class HomeView(LoginRequiredMixin, View):
-    login_url = '/member/login/'
+    login_url = '/login/'
     redirect_field_name = '/'
 
     def get(self, request):
-        member_id = request.session.get('Member')
+        member_id = request.session.get('member')
         member_info = Member.objects.get(pk=member_id)  # pk : primary key
         members = Member.objects.filter(location=member_info.location)
         chats = ChatRoom.objects.filter(location=member_info.location)
 
         # 서울특별시 금천구
         # 강원도 강릉시
-        key = member_info.location.si.name
+        key = member_info.location.si
         path = STATICFILES_DIRS[0] + "/gsons/"
-        if member_info.location.si.isGYorTB:
-            key += "_" + member_info.location.gu.name
-            path += member_info.location.si.name + "/" + member_info.location.gu.name + ".geojson"
+        if member_info.location.isGYorTB:
+            key += "_" + member_info.location.gu
+            path += member_info.location.si + "/" + member_info.location.gu + ".geojson"
         else:
-            key = member_info.location.do.name + "_" + key
-            path += member_info.location.do.name + "/" + member_info.location.si.name + ".geojson"
+            key = member_info.location.do + "_" + key
+            path += member_info.location.do + "/" + member_info.location.si + ".geojson"
 
         coords = []
         if not cache.get(key):
