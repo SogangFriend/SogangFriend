@@ -15,8 +15,8 @@
 }
 
 .login {
-    width: 40%;
-    height: 60%;
+    width: 500px;
+    height: 450px;
     background: white;
     position: absolute;
     top: 20%;
@@ -29,8 +29,8 @@
 }
 
 .img {
-    width: 40%;
-    height: 60%;
+    width: 500px;
+    height: 450px;
     position: absolute;
     top: 20%;
     border-radius: 20px 0px 0px 20px;
@@ -39,9 +39,9 @@
 
 h2 {
     position: relative;
-    top: 100%;
+    top: 10%;
     color: black;
-    font-size: 35px;
+    font-size: 30px;
     font-weight: bold;
     margin-left: 7%;
 

@@ -23,17 +23,16 @@
         <div class="h2">
             <h2>언택트 시대,</h2>
             <h2>친구 어떻게 사귀세요?</h2>
-        </div>
+
+            <h4>지금 내 주변의 서강대생을 만나보세요!</h4></div>
         <br>
-        <h4>지금 내 주변의 서강대생을 만나보세요!</h4>
-        <br><br><br><br>
 
         <form method = "POST" action = "">
 
             {% csrf_token %}
             {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}" style="margin-left: 30px">{{ field.label }} </label>
+            <div>
+{#                <label for="{{ field.id_for_label }}" style="margin-left: 30px">{{ field.label }} </label>#}
                 <input type="{{ field.field.widget.input_type }}" class ="form-control" id="{{ field.id_for_label }}"
                 name="{{ field.name }}">
                 {% endfor %}
@@ -48,7 +47,8 @@
                     <div class="bottomText">
                         아직 회원이 아니신가요? <a href="{% url 'Member:new'%}">  가입하기 </a>
                     </div>
-            </div>
+                </div>
+
         </form>
     </div>
 </div>
