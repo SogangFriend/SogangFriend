@@ -122,7 +122,7 @@ class RegisterView(APIView):
             user.save()
             mail_send(user, request, False)
             token = Token.objects.create(user=user)
-            return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
+            # return render(request, 'Member/register_mail.html')
         return render(request, 'Member/register.html', res_data)  # register를 요청받으면 register.html 로 응답.
 
 
@@ -250,8 +250,6 @@ class PasswordResetView(View):
 
 
 class MemberListView(View):
-    def get(self,request):
-
-
+    def get(self, request):
         members = Member.objects.all()
-        return render(request, 'Member/member_list.html', {"members":members})
+        return render(request, 'Member/member_list.html', {"members": members})
