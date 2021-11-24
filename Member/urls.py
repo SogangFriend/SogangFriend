@@ -22,7 +22,9 @@ urlpatterns = [
 
 
     path('mypage/', MyPageView.as_view(), name='my_page'),
-    path('mypage/password/', PasswordChangeView.as_view(), name='password_change')
+    path('mypage/password/', PasswordChangeView.as_view(), name='password_change'),
+
+    path('mail/<str:email>/', RetryMailView.as_view(), name='retry'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

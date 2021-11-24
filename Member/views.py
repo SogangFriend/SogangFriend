@@ -238,3 +238,12 @@ class MemberListView(View):
     def get(self,request):
         members = Member.objects.all()
         return render(request, 'Member/member_list.html', {"members":members})
+
+
+class RetryMailView(View):
+    def get(self, request, email):
+        member = Member.objects.get(email=email)
+        mail_send(member, request, False)
+        return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
+
+    
