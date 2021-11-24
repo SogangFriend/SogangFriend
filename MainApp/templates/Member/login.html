@@ -29,9 +29,9 @@
             <h4>지금 내 주변의 서강대생을 만나보세요!</h4>
                 {% csrf_token %}
                 {% for field in form %}
-                <label for="{{ field.id_for_label }}" style="margin-left: 30px">{{ field.label }} </label>
-                <input type="{{ field.field.widget.input_type }}" class ="form-control" id="{{ field.id_for_label }}"
-                name="{{ field.name }}">
+{#                    <label for="{{ field.id_for_label }}" style="margin-left: 30px">{{ field.label }} </label>#}
+                    <input type="{{ field.field.widget.input_type }}" class ="form-control" id="{{ field.id_for_label }}"
+                        name="{{ field.name }}" placeholder="{{ field.label }}">
                 {% endfor %}
                 <span style="color:red;"><strong>{{ error }}</strong> </span>
                 <br>
