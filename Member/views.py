@@ -84,10 +84,10 @@ class RegisterView(View):
             if si[:-4:-1] == "특별시" or si[:-4:-1] == "광역시":
                 isGYorTB = True
             loc = Location.objects.filter(si=si, gu=gu, dong=dong, isGYorTB=isGYorTB)
-            if loc.count != 0:
+            if loc.count() != 0:
                 loc = loc[0]
             else:
-                loc = Location(si=si, gu=gu, dong=dong)
+                loc = Location(si=si, gu=gu, dong=dong, isGYorTB=True)
                 loc.save()
 
             user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number,

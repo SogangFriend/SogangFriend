@@ -6,5 +6,5 @@ from Member.views import LoginView, log_out
 urlpatterns = [
     path('', HomeView.as_view()),
     path('login/', LoginView.as_view(), name='login'),
-    path('logout/', log_out),
+    path('logout/', log_out, name='logout'),
 ]
