@@ -36,7 +36,7 @@ class HomeView(LoginRequiredMixin, View):
 
         coords = []
         if not cache.get(key):
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, "r", encoding="UTF-8") as f:
                 json_data = json.load(f)
                 features = json_data['features']
                 for feature in features:
