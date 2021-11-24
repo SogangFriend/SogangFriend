@@ -29,3 +29,4 @@ class CustomPasswordValidator:
             "비밀번호는 7자 이상의 영문자가 숫자가 혼합되어야 합니다."
         )
 
+#commit test
