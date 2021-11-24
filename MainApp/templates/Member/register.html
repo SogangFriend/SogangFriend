@@ -1,72 +1,68 @@
-{% extends 'base.html' %}
+{% extends 'yellow_base.html' %}
 {% load static %}
-{% block content %}
-
-    <link rel="stylesheet" href="{% static 'css/design2.css' %}?{% now "U" %}">
+{% block inwrap %}
 
     <img class="img" img src="{% static 'images/register.jpg' %}" >
 
-
-    <div class="wrap">
-        <div class="register">
-            <h2>회원가입하고</h2>
-            <h2>인생친구 만들어 볼까요?</h2>
-            {% if error %}
-                <script type="text/javascript">
-                    alert("{{ error }}");
-                </script>
-            {% endif %}
-            <div class = "col-12 ">
-                <form method = "POST" action = "">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <div class="idForm">
-                        </div>
-                        <br> <br> <br> <br>
-                        <h4>*표시는 필수 사항입니다.</h4>
-
-                        <div class="idForm">
-                            <input type="text" class="inputshort" id="name" placeholder="*닉네임" name="name">
-                            <input type="button" class="btn1" onclick="id_overlap_check()" value ="중복검사"/>
-                        </div>
-
-                        <div class="idForm">
-                            <input type="number" class="input" id="student_number" placeholder="학번을 입력하면 공개됩니다" name= "student_number">
-                        </div>
-
-                        <div class="idForm">
-                            <input type="text" class="input" id="email" placeholder="*서강 이메일" name= "email">
-                        </div>
-
-                        <div class="idForm">
-                            <input type="text" class="inputshort" id="location" placeholder="*위치를 인증해주세요" name= "location"/>
-                            <input type="button" class="btn1" onclick="coordToAddr()" value="위치 얻기"/>
-                        </div>
-
-                        <div class="idForm">
-                            <input type="password" class="input" id="password" placeholder="*비밀번호 (7자 이상 영문자&숫자 조합)" name= "password">
-                        </div>
-
-                        <div class="idForm">
-                            <input type= "password" class="input" id="re_password" placeholder="*비밀번호 확인" name = "re_password">
-                        </div>
-
-                        <div class="idForm">
-                            <input type="text" class="input" id="introduction" placeholder="간단한 자기소개를 입력해주세요" name= "introduction">
-                        </div>
-                        <h4>자기소개는 My Page에서 수정 가능합니다. </h4>
-
-                        <button id="alertStart" type="submit" class="btn">이메일 인증하고 가입 완료</button>
-
-                        <div class="bottomText text-center">
-                            이미 회원이신가요? <a href="{% url 'login'%}"> 로그인하기 </a>
-
-                        </div>
+    <div class="register">
+        <h2>회원가입하고</h2>
+        <h2>인생친구 만들어 볼까요?</h2>
+        {% if error %}
+            <script type="text/javascript">
+                alert("{{ error }}");
+            </script>
+        {% endif %}
+        <div class = "col-12 ">
+            <form method = "POST" action = "">
+                {% csrf_token %}
+                <div class="form-group">
+                    <div class="idForm">
                     </div>
-               </form>
-            </div>
+                    <br> <br> <br> <br>
+                    <h4>*표시는 필수 사항입니다.</h4>
+
+                    <div class="idForm">
+                        <input type="text" class="inputshort" id="name" placeholder="*닉네임" name="name">
+                        <input type="button" class="btn1" onclick="id_overlap_check()" value ="중복검사"/>
+                    </div>
+
+                    <div class="idForm">
+                        <input type="number" class="input" id="student_number" placeholder="학번을 입력하면 공개됩니다" name= "student_number">
+                    </div>
+
+                    <div class="idForm">
+                        <input type="text" class="input" id="email" placeholder="*서강 이메일" name= "email">
+                    </div>
+
+                    <div class="idForm">
+                        <input type="text" class="inputshort" id="location" placeholder="*위치를 인증해주세요" name= "location"/>
+                        <input type="button" class="btn1" onclick="coordToAddr()" value="위치 얻기"/>
+                    </div>
+
+                    <div class="idForm">
+                        <input type="password" class="input" id="password" placeholder="*비밀번호 (7자 이상 영문자&숫자 조합)" name= "password">
+                    </div>
+
+                    <div class="idForm">
+                        <input type= "password" class="input" id="re_password" placeholder="*비밀번호 확인" name = "re_password">
+                    </div>
+
+                    <div class="idForm">
+                        <input type="text" class="input" id="introduction" placeholder="간단한 자기소개를 입력해주세요" name= "introduction">
+                    </div>
+                    <h4>자기소개는 My Page에서 수정 가능합니다. </h4>
+
+                    <button id="alertStart" type="submit" class="btn">이메일 인증하고 가입 완료</button>
+
+                    <div class="bottomText text-center">
+                        이미 회원이신가요? <a href="{% url 'login'%}"> 로그인하기 </a>
+
+                    </div>
+                </div>
+           </form>
         </div>
     </div>
+
 
     <script>
 

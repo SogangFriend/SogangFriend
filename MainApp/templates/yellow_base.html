@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/find.css' %}">
+
+    <div class="wrap">
+    {% block inwrap %}
+    {% endblock %}
+    </div>
+{% endblock %}

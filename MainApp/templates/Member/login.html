@@ -1,39 +1,37 @@
-{% extends 'base.html' %}
+{% extends 'yellow_base.html' %}
 {% load static %}
-{% block content %}
+{% block inwrap %}
 
-<img class="img" img src="{% static 'images/login.jpeg' %}" >
-
-<div class="wrap">
+<div class="white_box">
+    <div class="img_login_box">
+        <img class="img_login" src="{% static 'images/login.jpeg' %}" >
+    </div>
     <div class="login">
+        <div class="login_h2">
+            언택트 시대,<br>친구 어떻게 사귀세요?
+        </div>
+        <br>
+        <h4 class="login_h4">지금 내 주변의 서강대생을 만나보세요!</h4>
         <form method = "POST" action = "">
-            <div class="form-group">
-            <div class="h2">
-            <h2>언택트 시대,</h2>
-            <h2>친구 어떻게 사귀세요?</h2>
+            {% csrf_token %}
+            {% for field in form %}
+                <input type="{{ field.field.widget.input_type }}" class ="login_input" id="{{ field.id_for_label }}"
+                    name="{{ field.name }}" placeholder="{{ field.label }}">
+            {% endfor %}
+            <span style="color:red;"><strong>{{ error }}</strong> </span>
+            <br>
+            <button type="submit" class="btn">로그인</button>
+            <div class="auto-login">
+                <input class="checkbox" type="checkbox" name="" id="checkbox"/>
+                <label class="auto-login-text" for="checkbox">자동로그인</label>
+                <a class="password" href="{% url 'Member:password' %}">비밀번호 찾기</a>
             </div>
             <br>
-            <h4>지금 내 주변의 서강대생을 만나보세요!</h4>
-                {% csrf_token %}
-                {% for field in form %}
-{#                    <label for="{{ field.id_for_label }}" style="margin-left: 30px">{{ field.label }} </label>#}
-                    <input type="{{ field.field.widget.input_type }}" class ="form-control" id="{{ field.id_for_label }}"
-                        name="{{ field.name }}" placeholder="{{ field.label }}">
-                {% endfor %}
-                <span style="color:red;"><strong>{{ error }}</strong> </span>
-                <br>
-                    <button type="submit" class="btn btn-dark btn-lg">로그인</button>
-                    <div class="checkbox">
-                        <p style="margin-left:3em"> <input type="checkbox" name="" id="">   자동로그인</p>
-                        <a href="{% url 'Member:password' %}" style="margin-left:70%; color: gray;">비밀번호 찾기</a>
-                    </div>
-                <br>
-                    <div class="bottomText">
-                        아직 회원이 아니신가요? <a href="{% url 'Member:new'%}">  가입하기 </a>
-                    </div>
+            <div class="bottomText">
+                아직 회원이 아니신가요? <a href="{% url 'Member:new'%}">  가입하기 </a>
             </div>
         </form>
     </div>
 </div>
-</body>
+
 {% endblock %}
