@@ -77,30 +77,17 @@ class RegisterView(View):
             error_message = '서강대학교 이메일을 사용해주세요.'
         else:
             location_info = str(location).split(' ')
-            # 수정 필요 이미 있는지 검사
-            s = Si.objects.filter(name=location_info[0])
-            if s.count() != 0: # 이미 있으면
-                s = s[0]
-            else:
-                s = Si(name=location_info[0], isGYorTB=True)  # 수정 필요 나중에 특별시 광역시 검사 로직 이거 지금 생성자
-                s.save()
-            g = Gu.objects.filter(name=location_info[1])
-            if g.count() != 0:
-                g = g[0]
-            else:
-                g = Gu(name=location_info[1], si=s)
-                g.save()
-            d = Dong.objects.filter(name=location_info[2])
-            if d.count() != 0:
-                d = d[0]
-            else:
-                d = Dong(name=location_info[2], si=s, gu=g)
-                d.save()
-            loc = Location.objects.filter(si=s, gu=g, dong=d)
-            if loc.count() != 0:
+            si = location_info[0]
+            gu = location_info[1]
+            dong = location_info[2]
+            isGYorTB = False
+            if si[:-4:-1] == "특별시" or si[:-4:-1] == "광역시":
+                isGYorTB = True
+            loc = Location.objects.filter(si=si, gu=gu, dong=dong, isGYorTB=isGYorTB)
+            if loc.count != 0:
                 loc = loc[0]
             else:
-                loc = Location(si=s, gu=g, dong=d)
+                loc = Location(si=si, gu=gu, dong=dong)
                 loc.save()
 
             user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number,
@@ -155,8 +142,8 @@ class MyPageView(LoginRequiredMixin, View):
         member = Member.objects.get(pk=member_pk)
         form = self.form_class(initial={'name': member.name, 'email': member.email,
                                         'password': member.password, 'introduction': member.introduction,
-                                        'location': member.location.si.name + " " + member.location.gu.name + " " +
-                                                    member.location.dong.name})
+                                        'location': member.location.si + " " + member.location.gu + " " +
+                                                    member.location.dong})
         return render(request, 'Member/my_page.html', {'form': form})
 
     def post(self, request):
@@ -246,4 +233,3 @@ class RetryMailView(View):
         mail_send(member, request, False)
         return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
 
-    

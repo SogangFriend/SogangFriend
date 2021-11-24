@@ -67,7 +67,7 @@
             var customOverlay = new kakao.maps.CustomOverlay({
                 map: map,
                 content: '<div style="padding: 5px; background:#fff;">' +
-                    '내 위치: {{ member_info.location.si.name }} {{ member_info.location.gu.name }} {{ member_info.location.dong.name }}' +
+                    '내 위치: {{ member_info.location.si }} {{ member_info.location.gu }} {{ member_info.location.dong }}' +
                     '</div>',
                 position: new kakao.maps.LatLng(37.462932227677896, 126.899851798148), // 커스텀 오버레이를 표시할 좌표 - 항상 맵 위의 고정 위치에 띄울 방법...?
                 xAnchor: 0, // 컨텐츠의 x 위치
