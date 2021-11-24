@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import *
+from channels.db import database_sync_to_async
 
 from .forms import *
 from .models import *
@@ -78,3 +79,24 @@ class EnterDMView(LoginRequiredMixin, View):
                 Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
         return render(request, 'Chat/room.html',
                       {'room_name': chatroom.pk, 'member_pk': me.pk})
+
+
+class CheckUnreadView(LoginRequiredMixin, View):
+    login_url = '/login'
+
+    def get(self, request):
+        member_pk = request.session['member']
+
+        member = Member.objects.get(pk=member_pk)
+
+        rooms = Member_ChatRoom.objects.filter(member=member)
+        flag = False
+        for room in rooms:
+            if room.member_timestamp > room.chat_room.timestamp:
+                room.unread = True
+                room.save()
+                flag = True
+        ret = {'unread': flag}
+
+        return JsonResponse(ret)
+

@@ -49,7 +49,7 @@ def activate(request, uid64):#계정활성화 함수
     if user is not None: #유효성 검사
         user.is_active = True
         user.save()
-        return redirect('/member/login')
+        return redirect('/login')
 
     else: #이메일 인증 기한 지남
         return render(request, "Member/register.html")
