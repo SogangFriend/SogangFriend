@@ -2,13 +2,20 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">서강프렌즈</a>
-        <div class="navbar-nav">
-                {% if user.is_authenticated %}
-                <a class="nav-link" href="{% url 'Member:my_page' %}" {{user.username}}>마이페이지</a>
-                {% endif %}
-{#                <a class="nav-item">#}
-{#                </a>#}
+        <a class="navbar-brand" href="/" style="color: #F5D300">서강프렌즈</a>
+            <ul class="navbar-nav">
+                <a class="nav-item">
+                    {% if user.is_authenticated %}
+                        <a class="nav-link" href="/">지도</a>
+                        <a class="nav-link" href="/chat">채팅</a>
+                        <a class="nav-link" href="{% url 'Member:logout' %}">로그아웃</a>
+                        <a class="nav-link" href="{% url 'Member:my_page' %}"> {{ user.name }} 님</a>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'Member:new' %}">회원가입</a>
+                        <a class="nav-link" href="{% url 'Member:login' %}">로그인</a>
+                    {% endif %}
+                </a>
+            </ul>
         </div>
     </div>
 </nav>

@@ -13,32 +13,47 @@
 
             <div>
                 <div class="left">
-                        <div class="left_header">
-                          <ul class="list">
+                    <div class="left_header">
+                        <p style="font-size: 13px; text-align:center; font-weight:bold; padding-top:15px; ">나와 관심사가 같은 서강대생을 찾아 이야기를 나누어 보세요!</p></div>
+                        <div class="tab_menu">
+                          <div class="list">
+
                             <li class="is_on">
-                              <a href="#people" class="lh_content">People</a>
+                              <a href="#people" class="btn">People</a>
                             </li>
 
                             <li>
-                              <a href="#chat" class="lh_content">Chat</a>
+                              <a href="#chat" class="btn">Chat</a>
                             </li>
-                          </ul>
-                        </div>
-                    <div class="left_body">
+                          </div>
+{#                        </div>#}
+                        <div class="left_body">
+{#                                <p style="padding-top:-10%; padding-bottom:-10%;">My</p>#}
                                 {% for member in members %}
                                  <div id="people" class="lb_profile" style="display:block;">
-                                     {{ member.name }} <a href="{% url 'Chat:dm' pk=member.pk %}">dm 보내기</a>
+                                    <div class="people_img">
+{#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
+                                     {{ profile_photo }}</div>
+                                     {{ member.name }} <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
+                                     <p class="people_info_txt">{{ member.location.si.name }} {{ member.location.gu.name }} {{ member.location.dong.name }}<br>
+                                     한줄소개: {{ member.introduction }}</p>
+
                                  </div>
                                  {% endfor %}
 
                                 {% for chat in chats %}
-                                  <div id="chat" class="lb_profile" style="display: none;">
-                                      {{ chat.name }}
-                                  </div>
+                                <div id="chat" class="lb_profile" style="display:none;">
+                                <div class="people_img">
+{#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
+                                     {{ profile_photo }}</div>
+                                      {{ chat.name }} <br>
+                                </div>
                                 {% endfor %}
                              </div>
+                        </div>
                     </div>
-                </div>
+
+
                 <div class="right">
                     <div class="member_info" style="height: 5%; float: left;">
                             <input type="radio" name="range" id="gu" onclick="clickCheck(this.id)" checked="checked" style="margin-top: 20px; margin-left: 5px"/> <span>구까지 범위 표시</span>
@@ -151,12 +166,12 @@
                 });
             }
 
-            const tabList = document.querySelectorAll('.left_header .list li');
-            const contents = document.querySelectorAll('.left_body .lb_profile')
+            const tabList = document.querySelectorAll('.tab_menu .list li');
+            const contents = document.querySelectorAll('.tab_menu .left_body .lb_profile')
             let activeCont = ''; // 현재 활성화 된 컨텐츠 (기본:#tab1 활성화)
 
             for(var i = 0; i < tabList.length; i++){
-              tabList[i].querySelector('.lh_content').addEventListener('click', function(e){
+              tabList[i].querySelector('.btn').addEventListener('click', function(e){
                 e.preventDefault();
                 for(var j = 0; j < contents.length; j++){
                   // 나머지 버튼 클래스 제거
@@ -179,7 +194,32 @@
                     console.log(l[j]);
                 }
               });
-            }
+            } // 기존꺼
+
+            {#const tabList = document.querySelectorAll('.left_header .list li');#}
+            {#const contents = document.querySelectorAll('.left_header .left_body .lb_profile')#}
+            {#let activeCont = ''; // 현재 활성화 된 컨텐츠 (기본:#tab1 활성화)#}
+            {##}
+            {#for(var i = 0; i < tabList.length; i++){#}
+            {#  tabList[i].querySelector('.btn').addEventListener('click', function(e){#}
+            {#    e.preventDefault();#}
+            {#    for(var j = 0; j < tabList.length; j++){#}
+            {#      // 나머지 버튼 클래스 제거#}
+            {#      tabList[j].classList.remove('is_on');#}
+            {##}
+            {#      // 나머지 컨텐츠 display:none 처리#}
+            {#      contents[j].style.display = 'none';#}
+            {#    }#}
+            {##}
+            {#    // 버튼 관련 이벤트#}
+            {#    this.parentNode.classList.add('is_on');#}
+            {##}
+            {#    // 버튼 클릭시 컨텐츠 전환#}
+            {#    activeCont = this.getAttribute('href');#}
+            {#    document.querySelectorAll(activeCont).style.display = 'block';#}
+            {##}
+            {#  });#}
+            {#}#}
 
         </script>
 {% endblock %}

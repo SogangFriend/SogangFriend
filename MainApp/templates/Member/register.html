@@ -5,6 +5,7 @@
 
 {#    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>#}
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/design2.css' %}?{% now "U" %}">
 
@@ -28,10 +29,11 @@
                         <div class="idForm">
                         </div>
                         <br> <br> <br> <br>
+                        <h4>*표시는 필수 사항입니다.</h4>
 
                         <div class="idForm">
                             <input type="text" class="inputshort" id="name" placeholder="*닉네임" name="name">
-                            <button type="button" class="btn1" onclick="id_overlap_check()">중복검사</button>
+                            <input type="button" class="btn1" onclick="id_overlap_check()" value ="중복검사"</input>
                         </div>
 
                         <div class="idForm">
@@ -39,32 +41,32 @@
                         </div>
 
                         <div class="idForm">
-                            <input type="text" class="input" id="email" placeholder="서강 이메일" name= "email">
+                            <input type="text" class="input" id="email" placeholder="*서강 이메일" name= "email">
                         </div>
 
                         <div class="idForm">
-                            <input type="text" class="inputshort" id="location" placeholder="위치를 인증해주세요" name= "location"/>
+                            <input type="text" class="inputshort" id="location" placeholder="*위치를 인증해주세요" name= "location"/>
                             <input type="button" class="btn1" onclick="coordToAddr()" value="위치 얻기"/>
                         </div>
 
                         <div class="idForm">
-                            <input type="password" class="input" id="password" placeholder="비밀번호" name= "password">
+                            <input type="password" class="input" id="password" placeholder="*비밀번호 (7자 이상 영문자&숫자 조합)" name= "password">
                         </div>
 
                         <div class="idForm">
-                            <input type= "password" class="input" id="re_password" placeholder="비밀번호 확인" name = "re_password">
+                            <input type= "password" class="input" id="re_password" placeholder="*비밀번호 확인" name = "re_password">
                         </div>
 
                         <div class="idForm">
-                            <input type="text" class="inputlong" id="introduction" placeholder="간단한 자기소개를 입력해주세요" name= "introduction">
+                            <input type="text" class="input" id="introduction" placeholder="간단한 자기소개를 입력해주세요" name= "introduction">
                         </div>
-
                         <h4>자기소개는 My Page에서 수정 가능합니다. </h4>
 
-                        <p><button type="submit" class="btn">이메일 인증하고 가입 완료</button></p>
+                        <button id="alertStart" type="submit" class="btn">이메일 인증하고 가입 완료</button>
 
-                        <div class = "col-12 text-center">
-                            이미 회원이신가요? <a href="{% url 'login'%}" > 로그인하기 </a>
+                        <div class = "bottomText text-center">
+                            이미 회원이신가요? <a href="{% url 'login'%}"> 로그인하기 </a>
+
                         </div>
                     </div>
                </form>
@@ -73,6 +75,7 @@
     </div>
 
     <script>
+
     let geocoder = new kakao.maps.services.Geocoder();
     let lat, lng;
         function coordToAddr() {
@@ -105,5 +108,17 @@
                 alert('GPS NOT SUPPORTED');
             }
         }
+
+        $().ready(function () {
+            $("#alertStart").click(function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '입력하신 이메일로 인증 메일이 전송되었습니다.',
+                    text: '메일이 오지 않았을 시 스팸메일함을 확인해 주세요.',
+                    confirmButtonColor: '#000000',
+                    confirmButtonText: '확인',
+                });
+            });
+        });
     </script>
 {% endblock %}
