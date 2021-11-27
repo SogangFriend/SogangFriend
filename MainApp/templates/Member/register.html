@@ -19,8 +19,8 @@
                     *표시는 필수 사항입니다.
                 </div>
                 <div class="idForm">
-                    <input type="text" class="sinput" id="name" placeholder="*닉네임" name="name">
-                    <input type="button" class="sbtn" onclick="id_overlap_check()" value ="중복검사"/input>
+                    <input type="text" class="name_input" id="name_input" placeholder="*닉네임" name="name" check_result="fail" required />
+                    <input type="button" class="name_btn" id="name_btn" onclick="name_overlap_check()" value ="중복검사"/>
                 </div>
 
                 <div class="idForm">
@@ -64,6 +64,44 @@
 
 
     <script>
+    function name_overlap_check() {
+
+        $('#name_input').change(function () {
+          $('#name_btn').show();
+          $('#name_input').attr("check_result", "fail");
+        })
+
+
+        if ($('#name_input').val() === '') {
+          alert('닉네임을 입력해주세요.')
+          return;
+        }
+
+        name_overlap_input = document.querySelector('input[name="name"]');
+
+        $.ajax({
+          url: "{% url 'Member:new' %}",
+          data: {
+            'name': name_overlap_input.value
+          },
+          datatype: 'json',
+          success: function (data) {
+            console.log(data['overlap']);
+            if (data['overlap'] === "fail") {
+              alert("이미 존재하는 닉네임 입니다.");
+              name_overlap_input.focus();
+              return;
+            } else {
+              alert("사용가능한 닉네임 입니다.");
+              $('#name_input').attr("check_result", "success");
+              $('#name_btn').show();
+              return;
+            }
+          }
+        });
+    }
+
+
 
     let geocoder = new kakao.maps.services.Geocoder();
     let lat, lng;
@@ -98,16 +136,5 @@
             }
         }
 
-        $().ready(function () {
-            $("#alertStart").click(function () {
-                Swal.fire({
-                    icon: 'success',
-                    title: '입력하신 이메일로 인증 메일이 전송되었습니다.',
-                    text: '메일이 오지 않았을 시 스팸메일함을 확인해 주세요.',
-                    confirmButtonColor: '#000000',
-                    confirmButtonText: '확인',
-                });
-            });
-        });
     </script>
 {% endblock %}

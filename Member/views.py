@@ -8,13 +8,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from .forms import *
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from MainApp.models import *
 from django.utils.encoding import force_bytes, force_text
 
 
 User = get_user_model()
-
 
 def mail_send(member, request, find):
     if find:
@@ -53,6 +52,20 @@ def activate(request, uid64):#계정활성화 함수
 
     else: #이메일 인증 기한 지남
         return render(request, "Member/register.html")
+
+
+def name_overlap_check(request):
+    name = request.GET.get('name')
+    try:
+        user = Member.objects.get(name=name)
+    except:
+        user = None
+    if user is None:
+        overlap = "pass"
+    else:
+        overlap = "fail"
+    context = {'overlap': overlap}
+    return JsonResponse(context)
 
 
 class RegisterView(View):
@@ -124,6 +137,8 @@ class LoginView(View):
         else:
             self.response_data['error'] = "이메일과 비밀번호를 모두 입력해주세요."
         return render(request, 'Member/login.html', self.response_data)
+
+
 
 
 def log_out(request):
@@ -226,7 +241,7 @@ class MemberListView(View):
         members = Member.objects.all()
         return render(request, 'Member/member_list.html', {"members": members})
 
-      
+
 class RetryMailView(View):
     def get(self, request, email):
         member = Member.objects.get(email=email)
