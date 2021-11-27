@@ -50,11 +50,10 @@ class EnterChatView(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = '/chat/'
 
-    def get(self, request):
+    def get(self, request, room):
         member_pk = request.session.get('member')
-        room_pk = request.GET.get('room')
         member = Member.objects.get(pk=member_pk)
-        chat_room = ChatRoom.objects.get(pk=room_pk)
+        chat_room = ChatRoom.objects.get(pk=room)
         mc = Member_ChatRoom.objects.filter(member=member, chat_room=chat_room)
         if mc.count() == 0:
             Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
