@@ -119,11 +119,10 @@ class RegisterView(View):
 
             user.save()
             mail_send(user, request, False)
-            html = "<div class='swal-confirm-sent'>인증 메일이 <u>{}</u>로 전송되었습니다.</div>" \
-                   "<div class='swal-confirm-sent2'>받으신 이메일을 열어 버튼을 클릭하면 가입이 완료됩니다.</div>".format(email)
+            html = "<div class='swal-confirm-sent'>인증 메일이 입력하신 주소로 전송되었습니다.</div>" \
+                   "<div class='swal-confirm-sent2'>받으신 이메일을 열어 버튼을 클릭하면 가입이 완료됩니다.</div>"
             footer = "<div class='swal-ask'>이메일을 확인할 수 없나요?</div>" \
                      "<div class='swal-retry'> 스팸편지함 확인 또는 <a href='/mail/{}'>인증메일 다시 보내기</a></div>".format(email)
-            # return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
             return JsonResponse({'success': success, 'message': html, 'footer': footer})
         return JsonResponse({'success': success, 'message': error_message})  # register를 요청받으면 register.html 로 응답.
 
