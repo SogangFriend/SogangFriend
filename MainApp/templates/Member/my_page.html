@@ -1,18 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<span_mypg>
+    마이페이지
+</span_mypg><br>
+    <div class="pro">
+    {{ profile_photo }}
+    </div>
 
 
-
-    <form method="POST" action="{% url 'Member:my_page' %}">
+    <form class="form_mypg"  method="POST" action="{% url 'Member:my_page' %}">
         {% csrf_token %}
         <span style="color:red;"><strong>{{ error }}</strong> </span>
-        {{ form.as_table }}
-        <input type="submit" value="변경">
+        {{ form.as_p }}
+
+        <button type="submit" class="btn_mypg">수정 완료</button>
     </form>
-    <a href="{% url 'Member:password_change' %}">
-         <button type="button" class="btn btn-default">비밀번호 변경</button>
-    </a>
+
+{#    <form method = "POST" action = " ">#}
+{#            {% csrf_token %}#}
+{#                <label for = "{{ field.id_for_label }}">닉네임</label>#}
+{#                <input type="{{ form.as_table }}" id="{{ field.id_for_label }}">#}
+{##}
+{#    <button type="submit" class="btn btn-default">변경 완료</button>#}
+{#    </form>#}
+
+{#    <a href="{% url 'Member:password_change' %}">#}
+{#        {% csrf_token %}#}
+{##}
+{#         <button type="button" class="btn btn-default">수정 완료</button>#}
+{#    </a>#}
+
 {#        <h2>{{member.profile.username}}</h2>#}
 {##}
 {#        <h3> 닉네임: {{member.name}} <br></h3>#}

@@ -93,6 +93,7 @@ class EditProfileView(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput)
     location = forms.CharField()
     introduction = forms.CharField(widget=forms.TextInput)
+    # password = forms.
 
     class Meta:
         fields = ['name', 'email', 'location', 'introduction']
@@ -108,7 +109,7 @@ class EditProfileView(forms.Form):
             'class': 'form-control',
             'readonly': 'True'
         })
-        self.fields['location'].label = "주소"
+        self.fields['location'].label = "지역"
         self.fields['location'].widget.attrs.update({
             'class': 'form-control',
             'readonly': 'True'
@@ -117,3 +118,7 @@ class EditProfileView(forms.Form):
         self.fields['introduction'].widget.attrs.update({
             'class': 'form-control'
         })
+        # self.fields['password'].label = "기존 비밀번호"
+        # self.fields['password'].widget.attrs.update({
+        #     'class': 'form-control'
+        # })
