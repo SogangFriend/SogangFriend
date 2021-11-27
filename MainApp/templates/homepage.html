@@ -43,7 +43,7 @@
                         {{ profile_photo }}
                     </div>
                     {{ chat.name }} <br>
-                    <a href="{% url 'Chat:dm'  pk=chat.pk %}" style="color: #F5D300; font-size:13px; float:right;">입장하기</a>
+                    <a href="{% url 'Chat:enter' room=chat.pk %}" style="color: #F5D300; font-size:13px; float:right;">입장하기</a>
                 </div>
             {% endfor %}
         </div>
