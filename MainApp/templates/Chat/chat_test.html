@@ -79,43 +79,6 @@
         let member = "{{ member_pk }}";
 
         /*
-        Msg log 에 History 불러오기
-         */
-        for(let i = 0; i < rms.length; i++) {
-            if(rms[i].pk === pk) {
-                for (let j = 0; j < rms[i].msgs.length; j++) {
-                    let newMsg = document.createElement('div');
-                    rms[i].msgs[j].sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
-                                                     : newMsg.setAttribute('class', 'incoming_msg');
-                    let innerNewMsg = document.createElement('div');
-                    rms[i].msgs[j].sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
-                                                     : innerNewMsg.setAttribute('class', 'received_msg');
-
-                    let msg = document.createElement('div');
-                    if(rms[i].msgs[j].sender !== member) msg.setAttribute('class', 'received_withd_msg');
-
-                    let p = document.createElement('p');
-                    let text = document.createTextNode(rms[i].msgs[j].message);
-
-                    let time = document.createElement('span');
-                    let timeText = document.createTextNode(rms[i].msgs[j].timestamp);
-
-                    p.appendChild(text);
-                    time.setAttribute('class', 'time_date');
-                    time.appendChild(timeText);
-
-                    msg.appendChild(p);
-                    msg.appendChild(time);
-
-                    innerNewMsg.appendChild(msg);
-                    newMsg.appendChild(innerNewMsg);
-
-                    msgHistory.appendChild(newMsg);
-                }
-            }
-        }
-
-        /*
         chatSocket 연결
          */
         const makeConnection = () => {
@@ -160,6 +123,42 @@
             };
 
 
+        /*
+        Msg log 에 History 불러오기
+         */
+        for(let i = 0; i < rms.length; i++) {
+            if(rms[i].pk === pk) {
+                for (let j = 0; j < rms[i].msgs.length; j++) {
+                    let newMsg = document.createElement('div');
+                    rms[i].msgs[j].sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
+                                                     : newMsg.setAttribute('class', 'incoming_msg');
+                    let innerNewMsg = document.createElement('div');
+                    rms[i].msgs[j].sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
+                                                     : innerNewMsg.setAttribute('class', 'received_msg');
+
+                    let msg = document.createElement('div');
+                    if(rms[i].msgs[j].sender !== member) msg.setAttribute('class', 'received_withd_msg');
+
+                    let p = document.createElement('p');
+                    let text = document.createTextNode(rms[i].msgs[j].message);
+
+                    let time = document.createElement('span');
+                    let timeText = document.createTextNode(rms[i].msgs[j].timestamp);
+
+                    p.appendChild(text);
+                    time.setAttribute('class', 'time_date');
+                    time.appendChild(timeText);
+
+                    msg.appendChild(p);
+                    msg.appendChild(time);
+
+                    innerNewMsg.appendChild(msg);
+                    newMsg.appendChild(innerNewMsg);
+
+                    msgHistory.appendChild(newMsg);
+                }
+            }
+        }
             document.querySelector('#write_msg').focus();
             document.querySelector('#write_msg').onkeyup = function(e) {
                 if (e.keyCode === 13) {  // enter, return

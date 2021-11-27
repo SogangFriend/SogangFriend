@@ -31,7 +31,7 @@ class RoomCreateView(LoginRequiredMixin, View):
                                                created_time=timezone.now(), location=member.location)
             Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
 
-        return redirect('/chat/list')
+        return redirect('/chat/')
 
       
 class ChatView(LoginRequiredMixin, View):
@@ -46,19 +46,27 @@ class ChatView(LoginRequiredMixin, View):
                       {'rooms': rooms, 'member_pk': member_pk})
 
 
-class ChatListView(LoginRequiredMixin, View):
+class EnterChatView(LoginRequiredMixin, View):
     login_url = '/login/'
-    redirect_field_name = '/chat/list/'
+    redirect_field_name = '/chat/'
 
     def get(self, request):
-        rooms = ChatRoom.objects.all()
-        return render(request, 'Chat/room_list.html',
-                      {'rooms': rooms})
+        member_pk = request.session.get('member')
+        room_pk = request.GET.get('room')
+        member = Member.objects.get(pk=member_pk)
+        chat_room = ChatRoom.objects.get(pk=room_pk)
+        mc = Member_ChatRoom.objects.filter(member=member, chat_room=chat_room)
+        if mc.count() == 0:
+            Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
+                                           member_timestamp=timezone.now())
+        else:
+            mc[0].unread = False
+        return redirect('/chat/')
 
 
 class EnterDMView(LoginRequiredMixin, View):
     login_url = '/login/'
-    redirect_field_name = '/chat/list/'
+    redirect_field_name = '/chat/'
 
     def get(self, request, pk):
         target = Member.objects.get(pk=pk)
@@ -82,7 +90,7 @@ class EnterDMView(LoginRequiredMixin, View):
 
 
 class CheckUnreadView(LoginRequiredMixin, View):
-    login_url = '/login'
+    login_url = '/login/'
 
     def get(self, request):
         member_pk = request.session['member']
