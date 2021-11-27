@@ -23,6 +23,7 @@ class HomeView(LoginRequiredMixin, View):
         members = Member.objects.filter(location=member_info.location)
         chats = ChatRoom.objects.filter(location=member_info.location)
 
+
         # 서울특별시 금천구
         # 강원도 강릉시
         key = member_info.location.si
@@ -30,6 +31,7 @@ class HomeView(LoginRequiredMixin, View):
         if member_info.location.isGYorTB:
             key += "_" + member_info.location.gu
             path += member_info.location.si + "/" + member_info.location.gu + ".geojson"
+
         else:
             key = member_info.location.do + "_" + key
             path += member_info.location.do + "/" + member_info.location.si + ".geojson"
@@ -41,7 +43,7 @@ class HomeView(LoginRequiredMixin, View):
                 features = json_data['features']
                 for feature in features:
                     data = {
-                        'name': feature['properties']['adm_nm'].split()[2],
+                        'name': feature['properties']['adm_nm'],
                         'coords': feature['geometry']['coordinates']
                     }
                     coords.append(data)

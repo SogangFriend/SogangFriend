@@ -52,7 +52,7 @@
                     자기소개는 My Page에서 수정 가능합니다.
                 </div>
                 <br>
-                <button id="alertStart" type="submit" class="btn">이메일 인증하고 가입 완료</button>
+                <button id="alertStart" type="button" class="btn">이메일 인증하고 가입 완료</button>
 
                 <div class="bottomText">
                     이미 회원이신가요? <a href="{% url 'login'%}">  로그인하기</a>
@@ -65,39 +65,40 @@
 
     <script>
     function name_overlap_check() {
-
-        $('#name_input').change(function () {
+        let nameInput = $('#name_input');
+        nameInput.change(function () {
           $('#name_btn').show();
           $('#name_input').attr("check_result", "fail");
         })
 
 
-        if ($('#name_input').val() === '') {
+        if (nameInput.val() === '') {
           alert('닉네임을 입력해주세요.')
           return;
         }
 
-        name_overlap_input = document.querySelector('input[name="name"]');
+        let name_overlap_input = document.querySelector('input[name="name"]');
+
+        console.log(nameInput.value);
+        console.log(name_overlap_input.value);
 
         $.ajax({
-          url: "{% url 'Member:new' %}",
-          data: {
-            'name': name_overlap_input.value
-          },
-          datatype: 'json',
-          success: function (data) {
-            console.log(data['overlap']);
-            if (data['overlap'] === "fail") {
-              alert("이미 존재하는 닉네임 입니다.");
-              name_overlap_input.focus();
-              return;
-            } else {
-              alert("사용가능한 닉네임 입니다.");
-              $('#name_input').attr("check_result", "success");
-              $('#name_btn').show();
-              return;
+            url: "{% url 'Member:check' %}",
+            data: {
+                'name': name_overlap_input.value
+            },
+            datatype: 'json',
+            success: function (data) {
+                console.log(data['overlap']);
+                if (data['overlap'] === "fail") {
+                    alert("이미 존재하는 닉네임 입니다.");
+                    name_overlap_input.focus();
+                } else {
+                    alert("사용가능한 닉네임 입니다.");
+                    $('#name_input').attr("check_result", "success");
+                    $('#name_btn').show();
+                }
             }
-          }
         });
     }
 
@@ -136,5 +137,80 @@
             }
         }
 
+        function clicked () {
+            let form = $('#register-form')[0];
+            let formData = new FormData(form);
+            $.ajax({
+                url: "/member/new/",
+                method: "POST",
+                data: formData,
+                processData: false,
+			    contentType: false,
+                dataType: 'json',
+            })
+            .done((data) => {
+                console.log(data);
+                if (data['success'] === 0) {
+                    Swal.fire({
+                        icon: 'success',
+                        html: data['message'],
+                        buttonsStyling:false,
+                        confirmButtonText: "확인",
+                        width: '672px',
+
+                        customClass : {
+                            confirmButton: 'swal-register-btn',
+                            popup: 'swal-custom-container'
+                        },
+                        footer: data['footer']
+                    });
+                }
+                else {
+                    if (data['success'] === 1) {
+                        Swal.fire({
+                            icon: 'error',
+                            html: data['message'],
+                            buttonsStyling:false,
+                            confirmButtonText: "확인",
+                            width: '672px',
+
+                            customClass : {
+                                confirmButton: 'swal-register-btn',
+                                popup: 'swal-custom-container'
+                            },
+                            footer: data['footer']
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            html: data['message'],
+                            buttonsStyling:false,
+                            confirmButtonText: "로그인하러 가기",
+                            cancelButtonText: "비밀번호 찾기",
+                            width: '672px',
+                            customClass : {
+                                confirmButton: 'swal-register-btn',
+                                cancelButton: 'swal-register-cancel-btn',
+                                popup: 'swal-custom-container',
+                            },
+                            footer: data['footer']
+                        })
+                        .then((result) => {
+                            if(result.isConfirmed){
+                                window.location = "/login/";
+                            } else {
+                                $.ajax({
+                                    url: "/member/password/",
+                                    method: "GET",
+                                })
+                            }
+                        });
+                    }
+                }
+
+            })
+            .fail(() => {console.log("failed");});
+        }
     </script>
 {% endblock %}
