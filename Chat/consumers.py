@@ -69,6 +69,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         member = Member.objects.get(pk=self.member)
         chat_room = ChatRoom.objects.get(pk=self.room_name)
         msg = Message.objects.create(message=message, sender=member, chat_room=chat_room, timestamp=timezone.now())
+        msg.save()
         return msg
 
     @database_sync_to_async
@@ -85,6 +86,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if mc.count() == 0:
             Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
                                            member_timestamp=timezone.now())
+            m.save()
         else:
             mc[0].unread = False
 

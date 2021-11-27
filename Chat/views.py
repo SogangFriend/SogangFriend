@@ -56,8 +56,9 @@ class EnterChatView(LoginRequiredMixin, View):
         chat_room = ChatRoom.objects.get(pk=room)
         mc = Member_ChatRoom.objects.filter(member=member, chat_room=chat_room)
         if mc.count() == 0:
-            Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
-                                           member_timestamp=timezone.now())
+            m = Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
+                                               member_timestamp=timezone.now())
+            m.save()
         else:
             mc[0].unread = False
         return redirect('/chat/')
