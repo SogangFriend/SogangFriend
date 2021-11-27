@@ -1,0 +1,260 @@
+* {
+    font-family: "Noto Sans KR", sans-serif;
+}
+.wrap {
+    width: 100%;
+    height: 1100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:#f5d300;
+}
+
+.white_box {
+    width: 1100px;
+    height: 1012px;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+.img_register_box {
+    width: 594px;
+    height: 1012px;
+    overflow:hidden;
+    text-align: center;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    float: left;
+    display: inline-block;
+}
+
+.img_register {
+    width: 100%;
+    height: 100%;
+}
+
+.register {
+    width: 506px;
+    height: 1012px;
+    padding: 100px 0 0 30px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    float: left;
+}
+
+.register_h2 {
+    height: 107px;
+    margin: 0 82px 15px 0;
+    font-size: 35px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.57;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000;
+}
+
+.register_h4 {
+  height: 20px;
+  width: 400px;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.43;
+  letter-spacing: normal;
+  text-align: right;
+  color: #121212;
+}
+
+.input {
+    width: 406px;
+    height: 50px;
+    margin-bottom: 15px;
+    padding-left: 15px;
+    /*border-radius: 8px;*/
+    border-color: #fff;
+    border: 0;
+    border-bottom: 1px solid #000;
+    background-color: #fff;
+}
+
+.btn {
+    width: 406px;
+    height: 60px;
+    margin: 15px 0 25px;
+    padding: 20px;
+    border-radius: 30px;
+    background-color: #000;
+
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fff;
+}
+
+.sinput {
+    width: 306px;
+    height: 50px;
+    margin-bottom: 15px;
+    padding-left: 15px;
+    /*border-radius: 8px;*/
+    border-color: #fff;
+    border: 0;
+    border-bottom: 1px solid #000;
+    background-color: #fff;
+}
+
+.sbtn {
+    width: 100px;
+    height: 40px;
+    border-radius: 30px;
+    background-color: #000;
+
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fff;
+}
+
+.name_input {
+    width: 306px;
+    height: 50px;
+    margin-bottom: 15px;
+    padding-left: 15px;
+    /*border-radius: 8px;*/
+    border-color: #fff;
+    border: 0;
+    border-bottom: 1px solid #000;
+    background-color: #fff;
+}
+
+.name_btn {
+    width: 100px;
+    height: 40px;
+    border-radius: 30px;
+    background-color: #000;
+
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fff;
+}
+
+
+.btn:hover {
+    color: #fff;
+}
+
+
+.password {
+    /*width: 80px;*/
+    height: 20px;
+    margin: 0 0 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: normal;
+    text-align: left;
+    vertical-align: middle;
+    color: #707070;
+    float: left;
+}
+
+.bottomText {
+    height: 20px;
+    margin: 25px 0 100px 120px;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+    /*text-align: center;*/
+    color: #7b7b7b;
+}
+
+.swal-confirm-sent {
+    width: 472px;
+    height: 29px;
+    margin: 25px 0 0 80px;
+    font-size: 20px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.75;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1d1d1d;
+}
+
+.swal-confirm-sent2 {
+      width: 340px;
+      height: 20px;
+      margin: 0 0 10px 150px;
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 3.93;
+      letter-spacing: normal;
+      text-align: center;
+      color: #969696;
+}
+
+.swal-register-btn {
+    width: 406px;
+    height: 60px;
+    margin: 0 33px 25px;
+    padding: 20px;
+    border-radius: 30px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+}
+
+.swal-custom-container {
+      width: 672px;
+      height: 504px;
+      /*margin: 187px 164px 336px 214px;*/
+      /*padding: 50px 100px;*/
+      border-radius: 20px;
+      border: solid 1px #707070;
+      background-color: #fff;
+}
+
+.swal-register-cancel-btn {
+    width: 406px;
+    height: 60px;
+    margin: 0 33px 25px;
+    padding: 20px;
+    border-radius: 30px;
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+}

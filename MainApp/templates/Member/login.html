@@ -1,6 +1,7 @@
 {% extends 'yellow_base.html' %}
 {% load static %}
 {% block inwrap %}
+<link rel="stylesheet" href="{% static '/css/login.css' %}">
 
 <div class="white_box">
     <div class="img_login_box">
@@ -12,7 +13,7 @@
         </div>
         <br>
         <h4 class="login_h4">지금 내 주변의 서강대생을 만나보세요!</h4>
-        <form method = "POST" action = "">
+        <form method = "POST" action = "" id="login-form">
             {% csrf_token %}
             {% for field in form %}
                 <input type="{{ field.field.widget.input_type }}" class ="login_input" id="{{ field.id_for_label }}"
@@ -20,10 +21,10 @@
             {% endfor %}
             <span style="color:red;"><strong>{{ error }}</strong> </span>
             <br>
-            <button type="submit" class="btn">로그인</button>
+            <button type="button" class="btn" onclick="clicked()">로그인</button>
             <div class="auto-login">
-                <input class="checkbox" type="checkbox" name="" id="checkbox"/>
-                <label class="auto-login-text" for="checkbox">자동로그인</label>
+                <input class="auto-login-checkbox" type="checkbox" id="auto-login-checkbox"/>
+                <label class="auto-login-text" for="auto-login-checkbox">자동로그인</label>
                 <a class="password" href="{% url 'Member:password' %}">비밀번호 찾기</a>
             </div>
             <br>
@@ -33,5 +34,55 @@
         </form>
     </div>
 </div>
+
+<script>
+    let flag = "{{ activate }}";
+    flag = flag === "1";
+    window.onload = () => {
+        if(flag) {
+            console.log("flag", flag);
+            Swal.fire({
+                icon: 'success',
+                html: "{{ message | escapejs }}",
+                buttonsStyling:false,
+                confirmButtonText: "로그인하러 가기",
+                customClass : {
+                    confirmButton: 'swal-register-btn',
+                    popup: 'swal-custom-container'
+                },
+                footer: "{{ footer | escapejs }}"
+            });
+        }
+    };
+
+    function clicked() {
+        let form = $('#login-form')[0];
+        let formData = new FormData(form);
+        $.ajax({
+            url: "/login/",
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+        }).done((data) => {
+            if (data['success'] === 1) {
+                window.location = "/";
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    html: data['error'],
+                    buttonsStyling: false,
+                    confirmButtonText: "확인",
+
+                    customClass : {
+                        confirmButton: 'swal-register-btn',
+                        popup: 'swal-custom-container'
+                    }
+                });
+            }
+        })
+    }
+</script>
 
 {% endblock %}

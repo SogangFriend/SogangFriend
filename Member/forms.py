@@ -46,56 +46,61 @@ class LoginForm(forms.Form):
 
 
 class EmailForm(forms.Form):
-    email = forms.EmailField(widget=forms.EmailInput)
+    email = forms.EmailField(widget=forms.EmailInput, label='')
 
     class Meta:
         fields = ['email']
 
     def __init__(self, *args, **kwarg):
         super(EmailForm, self).__init__(*args, **kwarg)
-        self.fields['email'].label = '이메일'
         self.fields['email'].widget.attrs.update({
             'class': 'form-control',
             'id': 'pw_form_email',
+            'placeholder': "Email"
         })
 
 
 class AuthNumForm(forms.Form):
-    auth_num = forms.CharField(widget=forms.TextInput)
+    auth_num = forms.CharField(widget=forms.TextInput, label='')
 
     class Meta:
         fields = ['auth_num']
 
     def __init__(self, *args, **kwargs):
         super(AuthNumForm, self).__init__(*args, **kwargs)
-        self.fields['auth_num'].label = '인증번호'
         self.fields['auth_num'].widget.attrs.update({
             'class': 'form-control',
             'id': 'auth_num',
+            'placeholder': "인증 번호",
         })
 
 
 class PasswordResetForm(SetPasswordForm):
     def __init__(self, *args, **kwargs):
         super(PasswordResetForm, self).__init__(*args, **kwargs)
-        self.fields['new_password1'].label = "새 비밀번호"
+        self.fields['new_password1'].label=""
         self.fields['new_password1'].widget.attrs.update({
-            'class': 'form-control'
+            'class': 'form-control',
+            'placeholder': "새 비밀번호"
         })
-        self.fields['new_password2'].label = "새 비밀번호 확인"
+        self.fields['new_password2'].label=""
         self.fields['new_password2'].widget.attrs.update({
-            'class': 'form-control'
+            'class': 'form-control',
+            'placeholder' : "새 비밀번호 확인"
         })
 
 
 class EditProfileView(forms.Form):
+    profile_photo = forms.ImageField(label="이미지", required=False)
     name = forms.CharField()
     email = forms.EmailField(widget=forms.EmailInput)
     location = forms.CharField()
     introduction = forms.CharField(widget=forms.TextInput)
 
+    # password = forms.
+
     class Meta:
-        fields = ['name', 'email', 'location', 'introduction']
+        fields = ['profile_photo', 'name', 'email', 'location', 'introduction']
 
     def __init__(self, *args, **kwargs):
         super(EditProfileView, self).__init__(*args, **kwargs)
@@ -108,12 +113,16 @@ class EditProfileView(forms.Form):
             'class': 'form-control',
             'readonly': 'True'
         })
-        self.fields['location'].label = "주소"
+        self.fields['location'].label = "지역"
         self.fields['location'].widget.attrs.update({
             'class': 'form-control',
             'readonly': 'True'
         })
         self.fields['introduction'].label = "자기소개"
         self.fields['introduction'].widget.attrs.update({
+            'class': 'form-control'
+        })
+        self.fields['profile_photo'].label = ""
+        self.fields['profile_photo'].widget.attrs.update({
             'class': 'form-control'
         })

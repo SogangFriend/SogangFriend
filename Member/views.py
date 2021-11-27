@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, reverse, resolve_url
 
@@ -8,13 +10,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import get_user_model
 from .forms import *
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from MainApp.models import *
 from django.utils.encoding import force_bytes, force_text
 
 
 User = get_user_model()
-
 
 def mail_send(member, request, find):
     if find:
@@ -49,10 +50,27 @@ def activate(request, uid64):#계정활성화 함수
     if user is not None: #유효성 검사
         user.is_active = True
         user.save()
-        return redirect('/login')
+        html = "<div class='swal-confirm-sent'>축하합니다!<br>회원가입이 완료되었습니다.</div>"
+        footer = "<div class='swal-ask'>* 개인정보 수정은 로그인 후 My Page에서 가능합니다.</div>"
+        return render(request, "Member/login.html", {'form': LoginForm(), 'activate': 1,
+                                                     'message': html, 'footer': footer})
 
     else: #이메일 인증 기한 지남
         return render(request, "Member/register.html")
+
+
+def name_overlap_check(request):
+    name = request.GET.get('name')
+    try:
+        user = Member.objects.get(name=name)
+    except:
+        user = None
+    if user is None:
+        overlap = "pass"
+    else:
+        overlap = "fail"
+    context = {'overlap': overlap}
+    return JsonResponse(context)
 
 
 class RegisterView(View):
@@ -69,25 +87,31 @@ class RegisterView(View):
         introduction = request.POST.get('introduction', '')
 
         error_message = None
+        success = 1
         if not (name and email and password and re_password and location and introduction):
-            error_message = "필수문항(*)을 입력해 주세요."
+            error_message = "<div class='swal-confirm-sent'>필수문항(*)을 입력해 주세요.</div>"
         elif password != re_password:
-            error_message = '비밀번호가 다릅니다.'
+            error_message = "<div class='swal-confirm-sent'>비밀번호가 다릅니다.</div>"
         elif not (email.endswith('@sogang.ac.kr') or email.endswith('@u.sogang.ac.kr')):
-            error_message = '서강대학교 이메일을 사용해주세요.'
+            error_message = "<div class='swal-confirm-sent'>서강대학교 이메일을 사용해주세요.</div>"
+        elif Member.objects.filter(email=email).count() != 0:
+            error_message = "<div class='swal-confirm-sent'>이미 가입된 계정입니다.</div>" \
+                            "<div class='swal-confirm-sent2'>로그인해주세요.</div>"
+            success = 2
         else:
+            success = 0
             location_info = str(location).split(' ')
             si = location_info[0]
             gu = location_info[1]
             dong = location_info[2]
             isGYorTB = False
-            if si[:-4:-1] == "특별시" or si[:-4:-1] == "광역시":
+            if si.endswith("특별시") or si.endswith("광역시"):
                 isGYorTB = True
             loc = Location.objects.filter(si=si, gu=gu, dong=dong, isGYorTB=isGYorTB)
             if loc.count() != 0:
                 loc = loc[0]
             else:
-                loc = Location(si=si, gu=gu, dong=dong, isGYorTB=True)
+                loc = Location(si=si, gu=gu, dong=dong, isGYorTB=isGYorTB)
                 loc.save()
 
             user = User.objects.create_user(email=email, name=name, password=password, student_number=student_number,
@@ -95,8 +119,12 @@ class RegisterView(View):
 
             user.save()
             mail_send(user, request, False)
-            return HttpResponse("회원가입을 축하드립니다. 가입하신 이메일주소로 인증메일을 발송했으니 확인 후 인증해주세요.")
-        return render(request, 'Member/register.html', {'error': error_message})  # register를 요청받으면 register.html 로 응답.
+            html = "<div class='swal-confirm-sent'>인증 메일이 입력하신 주소로 전송되었습니다.</div>" \
+                   "<div class='swal-confirm-sent2'>받으신 이메일을 열어 버튼을 클릭하면 가입이 완료됩니다.</div>"
+            footer = "<div class='swal-ask'>이메일을 확인할 수 없나요?</div>" \
+                     "<div class='swal-retry'> 스팸편지함 확인 또는 <a href='/mail/{}'>인증메일 다시 보내기</a></div>".format(email)
+            return JsonResponse({'success': success, 'message': html, 'footer': footer})
+        return JsonResponse({'success': success, 'message': error_message})  # register를 요청받으면 register.html 로 응답.
 
 
 class LoginView(View):
@@ -112,18 +140,21 @@ class LoginView(View):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
+            self.response_data['success'] = 2
             login_email = form.cleaned_data['email']
             login_password = form.cleaned_data['password']
             member = authenticate(email=login_email, password=login_password)
             if member is not None:
                 login(request, member)
                 request.session['member'] = member.pk
-                return redirect('/')
+                self.response_data['success'] = 1
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
         else:
             self.response_data['error'] = "이메일과 비밀번호를 모두 입력해주세요."
-        return render(request, 'Member/login.html', self.response_data)
+        return JsonResponse(self.response_data)
+
+
 
 
 def log_out(request):
@@ -142,8 +173,8 @@ class MyPageView(LoginRequiredMixin, View):
         member = Member.objects.get(pk=member_pk)
         form = self.form_class(initial={'name': member.name, 'email': member.email,
                                         'password': member.password, 'introduction': member.introduction,
-                                        'location': member.location.si + " " + member.location.gu + " " +
-                                                    member.location.dong})
+                                        'location': member.location.si.name + " " + member.location.gu.name + " " +
+                                                    member.location.dong.name, 'profile_photo' : member.profile_photo})
         return render(request, 'Member/my_page.html', {'form': form})
 
     def post(self, request):
@@ -155,6 +186,7 @@ class MyPageView(LoginRequiredMixin, View):
             target_member = Member.objects.get(pk=member_pk)
             target_member.name = name
             target_member.introduction = introduction
+            # target_member.profile_photo = profile_photo
             target_member.save()
         return redirect('/member/mypage/')
 
@@ -210,7 +242,7 @@ class PasswordResetView(View):
 
             if form.is_valid():
                 form.save()
-                message = "비밀번호 변경완료! 변경된 비밀번호로 로그인하세요."
+                message = "변경된 비밀번호로 로그인하세요."
                 logout(request)
                 return render(request, "Member/password_reset_done.html", {"message": message})
             else:
@@ -226,7 +258,7 @@ class MemberListView(View):
         members = Member.objects.all()
         return render(request, 'Member/member_list.html', {"members": members})
 
-      
+
 class RetryMailView(View):
     def get(self, request, email):
         member = Member.objects.get(email=email)
