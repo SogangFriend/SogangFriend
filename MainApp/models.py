@@ -17,17 +17,6 @@ class Location(models.Model):
     gu = models.CharField(max_length=20, null=True, blank=True)
     dong = models.CharField(max_length=20, null=False)
 
-
-class CentralPosition(models.Model):
-    loc1 = models.CharField(max_length=20)
-    isGYorTB = models.BooleanField(default=False)
-    loc2 = models.CharField(max_length=20, null=False)
-    loc3 = models.CharField(max_length=20, null=False)
-    loc4 = models.CharField(max_length=20, null=True)
-    lat = models.FloatField()
-    lng = models.FloatField()
-
-
 # 데이터베이스 테이블
 # class - 테이블 하나에 매칭
 # 테이블 도, 시, 구, 동, location, Member

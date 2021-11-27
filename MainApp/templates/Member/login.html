@@ -2,7 +2,6 @@
 {% load static %}
 {% block inwrap %}
 <link rel="stylesheet" href="{% static '/css/login.css' %}">
-<link rel="stylesheet" href="{% static '/css/register.css' %}">
 
 <div class="white_box">
     <div class="img_login_box">
@@ -24,8 +23,8 @@
             <br>
             <button type="button" class="btn" onclick="clicked()">로그인</button>
             <div class="auto-login">
-                <input class="checkbox" type="checkbox" name="" id="checkbox"/>
-                <label class="auto-login-text" for="checkbox">자동로그인</label>
+                <input class="auto-login-checkbox" type="checkbox" id="auto-login-checkbox"/>
+                <label class="auto-login-text" for="auto-login-checkbox">자동로그인</label>
                 <a class="password" href="{% url 'Member:password' %}">비밀번호 찾기</a>
             </div>
             <br>
