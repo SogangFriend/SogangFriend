@@ -25,6 +25,9 @@ urlpatterns = [
     path('mypage/password/', PasswordChangeView.as_view(), name='password_change'),
 
     path('mail/<str:email>/', RetryMailView.as_view(), name='retry'),
+
+    # ajax 통신 url
+    path('/check/<str:name>/', name_overlap_check, name='check'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
