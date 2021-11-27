@@ -171,7 +171,7 @@ class MyPageView(LoginRequiredMixin, View):
         form = self.form_class(initial={'name': member.name, 'email': member.email,
                                         'password': member.password, 'introduction': member.introduction,
                                         'location': member.location.si.name + " " + member.location.gu.name + " " +
-                                                    member.location.dong.name})
+                                                    member.location.dong.name, 'profile_photo' : member.profile_photo})
         return render(request, 'Member/my_page.html', {'form': form})
 
     def post(self, request):
@@ -179,10 +179,12 @@ class MyPageView(LoginRequiredMixin, View):
         if form.is_valid():
             name = form.cleaned_data['name']
             introduction = form.cleaned_data['introduction']
+            profile_photo = form.cleaned_data['profile_photo']
             member_pk = request.session['Member']
             target_member = Member.objects.get(pk=member_pk)
             target_member.name = name
             target_member.introduction = introduction
+            target_member.profile_photo = profile_photo
             target_member.save()
         return redirect('/member/mypage/')
 

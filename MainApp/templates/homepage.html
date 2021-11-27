@@ -32,9 +32,11 @@
                                 {% for member in members %}
                                  <div id="people" class="lb_profile" style="display:block;">
                                     <div class="people_img">
-{#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
-                                     {{ profile_photo }}</div>
-                                     {{ member.name }} <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
+                                     <img src="/static/images/default_profile.png" alt="sogang">
+                                     {{ member.profile_photo }}</div>
+                                     {{ member.name }}
+                                     <span_studentN>{{ member.student_number }}학번</span_studentN>
+                                     <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
                                      <p class="people_info_txt">{{ member.location.si.name }} {{ member.location.gu.name }} {{ member.location.dong.name }}<br>
                                      한줄소개: {{ member.introduction }}</p>
 
@@ -47,6 +49,7 @@
 {#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
                                      {{ profile_photo }}</div>
                                       {{ chat.name }} <br>
+                                    <a href="{% url 'Chat:dm'  pk=chat.pk %}" style="color: #F5D300; font-size:13px; float:right;">입장하기</a>
                                 </div>
                                 {% endfor %}
                              </div>

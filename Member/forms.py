@@ -89,14 +89,16 @@ class PasswordResetForm(SetPasswordForm):
 
 
 class EditProfileView(forms.Form):
+    profile_photo = forms.ImageField(label="이미지", required=False)
     name = forms.CharField()
     email = forms.EmailField(widget=forms.EmailInput)
     location = forms.CharField()
     introduction = forms.CharField(widget=forms.TextInput)
+
     # password = forms.
 
     class Meta:
-        fields = ['name', 'email', 'location', 'introduction']
+        fields = ['profile_photo', 'name', 'email', 'location', 'introduction']
 
     def __init__(self, *args, **kwargs):
         super(EditProfileView, self).__init__(*args, **kwargs)
@@ -118,7 +120,7 @@ class EditProfileView(forms.Form):
         self.fields['introduction'].widget.attrs.update({
             'class': 'form-control'
         })
-        # self.fields['password'].label = "기존 비밀번호"
-        # self.fields['password'].widget.attrs.update({
-        #     'class': 'form-control'
-        # })
+        self.fields['profile_photo'].label = ""
+        self.fields['profile_photo'].widget.attrs.update({
+            'class': 'form-control'
+        })

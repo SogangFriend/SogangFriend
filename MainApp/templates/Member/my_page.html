@@ -5,17 +5,15 @@
     마이페이지
 </span_mypg><br>
     <div class="pro">
-    {{ profile_photo }}
     </div>
-
 
     <form class="form_mypg"  method="POST" action="{% url 'Member:my_page' %}">
         {% csrf_token %}
         <span style="color:red;"><strong>{{ error }}</strong> </span>
         {{ form.as_p }}
-
         <button type="submit" class="btn_mypg">수정 완료</button>
     </form>
+
 
 {#    <form method = "POST" action = " ">#}
 {#            {% csrf_token %}#}
