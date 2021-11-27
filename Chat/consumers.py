@@ -81,9 +81,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def enter_chatroom(self):
         member = Member.objects.get(pk=self.member)
         chat_room = ChatRoom.objects.get(pk=self.room_name)
-        if Member_ChatRoom.objects.filter(member=member, chat_room=chat_room).count() == 0:
+        mc = Member_ChatRoom.objects.filter(member=member, chat_room=chat_room)
+        if mc.count() == 0:
             Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
                                            member_timestamp=timezone.now())
+        else:
+            mc[0].unread = False
 
     @database_sync_to_async
     def get_member_chatroom(self):

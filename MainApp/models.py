@@ -10,33 +10,12 @@ from django.db import models
 #               Dong - Daeheung
 
 
-class Do(models.Model):
-    name = models.CharField(max_length=30, null=False)
-
-
-class Si(models.Model):
-    name = models.CharField(max_length=30, null=False)
-    do = models.ForeignKey(Do, on_delete=models.CASCADE, null=True, blank=True)
-    isGYorTB = models.BooleanField(default=False)
-
-
-class Gu(models.Model):
-    name = models.CharField(max_length=30, null=False)
-    si = models.ForeignKey(Si, on_delete=models.CASCADE)
-
-
-class Dong(models.Model):
-    name = models.CharField(max_length=30, null=False)
-    si = models.ForeignKey(Si, on_delete=models.CASCADE)
-    gu = models.ForeignKey(Gu, on_delete=models.CASCADE, null=True, blank=True)
-#   읍 면 리 포함
-
-
 class Location(models.Model):
-    do = models.ForeignKey(Do, on_delete=models.CASCADE, null=True, blank=True)
-    si = models.ForeignKey(Si, on_delete=models.CASCADE, null=False)
-    gu = models.ForeignKey(Gu, on_delete=models.CASCADE, null=True, blank=True)
-    dong = models.ForeignKey(Dong, on_delete=models.CASCADE, null=False)
+    do = models.CharField(max_length=20, null=True, blank=True)
+    si = models.CharField(max_length=20, null=False)
+    isGYorTB = models.BooleanField(default=False)
+    gu = models.CharField(max_length=20, null=True, blank=True)
+    dong = models.CharField(max_length=20, null=False)
 
 # 데이터베이스 테이블
 # class - 테이블 하나에 매칭

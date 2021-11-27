@@ -2,13 +2,6 @@
 {% load static %}
 {% block content %}
 <link href="../../../static/admin/css/chat.css" rel="stylesheet">
-{#<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">#}
-{#<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>#}
-{#<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>#}
-<!------ Include the above in your HEAD tag ---------->
-
-<meta charset="utf-8">
-{#<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">#}
 
 <div class="container">
     <h3 class=" text-left">채팅</h3>
@@ -58,6 +51,7 @@
 
 
 <script>
+    let chatSocket = null;
     let msgHistory = document.getElementsByClassName("msg_history")[0];
     let rms = [
         {% for room in rooms %}
@@ -124,70 +118,77 @@
         /*
         chatSocket 연결
          */
-        chatSocket = new WebSocket(
-            'wss://' + window.location.host +
-            '/ws/chat/' + roomName + '/' + member + '/');
-
+        const makeConnection = () => {
+            chatSocket = new WebSocket(
+                        'wss://' + window.location.host +
+                        '/ws/chat/' + roomName + '/' + member + '/');
+            // Other logic codes here
             chatSocket.onmessage = function(e) {
-            let data = JSON.parse(e.data);
-            let sender = data['sender'];
-            let message = data['message'];
-            let timestamp = data['timestamp'];
+                let data = JSON.parse(e.data);
+                let sender = data['sender'];
+                let message = data['message'];
+                let timestamp = data['timestamp'];
 
-            let newMsg = document.createElement('div');
-            sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
-                              : newMsg.setAttribute('class', 'incoming_msg');
-            let innerNewMsg = document.createElement('div');
-            sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
-                              : innerNewMsg.setAttribute('class', 'received_msg');
+                let newMsg = document.createElement('div');
+                sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
+                                  : newMsg.setAttribute('class', 'incoming_msg');
+                let innerNewMsg = document.createElement('div');
+                sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
+                                  : innerNewMsg.setAttribute('class', 'received_msg');
 
-            let msg = document.createElement('div');
-            if(member !== sender) msg.setAttribute('class', 'received_withd_msg');
+                let msg = document.createElement('div');
+                if(member !== sender) msg.setAttribute('class', 'received_withd_msg');
 
 
-            let p = document.createElement('p');
-            let text = document.createTextNode(message);
+                let p = document.createElement('p');
+                let text = document.createTextNode(message);
 
-            let time = document.createElement('span');
-            let timeText = document.createTextNode(timestamp);
+                let time = document.createElement('span');
+                let timeText = document.createTextNode(timestamp);
 
-            p.appendChild(text);
-            time.setAttribute('class', 'time_date');
-            time.appendChild(timeText);
+                p.appendChild(text);
+                time.setAttribute('class', 'time_date');
+                time.appendChild(timeText);
 
-            msg.appendChild(p);
-            msg.appendChild(time);
+                msg.appendChild(p);
+                msg.appendChild(time);
 
-            innerNewMsg.appendChild(msg);
-            newMsg.appendChild(innerNewMsg);
+                innerNewMsg.appendChild(msg);
+                newMsg.appendChild(innerNewMsg);
 
-            msgHistory.appendChild(newMsg);
+                msgHistory.appendChild(newMsg);
+            };
+
+
+            document.querySelector('#write_msg').focus();
+            document.querySelector('#write_msg').onkeyup = function(e) {
+                if (e.keyCode === 13) {  // enter, return
+                    document.querySelector('#msg_send_btn').click();
+                }
+            };
+
+            document.querySelector('#msg_send_btn').onclick = function(e) {
+                let messageInputDom = document.querySelector('#write_msg');
+                let message = messageInputDom.value;
+
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'sender' : "{{ member_pk }}"
+                }));
+
+                messageInputDom.value = '';
+            };
+            chatSocket.onclose = () => {
+                chatSocket = null;
+            };
         };
+        if (chatSocket) {
+            chatSocket.onclose = makeConnection;
+            chatSocket.close();
+        } else {
+            makeConnection();
+        }
 
-
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-            console.error(e);
-        };
-
-        document.querySelector('#write_msg').focus();
-        document.querySelector('#write_msg').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#msg_send_btn').click();
-            }
-        };
-
-        document.querySelector('#msg_send_btn').onclick = function(e) {
-            let messageInputDom = document.querySelector('#write_msg');
-            let message = messageInputDom.value;
-
-            chatSocket.send(JSON.stringify({
-                'message': message,
-                'sender' : "{{ member_pk }}"
-            }));
-
-            messageInputDom.value = '';
-        };
     }
 
 

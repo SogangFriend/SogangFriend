@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import os
 from .my_settings import *
@@ -61,8 +61,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'six',
     'rest_framework',
-    'rest_framework.authtoken',
 ]
+
+SESSION_COOKIE_AGE = 60 * 10		# 세션쿠키의 유효기간 설정(60s * 10m)
+SESSION_SAVE_EVERY_REQUEST = True	# 서버에게 Request를 보낼 경우 시간 초기화
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 
 ASGI_APPLICATION = 'SGFriend.routing.application'
 CHANNEL_LAYERS = {
@@ -73,13 +77,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ]
-}
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -123,9 +120,12 @@ AUTH_PASSWORD_VALIDATORS = [
     # {
     #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 7,
+        }
+    },
     # {
     #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     # },

@@ -14,11 +14,11 @@ class UserCustomAdmin(UserAdmin):
     form = MemberChangeForm
     add_form = MemberCreationForm
 
-    list_display = ('email', 'name', 'student_number', 'location', 'introduction', 'is_admin')
+    list_display = ('email', 'name', 'student_number', 'location', 'introduction', 'is_admin', 'profile_photo')
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('개인 정보', {'fields': ('name', 'student_number', 'location', 'introduction')}),
+        ('개인 정보', {'fields': ('name', 'student_number', 'location', 'introduction', 'profile_photo')}),
         ('권한', {'fields': ('is_admin',)}),
     )
 
