@@ -157,8 +157,8 @@ class MyPageView(LoginRequiredMixin, View):
         member = Member.objects.get(pk=member_pk)
         form = self.form_class(initial={'name': member.name, 'email': member.email,
                                         'password': member.password, 'introduction': member.introduction,
-                                        'location': member.location.si + " " + member.location.gu + " " +
-                                                    member.location.dong})
+                                        'location': member.location.si.name + " " + member.location.gu.name + " " +
+                                                    member.location.dong.name, 'profile_photo' : member.profile_photo})
         return render(request, 'Member/my_page.html', {'form': form})
 
     def post(self, request):
@@ -170,6 +170,7 @@ class MyPageView(LoginRequiredMixin, View):
             target_member = Member.objects.get(pk=member_pk)
             target_member.name = name
             target_member.introduction = introduction
+            # target_member.profile_photo = profile_photo
             target_member.save()
         return redirect('/member/mypage/')
 

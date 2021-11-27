@@ -4,45 +4,50 @@
 <div>
     <div class="left">
         <div class="left_header">
-            <p style="font-size: 13px; text-align:center; font-weight:bold; padding-top:15px; ">나와 관심사가 같은 서강대생을 찾아 이야기를 나누어 보세요!</p></div>
-            <div class="tab_menu">
-              <div class="list">
-
+            <p style="font-size: 13px; text-align:center; font-weight:bold; padding-top:15px; ">나와 관심사가 같은 서강대생을 찾아 이야기를 나누어 보세요!</p>
+        </div>
+        <div class="tab_menu">
+            <div class="list">
                 <li class="is_on">
-                  <a href="#people" class="btn">People</a>
+                    <a href="#people" class="btn">People</a>
                 </li>
 
                 <li>
-                  <a href="#chat" class="btn">Chat</a>
+                    <a href="#chat" class="btn">Chat</a>
                 </li>
-              </div>
-{#                        </div>#}
-            <div class="left_body">
-{#                                <p style="padding-top:-10%; padding-bottom:-10%;">My</p>#}
-                    {% for member in members %}
-                     <div id="people" class="lb_profile" style="display:block;">
-                        <div class="people_img">
-{#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
-                         {{ profile_photo }}</div>
-                         {{ member.name }} <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
-                         <p class="people_info_txt">{{ member.location.si.name }} {{ member.location.gu.name }} {{ member.location.dong.name }}<br>
-                         한줄소개: {{ member.introduction }}</p>
-
-                     </div>
-                     {% endfor %}
-
-                    {% for chat in chats %}
-                    <div id="chat" class="lb_profile" style="display:none;">
-                    <div class="people_img">
-{#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
-                         {{ profile_photo }}</div>
-                          {{ chat.name }} <br>
-                    </div>
-                    {% endfor %}
-                 </div>
             </div>
         </div>
+{#                        </div>#}
+        <div class="left_body">
+{#                                <p style="padding-top:-10%; padding-bottom:-10%;">My</p>#}
+            {% for member in members %}
+                <div id="people" class="lb_profile" style="display:block;">
+                    <div class="people_img">
+                        <img src="/static/images/default_profile.png" alt="sogang">
+                        {{ member.profile_photo }}
+                    </div>
+                    {{ member.name }}
+                    <span_studentN>{{ member.student_number }}학번</span_studentN>
+                    <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
+                    <p class="people_info_txt">{{ member.location.si.name }} {{ member.location.gu.name }} {{ member.location.dong.name }}<br>
+                                                한줄소개: {{ member.introduction }}
+                    </p>
 
+                </div>
+            {% endfor %}
+
+            {% for chat in chats %}
+                <div id="chat" class="lb_profile" style="display:none;">
+                    <div class="people_img">
+{#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
+                        {{ profile_photo }}
+                    </div>
+                    {{ chat.name }} <br>
+                    <a href="{% url 'Chat:dm'  pk=chat.pk %}" style="color: #F5D300; font-size:13px; float:right;">입장하기</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
     <div class="right">
         <div class="member_info" style="height: 5%; float: left;">
