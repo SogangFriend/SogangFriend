@@ -1,0 +1,74 @@
+* {
+    font-family: "Noto Sans KR", sans-serif;
+}
+.swal-confirm-sent {
+    width: 472px;
+    height: 29px;
+    margin: 25px 0 0 80px;
+    font-size: 20px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.75;
+    letter-spacing: normal;
+    text-align: center;
+    color: #1d1d1d;
+}
+
+.swal-confirm-sent2 {
+      width: 340px;
+      height: 20px;
+      margin: 0 0 10px 150px;
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 3.93;
+      letter-spacing: normal;
+      text-align: center;
+      color: #969696;
+}
+
+.swal-register-btn {
+    width: 406px;
+    height: 60px;
+    margin: 0 33px 25px;
+    padding: 20px;
+    border-radius: 30px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+}
+
+.swal-custom-container {
+      width: 672px;
+      height: 504px;
+      /*margin: 187px 164px 336px 214px;*/
+      /*padding: 50px 100px;*/
+      border-radius: 20px;
+      border: solid 1px #707070;
+      background-color: #fff;
+}
+
+.swal-register-cancel-btn {
+    width: 406px;
+    height: 60px;
+    margin: 0 33px 25px;
+    padding: 20px;
+    border-radius: 30px;
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    letter-spacing: normal;
+}

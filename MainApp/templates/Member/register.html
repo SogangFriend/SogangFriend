@@ -1,8 +1,8 @@
 {% extends 'yellow_base.html' %}
 {% load static %}
 {% block inwrap %}
-
-    <img class="img" img src="{% static 'images/register.jpg' %}" >
+    <img class="img" src="{% static 'images/register.jpg' %}" >
+    <link rel="stylesheet" href="{% static '/css/register.css' %}">
 
     <div class="register">
         <h2>회원가입하고</h2>
@@ -13,7 +13,7 @@
             </script>
         {% endif %}
         <div class = "col-12 ">
-            <form method = "POST" action = "">
+            <form method = "POST" action = "" id="register-form">
                 {% csrf_token %}
                 <div class="form-group">
                     <div class="idForm">
@@ -52,7 +52,7 @@
                     </div>
                     <h4>자기소개는 My Page에서 수정 가능합니다. </h4>
 
-                    <button id="alertStart" type="submit" class="btn">이메일 인증하고 가입 완료</button>
+                    <input id="alertStart" type="button" class="btn" onclick="clicked()" value="이메일 인증하고 가입 완료"/>
 
                     <div class="bottomText text-center">
                         이미 회원이신가요? <a href="{% url 'login'%}"> 로그인하기 </a>
@@ -99,16 +99,80 @@
             }
         }
 
-        $().ready(function () {
-            $("#alertStart").click(function () {
-                Swal.fire({
-                    icon: 'success',
-                    title: '입력하신 이메일로 인증 메일이 전송되었습니다.',
-                    text: '메일이 오지 않았을 시 스팸메일함을 확인해 주세요.',
-                    confirmButtonColor: '#000000',
-                    confirmButtonText: '확인',
-                });
-            });
-        });
+        function clicked () {
+            let form = $('#register-form')[0];
+            let formData = new FormData(form);
+            $.ajax({
+                url: "/member/new/",
+                method: "POST",
+                data: formData,
+                processData: false,
+			    contentType: false,
+                dataType: 'json',
+            })
+            .done((data) => {
+                console.log(data);
+                if (data['success'] === 0) {
+                    Swal.fire({
+                        icon: 'success',
+                        html: data['message'],
+                        buttonsStyling:false,
+                        confirmButtonText: "확인",
+                        width: '672px',
+
+                        customClass : {
+                            confirmButton: 'swal-register-btn',
+                            popup: 'swal-custom-container'
+                        },
+                        footer: data['footer']
+                    });
+                }
+                else {
+                    if (data['success'] === 1) {
+                        Swal.fire({
+                            icon: 'error',
+                            html: data['message'],
+                            buttonsStyling:false,
+                            confirmButtonText: "확인",
+                            width: '672px',
+
+                            customClass : {
+                                confirmButton: 'swal-register-btn',
+                                popup: 'swal-custom-container'
+                            },
+                            footer: data['footer']
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            html: data['message'],
+                            buttonsStyling:false,
+                            confirmButtonText: "로그인하러 가기",
+                            cancelButtonText: "비밀번호 찾기",
+                            width: '672px',
+                            customClass : {
+                                confirmButton: 'swal-register-btn',
+                                cancelButton: 'swal-register-cancel-btn',
+                                popup: 'swal-custom-container',
+                            },
+                            footer: data['footer']
+                        })
+                        .then((result) => {
+                            if(result.isConfirmed){
+                                window.location = "/login/";
+                            } else {
+                                $.ajax({
+                                    url: "/member/password/",
+                                    method: "GET",
+                                })
+                            }
+                        });
+                    }
+                }
+
+            })
+            .fail(() => {console.log("failed");});
+        }
     </script>
 {% endblock %}
