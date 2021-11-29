@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -12,26 +14,19 @@ from .models import *
 
 class RoomCreateView(LoginRequiredMixin, View):
     login_url = '/login/'
-    redirect_field_name = '/chat/create/'
-    form_class = ChatRoomForm
-
-    def get(self, request):
-        form = self.form_class()
-        return render(request, 'Chat/chat_form.html', {"form": form})
+    redirect_field_name = '/'
 
     def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            room_name = form.cleaned_data['room_name']
-            nick_name = form.cleaned_data['nick_name']
-            member_pk = request.session.get('member')
-            member = Member.objects.get(pk=member_pk)
+        body = json.loads(request.body)
+        name = body['name']
+        member_pk = request.session.get('member')
+        member = Member.objects.get(pk=member_pk)
+        chatroom = ChatRoom.objects.create(name=name, creator=member,
+                                           created_time=timezone.now(), location=member.location)
+        Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
+        data = {'message': "<div class='swal-confirm-sent'>채팅방이 생성되었습니다.</div>"}
 
-            chatroom = ChatRoom.objects.create(name=room_name, creator=member,
-                                               created_time=timezone.now(), location=member.location)
-            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
-
-        return redirect('/chat/list')
+        return JsonResponse(data)
 
       
 class ChatView(LoginRequiredMixin, View):
