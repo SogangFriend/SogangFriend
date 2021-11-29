@@ -16,36 +16,40 @@
                     <a href="#chat" class="btn">Chat</a>
                 </li>
             </div>
-        </div>
+{#        </div>#}
 {#                        </div>#}
-        <div class="left_body">
-{#                                <p style="padding-top:-10%; padding-bottom:-10%;">My</p>#}
-            {% for member in members %}
-                <div id="people" class="lb_profile" style="display:block;">
-                    <div class="people_img">
-                        <img src="/static/images/default_profile.png" alt="sogang">
-                        {{ member.profile_photo }}
+            <div class="left_body">
+    {#                                <p style="padding-top:-10%; padding-bottom:-10%;">My</p>#}
+                {% for member in members %}
+                    <div id="people" class="lb_profile" style="display:block;">
+                        <div class="people_img">
+                            <img src="/static/images/default_profile.png" alt="sogang">
+                            {{ member.profile_photo }}
+                        </div>
+                        {{ member.name }}
+                        <span_studentN>{{ member.student_number }}학번</span_studentN>
+                        <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
+                        <p class="people_info_txt">{{ member.location.si }} {{ member.location.gu }} {{ member.location.dong }}<br>
+                                                    한줄소개: {{ member.introduction }}
+                        </p>
+
                     </div>
-                    {{ member.name }}
-                    <span_studentN>{{ member.student_number }}학번</span_studentN>
-                    <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
-                    <p class="people_info_txt">{{ member.location.si }} {{ member.location.gu }} {{ member.location.dong }}<br>
-                                                한줄소개: {{ member.introduction }}
-                    </p>
-
-                </div>
-            {% endfor %}
-
-            {% for chat in chats %}
+                {% endfor %}
                 <div id="chat" class="lb_profile" style="display:none;">
-                    <div class="people_img">
-{#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
-                        {{ profile_photo }}
-                    </div>
-                    {{ chat.name }} <br>
-                    <a href="{% url 'Chat:dm'  pk=chat.pk %}" style="color: #F5D300; font-size:13px; float:right;">입장하기</a>
+                    <button type="submit" class="btn_chatroom">채팅방+</button>
                 </div>
-            {% endfor %}
+                {% for chat in chats %}
+                    <div id="chat" class="lb_profile" style="display:none;">
+                        <div class="people_img">
+    {#                                     <img src="/static/images/default_profile.png" alt="sogang">#}
+                            {{ profile_photo }}
+                        </div>
+                        {{ chat.name }} <br>
+                        <a href="{% url 'Chat:dm'  pk=chat.pk %}" style="color: #F5D300; font-size:13px; float:right;">입장하기</a>
+                    </div>
+                {% endfor %}
+
+            </div>
         </div>
     </div>
 
