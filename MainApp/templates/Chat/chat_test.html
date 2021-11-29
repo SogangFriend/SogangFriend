@@ -27,11 +27,14 @@
                     <div class="chat_img"> <img src="{% static '/images/default_profile.png' %}" alt="sogang"> </div>
                     <div class="chat_ib">
                         {% if room.chat_room.is_dm %}
-                        <h5>{{ room.chat_room.target.name }}<span class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
+                            <h5>{{ room.chat_room.target.name }}<span class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
                         {% else %}
-                        <h5>{{ room.chat_room.name }}<span class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
+                            <h5>{{ room.chat_room.name }}<span class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
+                            <p class="people_info_txt">
+                                <br>
+                                인원 : {{ room.chat_room.participants.count }}명
+                            </p>
                         {% endif %}
-    {#                  <p>안녕하세요!</p>#}
                     </div>
                 </div>
             </div>
