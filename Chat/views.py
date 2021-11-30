@@ -87,7 +87,7 @@ class CheckUnreadView(LoginRequiredMixin, View):
         rooms = Member_ChatRoom.objects.filter(member=member)
         flag = False
         for room in rooms:
-            if room.member_timestamp > room.chat_room.timestamp:
+            if room.member_timestamp < room.chat_room.timestamp:
                 room.unread = True
                 room.save()
                 flag = True
