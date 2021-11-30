@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link href="../../../static/admin/css/chat.css" rel="stylesheet">
+<link href="{% static '/css/chat.css' %}" rel="stylesheet">
 
 <div class="container">
     <h3 class=" text-left"> 채팅</h3>
@@ -22,7 +22,7 @@
 {#          </div>#}
           <div class="inbox_chat">
           {% for room in rooms %}
-            <div class="chat_list" style="cursor: pointer" onclick="chatRoom({{ room.chat_room.pk }})">
+            <div class="chat_list" style="cursor: pointer" onclick="chatRoom(this, {{ room.chat_room.pk }})">
                 <div class="chat_people">
                     <div class="chat_img"> <img src="{% static '/images/default_profile.png' %}" alt="sogang"> </div>
                     <div class="chat_ib">
@@ -57,6 +57,8 @@
 
 
 <script>
+    let chatList = document.getElementsByClassName("chat_list");
+
     let chatSocket = null;
     let msgHistory = document.getElementsByClassName("msg_history")[0];
     let rms = [
@@ -76,7 +78,17 @@
         {% endfor %}
     ];
 
-    function chatRoom(pk) {
+    function chatRoom(target, pk) {
+        if (target.classList[1] === "chat_clicked") {
+          target.classList.remove("chat_clicked");
+        } else {
+          for (let i = 0; i < chatList.length; i++) {
+            chatList[i].classList.remove("chat_clicked");
+          }
+          target.classList.add("chat_clicked");
+        }
+
+
         while(msgHistory.firstChild) {
             msgHistory.removeChild(msgHistory.firstChild);
         }
