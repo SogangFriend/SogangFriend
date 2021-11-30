@@ -9,6 +9,18 @@ from .models import *
 # Create your views here.
 
 
+class ChatView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = '/chat/'
+
+    def get(self, request):
+        member_pk = request.session.get('member')
+        member = Member.objects.get(pk=member_pk)
+        rooms = Member_ChatRoom.objects.filter(member=member)
+        return render(request, 'Chat/chat.html',
+                      {'rooms': rooms, 'member_pk': member_pk})
+
+
 class RoomCreateView(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = '/'
@@ -26,31 +38,23 @@ class RoomCreateView(LoginRequiredMixin, View):
         return JsonResponse(data)
 
 
-# class EnterChatView(LoginRequiredMixin, View):
-
-
-      
-class ChatView(LoginRequiredMixin, View):
+class EnterChatView(LoginRequiredMixin, View):
     login_url = '/login/'
-    redirect_field_name = '/chat/'
+    redirect_field_name = "/"
 
-    def get(self, request):
+    def post(self, request):
+        body = json.loads(request.body)
+        room_pk = body['room_pk']
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
-        rooms = Member_ChatRoom.objects.filter(member=member)
-        return render(request, 'Chat/chat.html',
-                      {'rooms': rooms, 'member_pk': member_pk})
+        chatroom = ChatRoom.objects.get(pk=room_pk)
+        data = {'new': True}
+        if Member_ChatRoom.objects.filter(member=member, chat_room=chatroom).count() == 0:
+            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
+        else:
+            data['new'] = False
 
-
-class ChatListView(LoginRequiredMixin, View):
-    login_url = '/login/'
-    redirect_field_name = '/chat/list/'
-
-    def get(self, request):
-        rooms = ChatRoom.objects.all()
-        return render(request, 'Chat/room_list.html',
-                      {'rooms': rooms})
-
+        return JsonResponse(data)
 
 class EnterDMView(LoginRequiredMixin, View):
     login_url = '/login/'

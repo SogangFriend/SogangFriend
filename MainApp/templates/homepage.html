@@ -45,7 +45,7 @@
                             {{ profile_photo }}
                         </div>
                         {{ chat.name }} <span_studentN>{{ chat.creator.name }}</span_studentN><br>
-                        <button class="btn_chatroom" onclick="location.href='{% url 'Chat:dm'  pk=chat.pk %}'">입장하기</button>
+                        <button class="btn_chatroom" onclick="enterChatRoom({{ chat.pk }})">입장하기</button>
                         <p class="people_info_txt">
                             <br>
                             인원 : {{ chat.participants.count }}명
@@ -197,11 +197,9 @@
                return { name: name }
            }
         }).then((result) => {
-            let csrftoken = getCookie('csrftoken');
             let data = {'name': result.value.name, };
-            console.log(data);
+            let csrftoken = getCookie('csrftoken');
             $.ajax({
-
                 beforeSend: function(xhr, settings) {
                     if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
                         xhr.setRequestHeader("X-CSRFToken", csrftoken);
@@ -241,6 +239,57 @@
                         popup: 'swal-custom-container'
                     },
                 });
+            });
+        });
+    }
+
+
+    function enterChatRoom(pk){
+        let csrftoken = getCookie('csrftoken');
+        let data = {'room_pk': pk};
+        $.ajax({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            url: "{% url 'Chat:enter' %}",
+            method: "POST",
+            data: JSON.stringify(data),
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+        }).done((data) => {
+            if(!data['new']) {
+                Swal.fire({
+                    icon: 'error',
+                    html: "이미 속한 채팅방입니다.",
+                    buttonsStyling:false,
+                    confirmButtonText: "확인",
+                    width: '672px',
+
+                    customClass : {
+                        confirmButton: 'swal-register-btn',
+                        popup: 'swal-custom-container'
+                    },
+                }).then(() => {
+                    location.href="{% url 'Chat:home' %}";
+                });
+            } else {
+                location.href="{% url 'Chat:home' %}";
+            }
+        }).fail((data, status, error) => {
+            Swal.fire({
+                icon: 'error',
+                html: "입장하실 수 없습니다.",
+                buttonsStyling:false,
+                confirmButtonText: "확인",
+                width: '672px',
+
+                customClass : {
+                    confirmButton: 'swal-register-btn',
+                    popup: 'swal-custom-container'
+                },
             });
         });
     }
