@@ -1,13 +1,10 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views.generic import *
-from channels.db import database_sync_to_async
 
-from .forms import *
 from .models import *
 # Create your views here.
 
@@ -28,6 +25,10 @@ class RoomCreateView(LoginRequiredMixin, View):
 
         return JsonResponse(data)
 
+
+# class EnterChatView(LoginRequiredMixin, View):
+
+
       
 class ChatView(LoginRequiredMixin, View):
     login_url = '/login/'
@@ -37,7 +38,7 @@ class ChatView(LoginRequiredMixin, View):
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         rooms = Member_ChatRoom.objects.filter(member=member)
-        return render(request, 'Chat/chat_test.html',
+        return render(request, 'Chat/chat.html',
                       {'rooms': rooms, 'member_pk': member_pk})
 
 
