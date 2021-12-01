@@ -23,8 +23,12 @@
             <br>
             <button type="button" class="btn" onclick="clicked()">로그인</button>
             <div class="auto-login">
-                <input class="auto-login-checkbox" type="checkbox" id="auto-login-checkbox"/>
-                <label class="auto-login-text" for="auto-login-checkbox">자동로그인</label>
+{#                <input class="auto-login-checkbox" type="checkbox" id="auto-login-checkbox"/>#}
+                <label class="auto-login-text">
+                    <input type="checkbox" name="remember_session"/>
+                    <span>자동로그인</span>
+{#                        class="auto-login-text" for="auto-login-checkbox" name="remember_session">자동로그인#}
+                </label>
                 <a class="password" href="{% url 'Member:password' %}">비밀번호 찾기</a>
             </div>
             <br>

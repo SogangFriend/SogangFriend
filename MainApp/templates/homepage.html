@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <div>
-        <div class="left" id="left">
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+    <div class="full">
+        <div class="left">
             <div class="left_header">
-                <p style="font-size: 13px; text-align:center; font-weight:bold; padding-top:15px; ">나와 관심사가 같은 서강대생을 찾아
-                    이야기를 나누어 보세요!</p>
+                <p style="font-size: 13px; text-align:center; font-weight:bold; padding-top:15px; ">나와 관심사가 같은 서강대생을 찾아 이야기를 나누어 보세요!</p>
             </div>
             <div class="tab_menu">
                 <div class="list">
@@ -16,6 +16,28 @@
                     <li>
                         <a href="#chat" class="btn">Chat</a>
                     </li>
+                </div>
+            </div>
+    {#                        </div>#}
+            <div class="left_body">
+    {#                                <p style="padding-top:-10%; padding-bottom:-10%;">My</p>#}
+                {% for member in members %}
+                    <div id="people" class="lb_profile" style="display:block;">
+                        <div class="people_img">
+                            <img src="/static/images/default_profile.png" alt="sogang">
+                            {{ member.profile_photo }}
+                        </div>
+                        {{ member.name }}
+                        <span_studentN>{{ member.student_number }}학번</span_studentN>
+                        <a href="{% url 'Chat:dm'  pk=member.pk %}" style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
+                        <p class="people_info_txt">{{ member.location.si }} {{ member.location.gu }} {{ member.location.dong }}<br>
+                                                    한줄소개: {{ member.introduction }}
+                        </p>
+
+                    </div>
+                {% endfor %}
+                <div id="chat" class="lb_profile" style="display:none;">
+                    <button type="submit" class="btn_chatroom">채팅방+</button>
                 </div>
                 {#        </div>#}
                 {#                        </div>#}
@@ -63,9 +85,8 @@
 
         <div class="right">
             <div class="member_info" style="height: 5%; float: left;">
-                <input type="radio" name="range" id="gu" onclick="clickCheck(this.id)" checked="checked"
-                       style="margin-top: 20px; margin-left: 5px"/> <span>구까지 범위 표시</span>
-                <input type="radio" name="range" id="dong" onclick="clickCheck(this.id)"/> <span>동까지 범위 표시</span>
+                    <input type="radio" name="range" id="gu" onclick="clickCheck(this.id)" checked="checked" style="margin-top: 20px; margin-left: 5px"/> <span>구까지 범위 표시</span>
+                    <input type="radio" name="range" id="dong" onclick="clickCheck(this.id)"/> <span>동까지 범위 표시</span>
             </div>
             <div id="map" style="width:100%; height: 95%; display: block;"></div>
             <!-- 지도타입 컨트롤 div 입니다 -->
