@@ -120,10 +120,10 @@
     font-size: 14px;
     line-height: 20px;
     letter-spacing: normal;
-    text-align: left;
+    text-align: right;
     vertical-align: middle;
     color: #707070;
-    float: left;
+    float: right;
 }
 
 .bottomText {
