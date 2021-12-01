@@ -109,17 +109,18 @@
             navigator.geolocation.getCurrentPosition(function (position) {
                 lat = position.coords.latitude;
                 lng = position.coords.longitude;
-                geocoder.coord2Address(lng, lat, function (result, status) {
+                geocoder.coord2RegionCode(lng, lat, function (result, status) {
                     if (status === kakao.maps.services.Status.OK) {
                         console.log(result);
-                        let addr = result[0].address.address_name.split(' ');
-                        let GY = ["인천", "부산", "대전", "울산", "광주", "대구"];
-                        if (addr[0] === "서울") addr[0] += "특별시";
-                        else if (addr[0] === "세종") addr[0] += "특별자치시";
-                        else if (addr[0] in GY) addr[0] += "광역시";
-                        else addr[0] += "도";
+                        let addr = result[1].address_name.split(' ');
+                        {#let GY = ["인천", "부산", "대전", "울산", "광주", "대구"];#}
+                        {#if (addr[0] === "서울") addr[0] += "특별시";#}
+                        {#else if (addr[0] === "세종") addr[0] += "특별자치시";#}
+                        {#else if (addr[0] in GY) addr[0] += "광역시";#}
+                        {#else addr[0] += "도";#}
                         addr = addr[0] + " " + addr[1] + " " + addr[2];
                         console.log(addr);
+                        document.getElementById("location").value = addr;
                         document.getElementById("location").value = addr;
                     }
                 });
