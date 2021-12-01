@@ -63,7 +63,7 @@
 </div>
 
 
-    <script>
+<script>
     function name_overlap_check() {
         let nameInput = $('#name_input');
         nameInput.change(function () {
@@ -121,7 +121,7 @@
                         addr = addr[0] + " " + addr[1] + " " + addr[2];
                         console.log(addr);
                         document.getElementById("location").value = addr;
-                        document.getElementById("location").value = addr;
+                        document.getElementById("location").readOnly = true;
                     }
                 });
             }, function (error) {
