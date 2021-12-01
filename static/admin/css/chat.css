@@ -1,3 +1,7 @@
+* {
+    font-family: "Noto Sans KR", sans-serif;
+}
+
 .container {
     max-width: 1170px;
     margin: auto;
@@ -192,18 +196,6 @@ img {
 .type_msg {
     border-top: 1px solid #c4c4c4;
     position: relative;
-}
-
-.outgoing_sender {
-    display: inline-block;
-    font-size: 14px;
-    text-align: right;
-}
-
-.incoming_sender {
-    display: inline-block;
-    font-size: 14px;
-    text-align: left;
 }
 
 .msg_send_btn {
