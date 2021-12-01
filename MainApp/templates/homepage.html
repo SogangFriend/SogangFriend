@@ -273,10 +273,9 @@
                         popup: 'swal-custom-container'
                     },
                 }).then(() => {
+                    sessionStorage.setItem('default', data['room_pk']);
                     location.href="{% url 'Chat:home' %}";
                 });
-            } else {
-                location.href="{% url 'Chat:home' %}";
             }
         }).fail((data, status, error) => {
             Swal.fire({

@@ -48,13 +48,16 @@ class EnterChatView(LoginRequiredMixin, View):
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         chatroom = ChatRoom.objects.get(pk=room_pk)
-        data = {'new': True}
+        data = {'new': True, 'room_pk': room_pk}
         if Member_ChatRoom.objects.filter(member=member, chat_room=chatroom).count() == 0:
             Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
+            request.session['default'] = room_pk
+            return redirect('/chat/')
         else:
             data['new'] = False
+            return JsonResponse(data)
 
-        return JsonResponse(data)
+
 
 class EnterDMView(LoginRequiredMixin, View):
     login_url = '/login/'
