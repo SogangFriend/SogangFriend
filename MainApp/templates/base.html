@@ -298,34 +298,6 @@
 
     <script>
         let member = "{{ request.session.member }}";
-        if (member !== "") {
-            let path = "/chat/unread/";
-            $.ajax({
-               url: path,
-               method: "GET",
-               dataType: "json",
-               success : (data) => {
-                   console.log(data);
-               },
-               error : (request, status, error) => {
-                   console.log(status + " " + error);
-               }
-            });
-            $(() => {
-                setInterval( () => {
-                   $.ajax({
-                       url: path,
-                       method: "GET",
-                       dataType: "json",
-                       success : (data) => {
-                           console.log(data);
-                       },
-                       error : (request, status, error) => {
-                           console.log(status + " " + error);
-                       }
-                   })
-               }, 30000);
-            });
-        }
     </script>
+    <script src="{% static '/js/base.js' %}"></script>
 </html>
