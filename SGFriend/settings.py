@@ -63,8 +63,8 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
-SESSION_COOKIE_AGE = 60 * 10		# 세션쿠키의 유효기간 설정(60s * 10m)
-SESSION_SAVE_EVERY_REQUEST = True	# 서버에게 Request를 보낼 경우 시간 초기화
+SESSION_COOKIE_AGE = 10 * 60 * 1		# 세션쿠키의 유효기간 설정(60s * 10m)
+SESSION_SAVE_EVERY_REQUEST = True	    # 서버에게 Request를 보낼 경우 시간 초기화
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
@@ -115,17 +115,16 @@ WSGI_APPLICATION = 'SGFriend.wsgi.application'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'Member.validator.CustomPasswordValidator',
-
     },
     # {
     #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     # },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 7,
-        }
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    #     'OPTIONS': {
+    #         'min_length': 7,
+    #     }
+    # },
     # {
     #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     # },

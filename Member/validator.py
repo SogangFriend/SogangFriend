@@ -18,11 +18,9 @@ class CustomPasswordValidator:
                 params={'min_length': self.min_length},
             )
         if not any(char.isdigit() for char in password):
-            raise ValidationError(
-                _('숫자를 포함해야 합니다.'))
+            raise ValidationError(_('숫자를 포함해야 합니다.'))
         if not any(char.isalpha() for char in password):
-            raise ValidationError(
-                _('영문자를 포함해야 합니다.'))
+            raise ValidationError(_('영문자를 포함해야 합니다.'))
 
     def get_help_text(self):
         return _(

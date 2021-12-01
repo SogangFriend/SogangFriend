@@ -1,0 +1,240 @@
+.full {
+    width: 100%;
+    height: 960px;
+}
+
+div.left, div.right {
+    width: 100%;
+    height: 960px;
+    border: 0.3px solid #f6f6f6;
+}
+
+div.left {
+    width: 30%;
+    float: left;
+    box-sizing: border-box;
+}
+
+div.right {
+    width: 70%;
+    float: right;
+    box-sizing: border-box;
+    background: #ece6cc;
+}
+
+.left_header {
+    background-color: white;
+    height: 5%;
+}
+
+.lh_cell {
+    float: left;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    outline: none;
+    color: #FFBB00;
+}
+
+.lh_cell:focus {
+    background-color: #FFBB00;
+    border: 1px solid #ffb300;
+    outline: none;
+    color: white;
+}
+
+.left_body {
+    background-color: white;
+    height: 80%;
+    overflow: hidden;
+}
+
+.lb_profile {
+    float: left;
+    width: 100%;
+    height: 10%;
+    box-sizing: border-box;
+    border-bottom: 2px solid #f6f6f6;
+    color: black;
+    font-weight: bold;
+    padding-top: 5%;
+    padding-bottom: 3%;
+}
+
+.lh_content {
+    text-align: center;
+    padding-top: 7.5%;
+    border: 1px solid black;
+    outline: none;
+    color: #636e72;
+
+}
+
+.tab_menu {
+    padding: 10px;
+    letter-spacing: -0.5px;
+}
+
+.tab_menu .list {
+    overflow: hidden;
+}
+
+.tab_menu .list li {
+    padding-top: -10px;
+    list-style: none;
+    float: left;
+    width: 50%;
+    height: 40px;
+    text-align: center;
+    position: relative;
+    left: -10.5px;
+}
+
+.tab_menu .list li.is_on .btn {
+    font-weight: bold;
+    color: #F5D300;
+    float: left;
+    background-color: white;
+    width: 100%;
+    height: 40px;
+    border-bottom: inset 3px;
+    border-bottom-color: #FFBB00;
+}
+
+.tab_menu .list .btn {
+    font-size: 15px;
+    color: gray;
+    float: left;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    padding: 0;
+    cursor: default;
+    border-bottom: 2px solid #f6f6f6;
+}
+
+.people_info_txt {
+    font-size: 12px;
+    color: #636e72;
+    font-weight: bold;
+}
+
+.people_img {
+    float: left;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    margin: 0 16px 0 0;
+    border-radius: 46px;
+    background-color: #cdcdcd;
+}
+
+span_mypg {
+    width: 161px;
+    height: 52px;
+    margin: 20px 400px 0px 550px;
+    font-size: 30px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.57;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000;
+    display: block;
+}
+
+.pro {
+    width: 120px;
+    height: 120px;
+    margin: 20px 400px 20px 570px;
+    background-color: #dedede;
+    border-radius: 46px;
+    display: block;
+}
+
+
+.form_mypg {
+    margin-left: 150px;
+}
+
+.form-control123 {
+    display: block;
+    width: 500px;
+    height: 50px;
+    margin: 0 0 15px 82px;
+    border-radius: 8px;
+    border: solid 1px #e8e8e8;
+    background-color: #fff;
+    color: #616161;
+
+}
+
+.btn_mypg {
+    width: 621px;
+    height: 60px;
+    margin: 0 50px 0 170px;
+    padding: 20px 283px;
+    border-radius: 30px;
+    background-color: #000;
+    color: white;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-size: 14px;
+    line-height: 1.43;
+    float: left;
+}
+
+label {
+    width: 60px;
+    height: 20px;
+    margin: 15px 82px 15px 0;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 1.43;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000;
+
+    display: inline;
+    padding: 10px 10px 10px 180px;
+    white-space: nowrap;
+    vertical-align: baseline;
+
+}
+
+span_studentN {
+    width: 58px;
+    height: 18px;
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+    color: #6d6d6d;
+}
+
+.btn_chatroom {
+    border-radius: 16px;
+    background-color: #fb0;
+    width: 70px;
+    height: 25px;
+    text-align: center;
+    float: right;
+    font-size: 9px;
+    border: 1px solid transparent;
+}

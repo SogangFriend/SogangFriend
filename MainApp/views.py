@@ -18,11 +18,10 @@ class HomeView(LoginRequiredMixin, View):
     redirect_field_name = '/'
 
     def get(self, request):
-        member_id = request.session.get('member')
-        member_info = Member.objects.get(pk=member_id)  # pk : primary key
-        members = Member.objects.filter(location=member_info.location)
-        chats = ChatRoom.objects.filter(location=member_info.location)
-
+        member_pk = request.session.get('member')
+        member_info = Member.objects.get(pk=member_pk)  # pk : primary key
+        members = Member.objects.filter(location=member_info.location).exclude(pk=member_pk)
+        chats = ChatRoom.objects.filter(location=member_info.location, is_dm=False)
 
         # 서울특별시 금천구
         # 강원도 강릉시

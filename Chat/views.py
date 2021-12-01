@@ -1,39 +1,14 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import *
-from channels.db import database_sync_to_async
+import json
 
-from .forms import *
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.views.generic import *
+
 from .models import *
 # Create your views here.
 
 
-class RoomCreateView(LoginRequiredMixin, View):
-    login_url = '/login/'
-    redirect_field_name = '/chat/create/'
-    form_class = ChatRoomForm
-
-    def get(self, request):
-        form = self.form_class()
-        return render(request, 'Chat/chat_form.html', {"form": form})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            room_name = form.cleaned_data['room_name']
-            nick_name = form.cleaned_data['nick_name']
-            member_pk = request.session.get('member')
-            member = Member.objects.get(pk=member_pk)
-
-            chatroom = ChatRoom.objects.create(name=room_name, creator=member,
-                                               created_time=timezone.now(), location=member.location)
-            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
-
-        return redirect('/chat/')
-
-      
 class ChatView(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = '/chat/'
@@ -42,26 +17,45 @@ class ChatView(LoginRequiredMixin, View):
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         rooms = Member_ChatRoom.objects.filter(member=member)
-        return render(request, 'Chat/chat_test.html',
+        return render(request, 'Chat/chat.html',
                       {'rooms': rooms, 'member_pk': member_pk})
+
+
+class RoomCreateView(LoginRequiredMixin, View):
+    login_url = '/login/'
+    redirect_field_name = '/'
+
+    def post(self, request):
+        body = json.loads(request.body)
+        name = body['name']
+        member_pk = request.session.get('member')
+        member = Member.objects.get(pk=member_pk)
+        chatroom = ChatRoom.objects.create(name=name, creator=member,
+                                           created_time=timezone.now(), location=member.location)
+        Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
+        data = {'message': "<div class='swal-confirm-sent'>채팅방이 생성되었습니다.</div>"}
+
+        return JsonResponse(data)
 
 
 class EnterChatView(LoginRequiredMixin, View):
     login_url = '/login/'
-    redirect_field_name = '/chat/'
+    redirect_field_name = "/"
 
-    def get(self, request, room):
+    def post(self, request):
+        body = json.loads(request.body)
+        room_pk = body['room_pk']
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
-        chat_room = ChatRoom.objects.get(pk=room)
-        mc = Member_ChatRoom.objects.filter(member=member, chat_room=chat_room)
-        if mc.count() == 0:
-            m = Member_ChatRoom.objects.create(member=member, chat_room=chat_room,
-                                               member_timestamp=timezone.now())
-            m.save()
+        chatroom = ChatRoom.objects.get(pk=room_pk)
+        data = {'new': True, 'room_pk': room_pk}
+        if Member_ChatRoom.objects.filter(member=member, chat_room=chatroom).count() == 0:
+            Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
+            request.session['default'] = room_pk
+            return redirect('/chat/')
         else:
-            mc[0].unread = False
-        return redirect('/chat/')
+            data['new'] = False
+            return JsonResponse(data)
 
 
 class EnterDMView(LoginRequiredMixin, View):
@@ -100,7 +94,7 @@ class CheckUnreadView(LoginRequiredMixin, View):
         rooms = Member_ChatRoom.objects.filter(member=member)
         flag = False
         for room in rooms:
-            if room.member_timestamp > room.chat_room.timestamp:
+            if room.member_timestamp < room.chat_room.timestamp:
                 room.unread = True
                 room.save()
                 flag = True

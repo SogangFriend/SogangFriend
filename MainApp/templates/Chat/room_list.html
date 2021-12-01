@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-
-{% block content %}
-
-    {% for room in rooms  %}
-    <div> <a href="{% url 'Chat:room' room_name=room.pk %}">{{ room.name }}</a> / {{ room.creator.name }}</div>
-    {% endfor %}
-{% endblock %}
