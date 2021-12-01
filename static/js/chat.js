@@ -71,7 +71,7 @@ function chatRoom(target, pk, member_pk) {
      */
     const makeConnection = () => {
         chatSocket = new WebSocket(
-            'ws://' + window.location.host +
+            'wss://' + window.location.host +
             '/ws/chat/' + pk + '/' + member_pk + '/');
         // Other logic codes here
         chatSocket.onmessage = function (e) {
