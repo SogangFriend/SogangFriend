@@ -44,7 +44,6 @@
     flag = flag === "1";
     window.onload = () => {
         if(flag) {
-            console.log("flag", flag);
             Swal.fire({
                 icon: 'success',
                 html: "{{ message | escapejs }}",

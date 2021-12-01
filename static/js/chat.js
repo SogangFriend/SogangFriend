@@ -79,7 +79,6 @@ function chatRoom(target, pk, member_pk) {
             let sender = data['sender'];
             let message = data['message'];
             let timestamp = data['timestamp'];
-            console.log(data['message']);
             let newMsg = document.createElement('div');
             sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
                 : newMsg.setAttribute('class', 'incoming_msg');

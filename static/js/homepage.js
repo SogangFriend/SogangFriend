@@ -80,19 +80,23 @@ function makeMultiPolygon(guFlag, coordinates) {
 }
 
 const tabList = document.querySelectorAll('.tab_menu .list li');
-const contents = document.querySelectorAll('.tab_menu .left_body .lb_profile')
+// const contents = document.querySelectorAll('.left .left_body .lb_profile');
 let activeCont = ''; // 현재 활성화 된 컨텐츠 (기본:#tab1 활성화)
 
 for (var i = 0; i < tabList.length; i++) {
     tabList[i].querySelector('.btn').addEventListener('click', function (e) {
         e.preventDefault();
-        for (var j = 0; j < contents.length; j++) {
-            // 나머지 버튼 클래스 제거
-            if (j < tabList.length) tabList[j].classList.remove('is_on');
-
-            // 나머지 컨텐츠 display:none 처리
-            contents[j].style.display = 'none';
-
+        // 나머지 버튼 클래스 제거
+        for (let j = 0; j < tabList.length; j++) {
+            if(tabList[j].firstElementChild !== e.target) {
+                tabList[j].classList.remove('is_on');
+                let a = tabList[j].firstElementChild.getAttribute('href');
+                let contents = document.querySelectorAll(a);
+                for (let k = 0; k < contents.length; k++) {
+                    // 나머지 컨텐츠 display:none 처리
+                    contents[k].style.display = 'none';
+                }
+            }
         }
 
         // 버튼 관련 이벤트
@@ -137,7 +141,6 @@ function createChatRoom() {
             contentType: false,
             dataType: 'json',
         }).done((data) => {
-            console.log("chat create result : ", data);
             Swal.fire({
                 icon: 'success',
                 html: data['message'],

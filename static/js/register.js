@@ -13,9 +13,6 @@ function name_overlap_check() {
 
     let name_overlap_input = document.querySelector('input[name="name"]');
 
-    console.log(nameInput.value);
-    console.log(name_overlap_input.value);
-
     $.ajax({
         url: "/member/check/",
         data: {
@@ -23,7 +20,6 @@ function name_overlap_check() {
         },
         datatype: 'json',
         success: function (data) {
-            console.log(data['overlap']);
             if (data['overlap'] === "fail") {
                 alert("이미 존재하는 닉네임 입니다.");
                 name_overlap_input.focus();
@@ -46,10 +42,8 @@ function coordToAddr() {
             lng = position.coords.longitude;
             geocoder.coord2RegionCode(lng, lat, function (result, status) {
                 if (status === kakao.maps.services.Status.OK) {
-                    console.log(result);
                     let addr = result[1].address_name.split(' ');
                     addr = addr[0] + " " + addr[1] + " " + addr[2];
-                    console.log(addr);
                     document.getElementById("location").value = addr;
                     document.getElementById("location").readOnly = true;
                 }
@@ -69,7 +63,6 @@ function coordToAddr() {
 function clicked() {
     let form = $('#register-form')[0];
     let formData = new FormData(form);
-    console.log(formData['']);
     $.ajax({
         url: "/member/new/",
         method: "POST",
@@ -79,7 +72,6 @@ function clicked() {
         dataType: 'json',
     })
         .done((data) => {
-            console.log(data);
             if (data['success'] === 0) {
                 Swal.fire({
                     icon: 'success',

@@ -5,7 +5,13 @@ if (member !== "") {
         method: "GET",
         dataType: "json",
         success: (data) => {
-            console.log(data);
+            let dot = document.getElementById('new_chat');
+            if (data['unread']) {
+                dot.style.display = 'inline';
+            } else {
+                dot.style.display = 'none';
+
+            }
         },
         error: (request, status, error) => {
             console.log(status + " " + error);
@@ -18,7 +24,12 @@ if (member !== "") {
                 method: "GET",
                 dataType: "json",
                 success: (data) => {
-                    console.log(data);
+                    let dot = document.getElementById('new_chat');
+                    if (data['unread']) {
+                        dot.style.display = 'inline';
+                    } else {
+                        dot.style.display = 'none';
+                    }
                 },
                 error: (request, status, error) => {
                     console.log(status + " " + error);
