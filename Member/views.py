@@ -2,7 +2,7 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, reverse, resolve_url
-
+from django.conf import settings
 from .helpers import send_mail, email_auth_num
 from django.views.generic import *
 from django.template.loader import render_to_string
@@ -149,7 +149,12 @@ class LoginView(View):
             if member is not None:
                 login(request, member)
                 request.session['member'] = member.pk
+
+                remember_session = request.POST.get('remember_session', False)
+                if remember_session: #자동로그인
+                    request.session.set_expiry(24*3*60*60)
                 self.response_data['success'] = 1
+
             else:
                 self.response_data['error'] = "비밀번호를 틀렸습니다."
         else:
@@ -175,8 +180,8 @@ class MyPageView(LoginRequiredMixin, View):
         member = Member.objects.get(pk=member_pk)
         form = self.form_class(initial={'name': member.name, 'email': member.email,
                                         'password': member.password, 'introduction': member.introduction,
-                                        'location': member.location.si.name + " " + member.location.gu.name + " " +
-                                                    member.location.dong.name, 'profile_photo' : member.profile_photo})
+                                        'location': member.location.si + " " + member.location.gu + " " +
+                                                    member.location.dong, 'profile_photo' : member.profile_photo})
         return render(request, 'Member/my_page.html', {'form': form})
 
     def post(self, request):
