@@ -88,10 +88,12 @@ class RegisterView(View):
 
         error_message = None
         success = 1
-        if not (name and email and password and re_password and location and introduction):
+        if not (name and email and location and password and re_password):
             error_message = "<div class='swal-confirm-sent'>필수문항(*)을 입력해 주세요.</div>"
+        elif len(password) < 7 or password.isdigit() or password.isalpha():
+            error_message = "<div class='swal-confirm-sent'>비밀번호는 7자 이상의 영문자&숫자 조합이어야 합니다.</div>"
         elif password != re_password:
-            error_message = "<div class='swal-confirm-sent'>비밀번호가 다릅니다.</div>"
+            error_message = "<div class='swal-confirm-sent'>확인 비밀번호가 일치하지 않습니다.</div>"
         elif not (email.endswith('@sogang.ac.kr') or email.endswith('@u.sogang.ac.kr')):
             error_message = "<div class='swal-confirm-sent'>서강대학교 이메일을 사용해주세요.</div>"
         elif Member.objects.filter(email=email).count() != 0:

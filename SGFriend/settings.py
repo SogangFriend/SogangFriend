@@ -115,17 +115,16 @@ WSGI_APPLICATION = 'SGFriend.wsgi.application'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'Member.validator.CustomPasswordValidator',
-
     },
     # {
     #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     # },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS': {
-            'min_length': 7,
-        }
-    },
+    # {
+    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    #     'OPTIONS': {
+    #         'min_length': 7,
+    #     }
+    # },
     # {
     #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     # },
