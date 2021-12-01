@@ -87,6 +87,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                                            member_timestamp=timezone.now())
         else:
             mc[0].unread = False
+            mc[0].save()
 
     @database_sync_to_async
     def get_member_chatroom(self):

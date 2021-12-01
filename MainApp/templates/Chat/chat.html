@@ -64,6 +64,7 @@ let rms = [
             {% for msg in room.chat_room.message_set.all %}
                 {
                     sender: "{{ msg.sender.pk }}",
+                    senderName: "{{ msg.sender.name }}",
                     message: "{{ msg.message }}",
                     timestamp: "{{ msg.timestamp }}"
                 },

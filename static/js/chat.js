@@ -18,7 +18,6 @@ function chatRoom(target, pk, member_pk) {
         msgHistory.removeChild(msgHistory.firstChild);
     }
 
-    let roomName = pk;
     let member = member_pk;
 
     /*
@@ -30,6 +29,14 @@ function chatRoom(target, pk, member_pk) {
                 let newMsg = document.createElement('div');
                 rms[i].msgs[j].sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
                                                  : newMsg.setAttribute('class', 'incoming_msg');
+                let sender = document.createElement('div');
+                rms[i].msgs[j].sender === member ? sender.setAttribute('class', 'outgoing_sender')
+                                                : sender.setAttribute('class', 'incoming_sender');
+                let senderName = document.createTextNode(rms[i].msgs[j].senderName);
+                sender.appendChild(senderName);
+                newMsg.appendChild(sender);
+
+
                 let innerNewMsg = document.createElement('div');
                 rms[i].msgs[j].sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
                                                  : innerNewMsg.setAttribute('class', 'received_msg');
