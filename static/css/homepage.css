@@ -52,7 +52,7 @@ div.right {
 .lb_profile {
     float: left;
     width: 100%;
-    height: 10%;
+    height: 13%;
     box-sizing: border-box;
     border-bottom: 2px solid #f6f6f6;
     color: black;
@@ -71,7 +71,6 @@ div.right {
 }
 
 .tab_menu {
-    padding: 10px;
     letter-spacing: -0.5px;
 }
 
@@ -87,7 +86,7 @@ div.right {
     height: 40px;
     text-align: center;
     position: relative;
-    left: -10.5px;
+    /*left: -10.5px;*/
 }
 
 .tab_menu .list li.is_on .btn {
@@ -237,4 +236,14 @@ span_studentN {
     float: right;
     font-size: 9px;
     border: 1px solid transparent;
+}
+.chatroom_plus {
+    float: left;
+    width: 100%;
+    height: 5%;
+    box-sizing: border-box;
+    border-bottom: 2px solid #f6f6f6;
+    color: black;
+    font-weight: bold;
+    padding-top: 6px;
 }
