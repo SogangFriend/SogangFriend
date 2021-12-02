@@ -103,13 +103,6 @@ class CheckUnreadView(LoginRequiredMixin, View):
         return JsonResponse(ret)
 
 
-class RoomView(LoginRequiredMixin, View):
-    login_url = '/login/'
-
-    def get(self, request, room_pk):
-        return render(request, "Chat/chat_room.html", {"room_pk": room_pk})
-
-
 class MessagesView(LoginRequiredMixin, View):
     login_url = '/login/'
 
