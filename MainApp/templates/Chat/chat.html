@@ -70,6 +70,7 @@
             if (pk == null) {
                 pk = target.id.slice(10);
             }
+            console.log(pk);
 
             $.ajax({
                 url: "/chat/msgs/" + pk,
