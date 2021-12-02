@@ -3,7 +3,7 @@ let chatList = document.getElementsByClassName("chat_list");
 let chatSocket = null;
 let msgHistory = document.getElementsByClassName("msg_history")[0];
 
-function chatRoom(target, pk, member_pk) {
+async function chatRoom(target, pk, member_pk) {
     if (target.classList[1] === "chat_clicked") {
         target.classList.remove("chat_clicked");
     } else {
@@ -69,83 +69,87 @@ function chatRoom(target, pk, member_pk) {
     /*
     chatSocket 연결
      */
-    const makeConnection = () => {
-        chatSocket = new WebSocket(
-            'ws://' + window.location.host +
-            '/ws/chat/' + pk + '/' + member_pk + '/');
-        // Other logic codes here
-        chatSocket.onmessage = function (e) {
-            let data = JSON.parse(e.data);
-            let sender = data['sender'];
-            let message = data['message'];
-            let timestamp = data['timestamp'];
-            let newMsg = document.createElement('div');
-            sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
-                : newMsg.setAttribute('class', 'incoming_msg');
 
-            let senderDOM = document.createElement('div');
-            sender === member ? senderDOM.setAttribute('class', 'outgoing_sender')
-                              : senderDOM.setAttribute('class', 'incoming_sender');
-            let senderName = document.createTextNode(data['senderName']);
-            senderDOM.appendChild(senderName);
-            newMsg.appendChild(senderDOM);
-
-            let innerNewMsg = document.createElement('div');
-            sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
-                : innerNewMsg.setAttribute('class', 'received_msg');
-
-            let msg = document.createElement('div');
-            if (member !== sender) msg.setAttribute('class', 'received_withd_msg');
-
-
-            let p = document.createElement('p');
-            let text = document.createTextNode(message);
-
-            let time = document.createElement('span');
-            let timeText = document.createTextNode(timestamp);
-
-            p.appendChild(text);
-            time.setAttribute('class', 'time_date');
-            time.appendChild(timeText);
-
-            msg.appendChild(p);
-            msg.appendChild(time);
-
-            innerNewMsg.appendChild(msg);
-            newMsg.appendChild(innerNewMsg);
-
-            msgHistory.appendChild(newMsg);
-
-            $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
-        };
-
-        let keyDown = false;
-        document.querySelector('#write_msg').focus();
-        document.querySelector('#write_msg').onkeypress = function (e) {
-            if (e.keyCode === 13) {  // enter, return
-                keyDown = true;
-                document.querySelector('#msg_send_btn').click();
-            }
-        };
-        document.querySelector('#msg_send_btn').onclick = function (e) {
-            let messageInputDom = document.querySelector('#write_msg');
-            let message = messageInputDom.value;
-
-            chatSocket.send(JSON.stringify({
-                'message': message,
-                'sender': member_pk
-            }));
-
-            messageInputDom.value = '';
-        };
-        chatSocket.onclose = () => {
-            chatSocket = null
-        };
-    };
     if (chatSocket) {
-        chatSocket.onclose = makeConnection;
-        chatSocket.close();
-    } else {
-        makeConnection();
+        await chatSocket.close();
+        chatSocket = null;
     }
+    chatSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/chat/' + pk + '/' + member_pk + '/');
+    // Other logic codes here
+    chatSocket.onmessage = function (e) {
+        let data = JSON.parse(e.data);
+        let sender = data['sender'];
+        let message = data['message'];
+        let timestamp = data['timestamp'];
+        let newMsg = document.createElement('div');
+        sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
+            : newMsg.setAttribute('class', 'incoming_msg');
+
+        let senderDOM = document.createElement('div');
+        sender === member ? senderDOM.setAttribute('class', 'outgoing_sender')
+            : senderDOM.setAttribute('class', 'incoming_sender');
+        let senderName = document.createTextNode(data['senderName']);
+        senderDOM.appendChild(senderName);
+        newMsg.appendChild(senderDOM);
+
+        let innerNewMsg = document.createElement('div');
+        sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
+            : innerNewMsg.setAttribute('class', 'received_msg');
+
+        let msg = document.createElement('div');
+        if (member !== sender) msg.setAttribute('class', 'received_withd_msg');
+
+
+        let p = document.createElement('p');
+        let text = document.createTextNode(message);
+
+        let time = document.createElement('span');
+        let timeText = document.createTextNode(timestamp);
+
+        p.appendChild(text);
+        time.setAttribute('class', 'time_date');
+        time.appendChild(timeText);
+
+        msg.appendChild(p);
+        msg.appendChild(time);
+
+        innerNewMsg.appendChild(msg);
+        newMsg.appendChild(innerNewMsg);
+
+        msgHistory.appendChild(newMsg);
+
+        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+    };
+
+    document.querySelector('#write_msg').focus();
+    document.querySelector('#write_msg').onkeypress = function (e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#msg_send_btn').click();
+        }
+    };
+    document.querySelector('#msg_send_btn').onclick = function (e) {
+        let messageInputDom = document.querySelector('#write_msg');
+        let message = messageInputDom.value;
+
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'sender': member_pk
+        }));
+
+        messageInputDom.value = '';
+    };
+    // const makeConnection = () => {
+    //
+    //     chatSocket.onclose = () => {
+    //         chatSocket = null
+    //     };
+    // };
+    // if (chatSocket) {
+    //     chatSocket.onclose = makeConnection;
+    //     chatSocket.close();
+    // } else {
+    //     makeConnection();
+    // }
 }
