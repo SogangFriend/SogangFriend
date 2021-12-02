@@ -77,8 +77,7 @@ class EnterDMView(LoginRequiredMixin, View):
 
             Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
             Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
-        return render(request, 'Chat/room.html',
-                      {'room_pk': chatroom.pk})
+        return JsonResponse({'room_pk': chatroom.pk})
 
 
 class CheckUnreadView(LoginRequiredMixin, View):
