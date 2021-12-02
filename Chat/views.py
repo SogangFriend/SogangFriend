@@ -107,6 +107,7 @@ class MessagesView(LoginRequiredMixin, View):
     login_url = '/login/'
 
     def get(self, request, room_pk):
+        room_pk = int(room_pk)
         chatroom = ChatRoom.objects.get(pk=room_pk)
         msgs = Message.objects.filter(chat_room=chatroom)
         msgs = list(msgs.values())
