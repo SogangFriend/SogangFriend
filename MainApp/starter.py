@@ -29,7 +29,6 @@ class LoadConfig(AppConfig):
 
     def ready(self):
         # TODO: Write your codes to run on startup
-        print(self.gsons_dir)
         self.delete_all()
         for i in self.gsons_dir:
             i = normalize('NFC', i)
@@ -41,7 +40,6 @@ class LoadConfig(AppConfig):
                     # gson = normalize('NFC', i)
                     if i != gson[:len(gson)-8]:
                         key = i + "_" + gson[:len(gson)-8]
-                        print(key)
                         with open(self.path+i+"/"+gson, "r") as f:
                             try:
                                 json_data = json.load(f)
@@ -57,5 +55,3 @@ class LoadConfig(AppConfig):
                                     }
                                     coords.append(data)
                                 cache.set(key, coords)
-        print(cache.get("서울특별시_금천구"))
-

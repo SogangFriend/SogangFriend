@@ -30,8 +30,7 @@
                         </div>
                         {{ member.name }}
                         <span_studentN>{{ member.student_number }}학번</span_studentN>
-                        <a href="{% url 'Chat:dm'  pk=member.pk %}"
-                           style="color: #F5D300; font-size:13px; float:right;">Dm 보내기</a>
+                        <button class="btn_chatroom" onclick="enterDM({{ member.pk }})">DM 보내기</button>
                         <p class="people_info_txt">{{ member.location.si }} {{ member.location.gu }} {{ member.location.dong }}<br>
                             한줄소개: {{ member.introduction }}
                         </p>
@@ -80,5 +79,5 @@
         const gu = "{{ member_info.location.gu }}";
         const dong = "{{ member_info.location.dong }}";
     </script>
-    <script src="{% static '/js/homepage.js' %}"></script>
+    <script src="{% static '/js/homepage.js' %}?ver=2"></script>
 {% endblock %}

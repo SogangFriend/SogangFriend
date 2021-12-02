@@ -48,23 +48,20 @@ class EnterChatView(LoginRequiredMixin, View):
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         chatroom = ChatRoom.objects.get(pk=room_pk)
-        data = {'new': True, 'room_pk': room_pk}
+        data = {'room_pk': room_pk}
         if Member_ChatRoom.objects.filter(member=member, chat_room=chatroom).count() == 0:
             Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
-            request.session['default'] = room_pk
-            return redirect('/chat/')
-        else:
-            data['new'] = False
-            return JsonResponse(data)
-
+        return JsonResponse(data)
 
 
 class EnterDMView(LoginRequiredMixin, View):
     login_url = '/login/'
-    redirect_field_name = '/chat/list/'
+    redirect_field_name = '/chat/'
 
-    def get(self, request, pk):
-        target = Member.objects.get(pk=pk)
+    def post(self, request):
+        body = json.loads(request.body)
+        target_pk = body['target']
+        target = Member.objects.get(pk=target_pk)
         me = Member.objects.get(pk=request.session.get('member'))
         mc = me.chats.filter(target=target, is_dm=True)
         if mc.count() != 0:
@@ -80,12 +77,11 @@ class EnterDMView(LoginRequiredMixin, View):
 
                 Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
                 Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
-        return render(request, 'Chat/room.html',
-                      {'room_name': chatroom.pk, 'member_pk': me.pk})
+        return JsonResponse({'room_pk': chatroom.pk})
 
 
 class CheckUnreadView(LoginRequiredMixin, View):
-    login_url = '/login'
+    login_url = '/login/'
 
     def get(self, request):
         member_pk = request.session['member']
@@ -103,3 +99,16 @@ class CheckUnreadView(LoginRequiredMixin, View):
 
         return JsonResponse(ret)
 
+
+class MessagesView(LoginRequiredMixin, View):
+    login_url = '/login/'
+
+    def get(self, request, room_pk):
+        room_pk = int(room_pk)
+        chatroom = ChatRoom.objects.get(pk=room_pk)
+        msgs = Message.objects.filter(chat_room=chatroom)
+        msgs = list(msgs.values())
+        print(msgs)
+        for msg in msgs:
+            msg['timestamp'] = msg['timestamp'].strftime("%Y-%m-%d %I:%M %p")
+        return JsonResponse(msgs, safe=False)

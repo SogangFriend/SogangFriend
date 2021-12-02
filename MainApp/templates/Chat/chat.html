@@ -1,94 +1,180 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link href="{% static '/css/chat.css' %}" rel="stylesheet">
+    <link href="{% static '/css/chat.css' %}" rel="stylesheet">
 
-<div class="container">
-    <h3 class=" text-left"> 채팅</h3>
-    <div class="messaging">
-      <div class="inbox_msg">
-        <div class="inbox_people">
-{#          <div class="headind_srch">#}
-{#            <div class="recent_heading">#}
-{#              <h4>1 : 1</h4>#}
-{#            </div>#}
-{#            <div class="srch_bar">#}
-{#              <div class="stylish-input-group">#}
-{#                <input type="text" class="search-bar"  placeholder="Search" >#}
-{#                <span class="input-group-addon">#}
-{#                <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>#}
-{#                </span> </div>#}
-{#            </div>#}
-{#          </div>#}
-          <div class="inbox_chat">
-          {% for room in rooms %}
-            <div class="chat_list" id="chat_list_{{ room.chat_room.pk }}" style="cursor: pointer" onclick="chatRoom(this, {{ room.chat_room.pk }}, '{{ member_pk }}')">
-                <div class="chat_people">
-                    <div class="chat_img"> <img src="{% static '/images/default_profile.png' %}" alt="sogang"> </div>
-                    <div class="chat_ib">
-                        {% if room.chat_room.is_dm %}
-                            <h5>{{ room.chat_room.target.name }}<span class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
-                        {% else %}
-                            <h5>{{ room.chat_room.name }}<span class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
-                            <p class="people_info_txt">
-                                <br>
-                                인원 : {{ room.chat_room.participants.count }}명
-                            </p>
-                        {% endif %}
+    <div class="container">
+        <h3 class=" text-left"> 채팅</h3>
+        <div class="messaging">
+            <div class="inbox_msg">
+                <div class="inbox_people">
+                    {#          <div class="headind_srch">#}
+                    {#            <div class="recent_heading">#}
+                    {#              <h4>1 : 1</h4>#}
+                    {#            </div>#}
+                    {#            <div class="srch_bar">#}
+                    {#              <div class="stylish-input-group">#}
+                    {#                <input type="text" class="search-bar"  placeholder="Search" >#}
+                    {#                <span class="input-group-addon">#}
+                    {#                <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>#}
+                    {#                </span> </div>#}
+                    {#            </div>#}
+                    {#          </div>#}
+                    <div class="inbox_chat">
+                        {% for room in rooms %}
+                            <div class="chat_list" id="chat_list_{{ room.chat_room.pk }}" style="cursor: pointer"
+                                 onclick="chatRefresh({{ room.chat_room.pk }})">
+                                <div class="chat_people">
+                                    <div class="chat_img"><img src="{% static '/images/default_profile.png' %}"
+                                                               alt="sogang"></div>
+                                    <div class="chat_ib">
+                                        {% if room.chat_room.is_dm %}
+                                            {% if room.chat_room.creator.pk == member_pk %}
+                                                <h5>{{ room.chat_room.target.name }}<span
+                                                        class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
+                                            {% else %}
+                                                <h5>{{ room.chat_room.creator.name }}<span
+                                                    class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
+                                            {% endif %}
+                                        {% else %}
+                                            <h5>{{ room.chat_room.name }}<span
+                                                    class="chat_date">{{ room.chat_room.timestamp }}</span></h5>
+                                            <p class="people_info_txt">
+                                                <br>
+                                                인원 : {{ room.chat_room.participants.count }}명
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="mesgs">
+                    <div class="msg_history" id="chat-box">
+                    </div>
+                    <div class="type_msg">
+                        <div class="input_msg_write">
+                            <input type="text" id="write_msg" class="write_msg" placeholder="메시지 입력"/>
+                            <button id="msg_send_btn" class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o"
+                                                                                            aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-          {% endfor %}
         </div>
-        </div>
-        <div class="mesgs">
-          <div class="msg_history" id="chat-box">
-          </div>
-          <div class="type_msg">
-            <div class="input_msg_write">
-              <input type="text" id="write_msg" class="write_msg" placeholder="메시지 입력" />
-              <button id="msg_send_btn" class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-</div>
+    <script src="{% static '/js/chat.js' %}"></script>
+    <script>
+        let msgHistory = document.getElementsByClassName("msg_history")[0];
+        let chatSocket = null;
+        let chatList = document.getElementsByClassName("chat_list");
+        window.onload = () => {
+            let pk = sessionStorage.getItem('default');
+            if (pk == null) {
+                pk = target.id.slice(10);
+            }
+            let target = document.getElementById("chat_list_" + pk)
 
-<script>
-let rms = [
-    {% for room in rooms %}
-    {
-        pk: {{ room.chat_room.pk }},
-        msgs: [
-            {% for msg in room.chat_room.message_set.all %}
-                {
-                    sender: "{{ msg.sender.pk }}",
-                    senderName: "{{ msg.sender.name }}",
-                    message: "{{ msg.message }}",
-                    timestamp: "{{ msg.timestamp }}"
-                },
-            {% endfor %}
-        ]
-    },
-    {% endfor %}
-];
+            for (let i = 0; i < chatList.length; i++) {
+                chatList[i].classList.remove("chat_clicked");
+            }
+            target.classList.add("chat_clicked");
 
-window.onload = () => {
-    let defaultChat = sessionStorage.getItem('default');
-    if ("{{ request.session.default }}" !== "") defaultChat = "{{ request.session.default }}";
-    let target;
-    if (defaultChat != null) {
-        let id = "chat_list_" + defaultChat;
-        target = document.getElementById(id);
-        sessionStorage.removeItem('default');
-        target.click();
-    } else {
-        target = chatList[0];
-        target.click();
-    }
-};
 
-</script>
-<script src="{% static '/js/chat.js' %}"></script>
+            $.ajax({
+                url: "/chat/msgs/" + pk,
+                method: "GET",
+                dataType: "json",
+                processData: false,
+                contentType: false,
+            }).done((data) => {
+                console.log(data);
+                loadMessages(msgHistory, data, member);
+            }).fail((data, status, error) => {
+                console.log(status + " " + error);
+            });
+
+            let ws = window.location.protocol == "https:" ? "wss" : "ws";
+            chatSocket = new WebSocket(
+                ws + '://' + window.location.host +
+                '/ws/chat/' + pk + '/' + member + '/');
+            // Other logic codes here
+            chatSocket.onmessage = function (e) {
+                let data = JSON.parse(e.data);
+                let sender = data['sender'];
+                let message = data['message'];
+                let timestamp = data['timestamp'];
+                let newMsg = document.createElement('div');
+                sender === member ? newMsg.setAttribute('class', 'outgoing_msg')
+                    : newMsg.setAttribute('class', 'incoming_msg');
+
+                let senderDOM = document.createElement('div');
+                sender === member ? senderDOM.setAttribute('class', 'outgoing_sender')
+                    : senderDOM.setAttribute('class', 'incoming_sender');
+                let senderName = document.createTextNode(data['senderName']);
+                senderDOM.appendChild(senderName);
+                newMsg.appendChild(senderDOM);
+
+                let innerNewMsg = document.createElement('div');
+                sender === member ? innerNewMsg.setAttribute('class', 'sent_msg')
+                    : innerNewMsg.setAttribute('class', 'received_msg');
+
+                let msg = document.createElement('div');
+                if (member !== sender) msg.setAttribute('class', 'received_withd_msg');
+
+
+                let p = document.createElement('p');
+                let text = document.createTextNode(message);
+
+                let time = document.createElement('span');
+                let timeText = document.createTextNode(timestamp);
+
+                p.appendChild(text);
+                time.setAttribute('class', 'time_date');
+                time.appendChild(timeText);
+
+                msg.appendChild(p);
+                msg.appendChild(time);
+
+                innerNewMsg.appendChild(msg);
+                newMsg.appendChild(innerNewMsg);
+
+                msgHistory.appendChild(newMsg);
+
+                $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+            };
+
+            document.querySelector('#write_msg').focus();
+            document.querySelector('#write_msg').onkeypress = function (e) {
+                if (e.keyCode === 13) {  // enter, return
+                    document.querySelector('#msg_send_btn').click();
+                }
+            };
+            document.querySelector('#msg_send_btn').onclick = function (e) {
+                let messageInputDom = document.querySelector('#write_msg');
+                let message = messageInputDom.value;
+
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'sender': member
+                }));
+
+                messageInputDom.value = '';
+            };
+
+        };
+
+        window.onunload = () => {
+            chatSocket.close();
+        }
+
+
+        function chatRefresh(pk) {
+            sessionStorage.setItem('default', pk);
+            location.href = "{% url 'Chat:home' %}";
+        }
+    </script>
+
 {% endblock %}

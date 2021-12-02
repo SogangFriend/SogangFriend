@@ -43,7 +43,7 @@ EMAIL_HOST_PASSWORD = EMAIL['EMAIL_HOST_PASSWORD']
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['127.0.0.1', '.ap-northeast-2.compute.amazonaws.com', '.sogang-friend.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.ap-northeast-2.compute.amazonaws.com', '.sogang-friend.com', '172.31.11.70']
     #EMAIL_BACKEND
 
 # Application definition
