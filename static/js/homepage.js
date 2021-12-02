@@ -188,26 +188,8 @@ function enterChatRoom(pk) {
         contentType: false,
         dataType: 'json',
     }).done((data) => {
-        if (!data['new']) {
-            Swal.fire({
-                icon: 'error',
-                html: "이미 속한 채팅방입니다.",
-                buttonsStyling: false,
-                confirmButtonText: "확인",
-                width: '672px',
-
-                customClass: {
-                    confirmButton: 'swal-register-btn',
-                    popup: 'swal-custom-container'
-                },
-            }).then(() => {
-                sessionStorage.setItem('default', data['room_pk']);
-                location.href = "/chat/";
-            });
-        } else {
-            sessionStorage.setItem('default', data['room_pk']);
-            location.href = "/chat/";
-        }
+        sessionStorage.setItem('default', data['room_pk']);
+        location.href = "/chat/";
     }).fail((data, status, error) => {
         Swal.fire({
             icon: 'error',

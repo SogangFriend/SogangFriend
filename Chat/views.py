@@ -110,4 +110,7 @@ class MessagesView(LoginRequiredMixin, View):
         chatroom = ChatRoom.objects.get(pk=room_pk)
         msgs = Message.objects.filter(chat_room=chatroom)
         msgs = list(msgs.values())
+        print(msgs)
+        for msg in msgs:
+            msg['timestamp'] = msg['timestamp'].strftime("%Y-%m-%d %I:%M %p")
         return JsonResponse(msgs, safe=False)
