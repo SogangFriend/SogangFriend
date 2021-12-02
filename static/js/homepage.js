@@ -208,7 +208,7 @@ function enterChatRoom(pk) {
     }).fail((data, status, error) => {
         Swal.fire({
             icon: 'error',
-            html: "입장하실 수 없습니다.",
+            html: "입장하실 수 없습니다.<br>"+status + " " + error,
             buttonsStyling: false,
             confirmButtonText: "확인",
             width: '672px',
