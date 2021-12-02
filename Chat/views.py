@@ -67,16 +67,16 @@ class EnterDMView(LoginRequiredMixin, View):
         if mc.count() != 0:
             chatroom = mc[0]
         else:
-            # mc = target.chats.filter(target=me, is_dm=True)
-            # if mc.count() != 0:
-            #     chatroom = mc[0]
-            # else:
-            chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
-                                               created_time=timezone.now(), location=me.location,
-                                               is_dm=True, target=target)
+            mc = target.chats.filter(target=me, is_dm=True)
+            if mc.count() != 0:
+                chatroom = mc[0]
+            else:
+                chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
+                                                   created_time=timezone.now(), location=me.location,
+                                                   is_dm=True, target=target)
 
-            Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
-            Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
+                Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
+                Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
         return JsonResponse({'room_pk': chatroom.pk})
 
 
