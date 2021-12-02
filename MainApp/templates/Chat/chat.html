@@ -56,24 +56,6 @@
 </div>
 
 <script>
-let rms = [
-    {% for room in rooms %}
-    {
-        pk: {{ room.chat_room.pk }},
-        msgs: [
-            {% for msg in room.chat_room.message_set.all %}
-                {
-                    sender: "{{ msg.sender.pk }}",
-                    senderName: "{{ msg.sender.name }}",
-                    message: "{{ msg.message }}",
-                    timestamp: "{{ msg.timestamp }}"
-                },
-            {% endfor %}
-        ]
-    },
-    {% endfor %}
-];
-
 window.onload = () => {
     let defaultChat = sessionStorage.getItem('default');
     if ("{{ request.session.default }}" !== "") defaultChat = "{{ request.session.default }}";

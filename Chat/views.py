@@ -102,3 +102,12 @@ class CheckUnreadView(LoginRequiredMixin, View):
 
         return JsonResponse(ret)
 
+
+class MessagesView(LoginRequiredMixin, View):
+    login_url = '/login/'
+
+    def get(self, request, room_pk):
+        chatroom = ChatRoom.objects.get(pk=room_pk)
+        msgs = Message.objects.filter(chat_room=chatroom)
+        msgs = list(msgs.values())
+        return JsonResponse(msgs, safe=False)

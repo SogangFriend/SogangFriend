@@ -27,5 +27,6 @@ class Message(models.Model):
     message = models.TextField(null=False, blank=False)
     chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, null=False, blank=False)
     sender = models.ForeignKey(Member, on_delete=models.CASCADE, null=False, blank=False, related_name='my_messages')
+    sender_name = models.CharField(max_length=30, default=sender.name)
     timestamp = models.DateTimeField()
 
