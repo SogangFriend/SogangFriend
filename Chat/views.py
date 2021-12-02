@@ -17,7 +17,7 @@ class ChatView(LoginRequiredMixin, View):
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         rooms = Member_ChatRoom.objects.filter(member=member)
-        return render(request, 'Chat/chat_list.html',
+        return render(request, 'Chat/chat.html',
                       {'rooms': rooms, 'member_pk': member_pk})
 
 
