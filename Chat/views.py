@@ -48,38 +48,37 @@ class EnterChatView(LoginRequiredMixin, View):
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         chatroom = ChatRoom.objects.get(pk=room_pk)
-        data = {'new': True, 'room_pk': room_pk}
+        data = {'room_pk': room_pk}
         if Member_ChatRoom.objects.filter(member=member, chat_room=chatroom).count() == 0:
             Member_ChatRoom.objects.create(member=member, chat_room=chatroom, member_timestamp=timezone.now())
-            return redirect('/chat/')
-        else:
-            data['new'] = False
-            return JsonResponse(data)
+        return JsonResponse(data)
 
 
 class EnterDMView(LoginRequiredMixin, View):
     login_url = '/login/'
     redirect_field_name = '/chat/'
 
-    def get(self, request, pk):
-        target = Member.objects.get(pk=pk)
+    def post(self, request):
+        body = json.loads(request.body)
+        target_pk = body['target']
+        target = Member.objects.get(pk=target_pk)
         me = Member.objects.get(pk=request.session.get('member'))
         mc = me.chats.filter(target=target, is_dm=True)
         if mc.count() != 0:
             chatroom = mc[0]
         else:
-            mc = target.chats.filter(target=me, is_dm=True)
-            if mc.count() != 0:
-                chatroom = mc[0]
-            else:
-                chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
-                                                   created_time=timezone.now(), location=me.location,
-                                                   is_dm=True, target=target)
+            # mc = target.chats.filter(target=me, is_dm=True)
+            # if mc.count() != 0:
+            #     chatroom = mc[0]
+            # else:
+            chatroom = ChatRoom.objects.create(name="dm_"+me.name+"_"+target.name, creator=me,
+                                               created_time=timezone.now(), location=me.location,
+                                               is_dm=True, target=target)
 
-                Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
-                Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
+            Member_ChatRoom.objects.create(member=me, chat_room=chatroom, member_timestamp=timezone.now())
+            Member_ChatRoom.objects.create(member=target, chat_room=chatroom, member_timestamp=timezone.now())
         return render(request, 'Chat/room.html',
-                      {'room_name': chatroom.pk, 'member_pk': me.pk})
+                      {'room_pk': chatroom.pk})
 
 
 class CheckUnreadView(LoginRequiredMixin, View):

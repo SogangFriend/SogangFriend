@@ -152,8 +152,9 @@ function createChatRoom() {
                     confirmButton: 'swal-register-btn',
                     popup: 'swal-custom-container'
                 },
+            }).then(() => {
+                location.reload();
             });
-            location.reload();
         }).fail((data, status, error) => {
             Swal.fire({
                 icon: 'error',
@@ -206,6 +207,39 @@ function enterChatRoom(pk) {
     });
 }
 
+function enterDM(target) {
+    let csrftoken = getCookie('csrftoken');
+    let data = {'target': target};
+    $.ajax({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+        url: "/dm/",
+        method: "POST",
+        data: JSON.stringify(data),
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+    }).done((data) => {
+        sessionStorage.setItem('default', data['room_pk']);
+        location.href = "/chat/";
+    }).fail((data, status, error) => {
+        Swal.fire({
+            icon: 'error',
+            html: "입장하실 수 없습니다.<br>"+status + " " + error,
+            buttonsStyling: false,
+            confirmButtonText: "확인",
+            width: '672px',
+
+            customClass: {
+                confirmButton: 'swal-register-btn',
+                popup: 'swal-custom-container'
+            },
+        });
+    });
+}
 
 // using jQuery
 function getCookie(name) {
