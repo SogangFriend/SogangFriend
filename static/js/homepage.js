@@ -216,7 +216,7 @@ function enterDM(target) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
         },
-        url: "/dm/",
+        url: "/chat/dm/",
         method: "POST",
         data: JSON.stringify(data),
         processData: false,
