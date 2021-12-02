@@ -64,12 +64,19 @@
     <script>
         let msgHistory = document.getElementsByClassName("msg_history")[0];
         let chatSocket = null;
+        let chatList = document.getElementsByClassName("chat_list");
         window.onload = () => {
             let pk = sessionStorage.getItem('default');
             if (pk == null) {
                 pk = target.id.slice(10);
             }
-            console.log(pk);
+            let target = document.getElementById("chat_list_"+pk)
+
+            for (let i = 0; i < chatList.length; i++) {
+                chatList[i].classList.remove("chat_clicked");
+            }
+            target.classList.add("chat_clicked");
+            
 
             $.ajax({
                 url: "/chat/msgs/" + pk,
