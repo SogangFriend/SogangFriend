@@ -35,25 +35,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         sender_pk = text_data_json['sender']
+        msg = await self.create_message(message, sender_pk)
+        await self.set_chat_room_timestamp()
         await self.channel_layer.group_send(
             self.room_group_name, {
                 'type': 'chat_message',
                 'message': message,
-                'sender': sender_pk
+                'sender': sender_pk,
+                'sender_name': msg.sender_name,
+                'timestamp': msg.timestamp
             }
         )
 
     async def chat_message(self, event):
         message = event['message']
         sender_pk = event['sender']
-        sender = await self.get_member_with_pk(sender_pk)
-        msg = await self.create_message(message)
-        await self.set_chat_room_timestamp()
+        sender_name = event['sender_name']
+        timestamp = event['timestamp']
         await self.send(text_data=json.dumps({
             'sender' : sender_pk,
-            'senderName': sender.name,
+            'senderName': sender_name,
             'message' : message,
-            'timestamp' : msg.timestamp
+            'timestamp' : timestamp
         }, default=str))
 
     @database_sync_to_async
@@ -65,8 +68,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return Member.objects.get(pk=pk)
 
     @database_sync_to_async
-    def create_message(self, message):
-        member = Member.objects.get(pk=self.member)
+    def create_message(self, message, sender_pk):
+        member = Member.objects.get(pk=sender_pk)
         chat_room = ChatRoom.objects.get(pk=self.room_name)
         msg = Message.objects.create(message=message, sender=member, chat_room=chat_room,
                                      timestamp=timezone.now(), sender_name=member.name)
