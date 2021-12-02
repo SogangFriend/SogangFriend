@@ -155,6 +155,11 @@
             chatSocket.close();
         }
 
+
+        function chatRefresh(pk) {
+            sessionStorage.setItem('default', pk);
+            location.href = "{% url 'Chat:home' %}";
+        }
     </script>
 
 {% endblock %}

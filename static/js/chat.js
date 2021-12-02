@@ -43,8 +43,3 @@ Msg log 에 History 불러오기
     $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
 }
 
-
-function chatRefresh(pk) {
-    sessionStorage.setItem('default', pk);
-    location.href = "{% url 'Chat:home' %}";
-}
