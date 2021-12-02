@@ -204,6 +204,9 @@ function enterChatRoom(pk) {
                 sessionStorage.setItem('default', data['room_pk']);
                 location.href = "/chat/";
             });
+        } else {
+            sessionStorage.setItem('default', data['room_pk']);
+            location.href = "/chat/";
         }
     }).fail((data, status, error) => {
         Swal.fire({
