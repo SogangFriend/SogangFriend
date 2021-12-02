@@ -78,7 +78,10 @@
                 processData: false,
                 contentType: false,
             }).done((data) => {
+                console.log(data);
                 loadMessages(msgHistory, data, member);
+            }).fail((data, status, error) => {
+                console.log(status + " " + error);
             });
 
             let ws = window.location.protocol == "https:" ? "wss" : "ws";
