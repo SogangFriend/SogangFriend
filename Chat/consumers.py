@@ -43,7 +43,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message,
                 'sender': sender_pk,
                 'sender_name': msg.sender_name,
-                'timestamp': msg.timestamp
+                'timestamp': msg.timestamp.strftime("%Y-%m-%d %I:%M %p")
             }
         )
 

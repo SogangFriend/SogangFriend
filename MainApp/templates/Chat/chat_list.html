@@ -22,7 +22,8 @@
 {#          </div>#}
           <div class="inbox_chat">
           {% for room in rooms %}
-            <div class="chat_list" id="chat_list_{{ room.chat_room.pk }}" style="cursor: pointer" onclick="chatRoom(this, {{ room.chat_room.pk }}, '{{ member_pk }}')">
+            <div class="chat_list" id="chat_list_{{ room.chat_room.pk }}" style="cursor: pointer"
+                 onclick="location.href='/chat/room/'+ {{ room.chat_room.pk }}">
                 <div class="chat_people">
                     <div class="chat_img"> <img src="{% static '/images/default_profile.png' %}" alt="sogang"> </div>
                     <div class="chat_ib">
@@ -40,16 +41,6 @@
             </div>
           {% endfor %}
         </div>
-        </div>
-        <div class="mesgs">
-          <div class="msg_history" id="chat-box">
-          </div>
-          <div class="type_msg">
-            <div class="input_msg_write">
-              <input type="text" id="write_msg" class="write_msg" placeholder="메시지 입력" />
-              <button id="msg_send_btn" class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -71,6 +62,13 @@ window.onload = () => {
     }
 };
 
+function move(pk){
+    $.ajax({
+        url: "/chat/msgs/"+pk,
+        method: "GET",
+    });
+}
+
 </script>
-<script src="{% static '/js/chat.js' %}"></script>
+{#<script src="{% static '/js/chat.js' %}"></script>#}
 {% endblock %}

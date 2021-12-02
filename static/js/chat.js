@@ -1,8 +1,6 @@
 let chatList = document.getElementsByClassName("chat_list");
 
 let chatSocket = null;
-let msgHistory = document.getElementsByClassName("msg_history")[0];
-
 function chatRoom(target, pk, member_pk) {
     if (target.classList[1] === "chat_clicked") {
         target.classList.remove("chat_clicked");

@@ -9,5 +9,6 @@ urlpatterns = [
     # ajax 통신 url
     path('enter/', EnterChatView.as_view(), name='enter'),
     path('unread/', CheckUnreadView.as_view(), name='check'),
+    path('room/<str:room_pk>/', RoomView.as_view(), name='room'),
     path('msgs/<str:room_pk>/', MessagesView.as_view(), name='msgs'),
 ]

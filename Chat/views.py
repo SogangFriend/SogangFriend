@@ -17,7 +17,7 @@ class ChatView(LoginRequiredMixin, View):
         member_pk = request.session.get('member')
         member = Member.objects.get(pk=member_pk)
         rooms = Member_ChatRoom.objects.filter(member=member)
-        return render(request, 'Chat/chat.html',
+        return render(request, 'Chat/chat_list.html',
                       {'rooms': rooms, 'member_pk': member_pk})
 
 
@@ -101,6 +101,13 @@ class CheckUnreadView(LoginRequiredMixin, View):
         ret = {'unread': flag}
 
         return JsonResponse(ret)
+
+
+class RoomView(LoginRequiredMixin, View):
+    login_url = '/login/'
+
+    def get(self, request, room_pk):
+        return render(request, "Chat/chat_room.html", {"room_pk": room_pk})
 
 
 class MessagesView(LoginRequiredMixin, View):
