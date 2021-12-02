@@ -66,7 +66,6 @@
         let chatSocket = null;
         window.onload = () => {
             let pk = sessionStorage.getItem('default');
-            if ("{{ request.session.default }}" !== "") pk = "{{ request.session.default }}";
             if (pk == null) {
                 pk = target.id.slice(10);
             }
