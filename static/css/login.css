@@ -101,7 +101,7 @@
 
 .auto-login-text {
     padding: 0 0 0 0;
-    width: 68px;
+    /*width: 68px;*/
     height: 20px;
     margin: 0 230px 0 0;
     font-size: 14px;
@@ -114,9 +114,9 @@
 }
 
 .password {
-    /*width: 80px;*/
+    /*margin-right:20px;*/
     height: 20px;
-    margin: 0 0 0 0;
+    margin: 0 60px 0 0;
     font-size: 14px;
     line-height: 20px;
     letter-spacing: normal;
@@ -128,7 +128,7 @@
 
 .bottomText {
     height: 20px;
-    margin: 25px 0 100px 120px;
+    margin: 25px 29px 100px 109px;
     font-size: 14px;
     font-weight: normal;
     font-stretch: normal;

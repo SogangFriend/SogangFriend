@@ -76,5 +76,4 @@ Pycharm 등 IDE 사용 권장(idle, cmd 불편합니다)
         >python manage.py migrate
         
 * 주의사항
-1. 사람별로 브랜치를 만들 것입니다. <br>본인의 브랜치를 사용하길 권장하며 main 브랜치에 바로 commit-push 하지 않도록 부탁드립니다.<br>
-
+1. 사람별로 브랜치를 만들 것입니다. <br>본인의 브랜치를 사용하길 권장하며 main 브랜치에 바로 commit-push 하지 않도록 부탁드립니다.
