@@ -12,6 +12,11 @@
 - 같은 동네 사용자 간 취미 공유
 - 단체 채팅방, DM 기능
 
+## Preview
+
+https://user-images.githubusercontent.com/80390638/183651950-8341067b-5651-47cc-8609-082b688019b8.mp4
+
+
 ## Design Prototype
 ### Homepage
 <img src="https://user-images.githubusercontent.com/63971146/138401542-32426e82-e3cd-4a23-8a8e-2ca92723566f.png" width=70%/>
